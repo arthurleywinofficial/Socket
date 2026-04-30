@@ -220,9 +220,18 @@ ${getSystemContext()}`;
   return (
     <div className="ai-assistant-container">
       {showHint && (
-        <div className="ai-hint-bubble fade-in" onClick={() => { setIsOpen(true); handleSend("Mevcut alarmları ve durumu analiz et."); }}>
-          <AlertCircle size={16} />
-          <span>{hintText}</span>
+        <div className="ai-hint-bubble fade-in">
+          <div className="hint-content" onClick={() => { setIsOpen(true); handleSend("Mevcut alarmları ve durumu analiz et."); }} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1 }}>
+            <AlertCircle size={16} />
+            <span>{hintText}</span>
+          </div>
+          <button 
+            className="hint-close" 
+            onClick={(e) => { e.stopPropagation(); setShowHint(false); }}
+            style={{ background: 'rgba(0,0,0,0.1)', border: 'none', borderRadius: '50%', padding: '4px', cursor: 'pointer', display: 'flex', marginLeft: '0.5rem' }}
+          >
+            <X size={14} />
+          </button>
         </div>
       )}
 

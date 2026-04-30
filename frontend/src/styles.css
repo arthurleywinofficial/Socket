@@ -1457,6 +1457,28 @@ html[data-theme='light'] .themed-select-menu::-webkit-scrollbar-thumb {
     grid-template-columns: 1fr !important;
   }
   
+  .mobile-toggle {
+    display: flex !important;
+    z-index: 2000 !important;
+    background: rgba(0, 212, 255, 0.1) !important;
+    padding: 10px !important;
+    border-radius: 12px !important;
+    color: var(--accent) !important;
+  }
+
+  .status-badge {
+    padding: 0.4rem 0.75rem !important;
+    font-size: 0.75rem !important;
+    max-width: 120px;
+    overflow: hidden;
+  }
+
+  .status-badge span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
   html { font-size: 14px; }
   h1, h2, h3 { letter-spacing: 0px !important; }
   .panel-header { padding-bottom: 8px !important; margin-bottom: 8px !important; }
