@@ -1,0 +1,1707 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "content": "<div style=\"background: linear-gradient(135deg, #004185 0%, #001a35 100%); padding: 25px; border-radius: 12px; height: 100%; display: flex; flex-direction: column; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3);\">\n  <div style=\"display: flex; align-items: center; margin-bottom: 5px;\">\n    <span style=\"font-size: 2.2em; margin-right: 15px;\">\ud83d\udee1\ufe0f</span>\n    <h1 style=\"font-size: 2.5em; margin: 0; font-family: 'Inter', sans-serif; letter-spacing: -1px;\">SOCKET</h1>\n  </div>\n  <p style=\"font-size: 1.1em; color: #94a3b8; font-weight: 300; margin: 0;\">SOCAR Operasyon Kontrol ve End\u00fcstriyel Takip Merkezi</p>\n</div>",
+        "mode": "html"
+      },
+      "title": "",
+      "type": "text",
+      "transparent": true
+    },
+    {
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "id": 100,
+      "title": "\ud83c\udf0d \u00c7evresel Saha Ko\u015fullar\u0131 (Ali\u011fa Tesisleri)",
+      "type": "row",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "noValue": "...",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 30
+              },
+              {
+                "color": "red",
+                "value": 40
+              }
+            ]
+          },
+          "unit": "celsius"
+        }
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 0,
+        "y": 7
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"environment\" and r.sensor_name == \"Aliaga-Temp\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "S\u0131cakl\u0131k",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "cyan",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percent"
+        }
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 4,
+        "y": 7
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"environment\" and r.sensor_name == \"Aliaga-Hum\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Nem",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 30
+              },
+              {
+                "color": "red",
+                "value": 60
+              }
+            ]
+          }
+        }
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 4,
+        "x": 8,
+        "y": 7
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"environment\" and r.sensor_name == \"Aliaga-AQI\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Hava Kalitesi (AQI)",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "\u00b5g/m\u00b3"
+        }
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 12,
+        "y": 7
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"environment\" and r.sensor_name == \"Aliaga-PM10\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Partik\u00fcl (PM10)",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "\u00b5g/m\u00b3"
+        }
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 18,
+        "y": 7
+      },
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"environment\" and r.sensor_name == \"Aliaga-PM25\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Partik\u00fcl (PM2.5)",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 11
+      },
+      "id": 101,
+      "title": "\u26a1 Enerji Y\u00f6netimi",
+      "type": "row",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "kWh"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 0,
+        "y": 12
+      },
+      "id": 40,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"energy\" and r.sensor_name == \"Electricity\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Elektrik T\u00fcketimi",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "ton"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 4,
+        "y": 12
+      },
+      "id": 41,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"energy\" and r.sensor_name == \"Steam\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Buhar T\u00fcketimi",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "m\u00b3"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 8,
+        "y": 12
+      },
+      "id": 42,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"energy\" and r.sensor_name == \"Water\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Su T\u00fcketimi",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "kg CO2"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 12,
+        "y": 12
+      },
+      "id": 43,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"energy\" and r.sensor_name == \"Carbon\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Karbon Emisyonu",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "id": 125,
+      "title": "\ud83c\udfed \u00dcr\u00fcn Kalitesi ve Laboratuvar Sonu\u00e7lar\u0131",
+      "type": "row",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "%"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 0,
+        "y": 18
+      },
+      "id": 60,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"quality\" and r.sensor_name == \"Product-Purity\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "\u00dcr\u00fcn Safl\u0131\u011f\u0131",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "%"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 4,
+        "y": 18
+      },
+      "id": 61,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"quality\" and r.sensor_name == \"Daily-Target\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "G\u00fcnl\u00fck Hedef Ger\u00e7ekle\u015fme",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "%"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 8,
+        "y": 18
+      },
+      "id": 62,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"quality\" and r.sensor_name == \"Monthly-Target\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Ayl\u0131k Hedef Ger\u00e7ekle\u015fme",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "%"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 12,
+        "y": 18
+      },
+      "id": 63,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"quality\" and r.sensor_name == \"Lab-Result\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Laboratuvar Sonucu",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 23
+      },
+      "id": 130,
+      "title": "\ud83d\udce6 Lojistik & Stok Y\u00f6netimi",
+      "type": "row",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "%"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 0,
+        "y": 24
+      },
+      "id": 70,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"logistics\" and r.sensor_name == \"Raw-Tank-Level\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Ham Madde Tank Doluluk",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "%"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 4,
+        "y": 24
+      },
+      "id": 71,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"logistics\" and r.sensor_name == \"Product-Tank-Level\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "\u00dcr\u00fcn Tank Doluluk",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "%"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 8,
+        "y": 24
+      },
+      "id": 72,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"logistics\" and r.sensor_name == \"Tanker-Loading\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Tanker Y\u00fckleme",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "%"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 12,
+        "y": 24
+      },
+      "id": 73,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"logistics\" and r.sensor_name == \"Ship-Loading\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Gemi Y\u00fckleme",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "%"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 16,
+        "y": 24
+      },
+      "id": 74,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"logistics\" and r.sensor_name == \"Warehouse-Utilization\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Depo Doluluk",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "%"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 20,
+        "y": 24
+      },
+      "id": 75,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"logistics\" and r.sensor_name == \"Inventory-Turnover\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Stok Devir H\u0131z\u0131",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 30
+      },
+      "id": 150,
+      "title": "\ud83d\udee0\ufe0f Bak\u0131m ve Titre\u015fim Analizi",
+      "type": "row",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "mm/s"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 0,
+        "y": 31
+      },
+      "id": 44,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"maintenance\" and r.sensor_name == \"Pump-Vibration\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Pompa Titre\u015fimi",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "mm/s"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 4,
+        "y": 31
+      },
+      "id": 45,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"maintenance\" and r.sensor_name == \"Compressor-Vibration\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Kompres\u00f6r Titre\u015fimi",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "mm/s"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 8,
+        "y": 31
+      },
+      "id": 46,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"maintenance\" and r.sensor_name == \"Turbine-Vibration\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "T\u00fcrbin Titre\u015fimi",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "%"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 12,
+        "y": 31
+      },
+      "id": 47,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"maintenance\" and r.sensor_name == \"Filter-Condition\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Filtre Durumu",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "%"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 31
+      },
+      "id": 48,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r._measurement == \"maintenance\" and r.sensor_name == \"Valve-Position\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Vana Pozisyonu",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 36
+      },
+      "id": 200,
+      "title": "\ud83c\udfed End\u00fcstriyel \u00dcretim ve Operasyon Senaryosu",
+      "type": "row",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 11.5
+              }
+            ]
+          },
+          "unit": "pressurebar"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 0,
+        "y": 37
+      },
+      "id": 20,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r[\"_measurement\"] == \"production\") |> filter(fn: (r) => r[\"sensor_name\"] == \"Pipeline-Pressure\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Boru Bas\u0131nc\u0131",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "celsius"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 4,
+        "y": 37
+      },
+      "id": 21,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r[\"_measurement\"] == \"production\") |> filter(fn: (r) => r[\"sensor_name\"] == \"Pipeline-Temp\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Boru S\u0131cakl\u0131\u011f\u0131",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "unit": "m3h"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 4,
+        "x": 8,
+        "y": 37
+      },
+      "id": 22,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r[\"_measurement\"] == \"production\") |> filter(fn: (r) => r[\"sensor_name\"] == \"Flow-Rate\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Ak\u0131\u015f H\u0131z\u0131",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "orange",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 600
+              }
+            ]
+          },
+          "unit": "celsius"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 12,
+        "y": 37
+      },
+      "id": 23,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r[\"_measurement\"] == \"production\") |> filter(fn: (r) => r[\"sensor_name\"] == \"Reactor-Beta-Temp\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Reakt\u00f6r S\u0131cakl\u0131\u011f\u0131",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 20
+              },
+              {
+                "color": "green",
+                "value": 40
+              }
+            ]
+          },
+          "unit": "percent"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 37
+      },
+      "id": 24,
+      "options": {
+        "displayMode": "gradient",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "showUnfilled": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r[\"_measurement\"] == \"production\") |> filter(fn: (r) => r[\"sensor_name\"] == \"Tank-Alpha-Level\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Tank Doluluk",
+      "type": "bargauge",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "PostgreSQL"
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 12,
+        "x": 0,
+        "y": 47
+      },
+      "id": 2,
+      "targets": [
+        {
+          "format": "table",
+          "rawSql": "SELECT title as \"Ba\u015fl\u0131k\", TO_CHAR(timestamp, 'DD.MM HH24:MI') as \"Zaman\" FROM announcements ORDER BY timestamp DESC LIMIT 6",
+          "refId": "A"
+        }
+      ],
+      "title": "\ud83d\udccc Kritik Duyurular ve \u0130SG Notlar\u0131",
+      "type": "table",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "unit": "m3h",
+          "custom": {
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "lineWidth": 2
+          }
+        }
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 47
+      },
+      "id": 30,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -6h) |> filter(fn: (r) => r[\"_measurement\"] == \"production\" and r[\"sensor_name\"] == \"Flow-Rate\")",
+          "refId": "A"
+        }
+      ],
+      "title": "\ud83d\udcc8 Son 6 Saatlik Ak\u0131\u015f Trendi",
+      "type": "timeseries",
+      "transparent": true
+    },
+    {
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 58
+      },
+      "id": 9901,
+      "title": "\ud83d\udd34 Ger\u00e7ek Zamanl\u0131 End\u00fcstriyel Sens\u00f6rler (MQTT Sim\u00fclat\u00f6r\u00fc)",
+      "type": "row",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 30
+              },
+              {
+                "color": "red",
+                "value": 40
+              }
+            ]
+          },
+          "unit": "celsius"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 59
+      },
+      "id": 9902,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r.sensor_name == \"Temp-Zone1\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "B\u00f6lge 1 - S\u0131cakl\u0131k (+/- Dalgal\u0131)",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 0.5
+              },
+              {
+                "color": "red",
+                "value": 5
+              }
+            ]
+          },
+          "unit": "ppm"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 6,
+        "y": 59
+      },
+      "id": 9903,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r.sensor_name == \"Gas-H2S-Zone1\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "B\u00f6lge 1 - H2S Gaz Seviyesi (S\u0131z\u0131nt\u0131 Alarm Test)",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "cyan",
+                "value": null
+              },
+              {
+                "color": "blue",
+                "value": 60
+              }
+            ]
+          },
+          "unit": "percent"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 12,
+        "y": 59
+      },
+      "id": 9904,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r.sensor_name == \"Humidity-Zone2\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "B\u00f6lge 2 - Ortam Nemi",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "InfluxDB"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2.0
+              },
+              {
+                "color": "red",
+                "value": 4.0
+              }
+            ]
+          },
+          "unit": "mm/s"
+        }
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 59
+      },
+      "id": 9905,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"sensors\") |> range(start: -1h) |> filter(fn: (r) => r.sensor_name == \"Vibration-Motor1\") |> last() |> set(key: \"_field\", value: \"\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Motor 1 - Titre\u015fim",
+      "type": "stat",
+      "transparent": true
+    },
+    {
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 64
+      },
+      "id": 9906,
+      "title": "\ud83d\udc65 Personel Konum Takibi (RFID & WiFi Yaka Kartlar\u0131)",
+      "type": "row",
+      "transparent": true
+    },
+    {
+      "datasource": {
+        "type": "postgres",
+        "uid": "PostgreSQL"
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 65
+      },
+      "id": 9907,
+      "targets": [
+        {
+          "format": "table",
+          "rawSql": "SELECT username as \"Personel\", last_location as \"Son Konum\", last_signal_dbm || ' dBm' as \"Sinyal G\u00fcc\u00fc\", CASE WHEN is_evacuated THEN 'G\u00fcvende \u2705' ELSE 'Sahada \u26a0\ufe0f' END as \"G\u00fcvenlik Durumu\", TO_CHAR(last_seen, 'DD.MM.YYYY HH24:MI:SS') as \"Son G\u00f6r\u00fclme\" FROM users WHERE username != 'admin' ORDER BY last_seen DESC NULLS LAST",
+          "refId": "A"
+        }
+      ],
+      "title": "Personel Ge\u00e7i\u015f Loglar\u0131",
+      "type": "table",
+      "transparent": true
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 38,
+  "style": "dark",
+  "title": "SOCAR Proje Ana Sayfa",
+  "uid": "socar-home",
+  "version": 11
+}

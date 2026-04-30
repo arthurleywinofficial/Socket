@@ -1,0 +1,173 @@
+/* SOCAR Premium Dark Theme for Swagger UI - Aggressive Fix */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+:root {
+    --bg-color: #0F172A;
+    --surface-color: #1E293B;
+    --primary-color: #E30613; /* SOCAR RED */
+    --text-color: #F1F5F9;
+    --border-radius: 10px;
+}
+
+/* Global Background & Font */
+body {
+    margin: 0;
+    background-color: var(--bg-color) !important;
+}
+
+.swagger-ui {
+    font-family: 'Inter', sans-serif !important;
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+}
+
+/* Main Container Background */
+.swagger-ui .info, 
+.swagger-ui .scheme-container, 
+.swagger-ui .opblock-tag-section, 
+.swagger-ui .models,
+.swagger-ui .wrapper {
+    background-color: transparent !important;
+}
+
+/* Fix White Sections */
+.swagger-ui .scheme-container {
+    background-color: var(--surface-color) !important;
+    box-shadow: none !important;
+    border-radius: var(--border-radius);
+    margin: 20px 0 !important;
+    padding: 20px !important;
+}
+
+/* Topbar Customization */
+.swagger-ui .topbar {
+    background-color: #020617 !important;
+    padding: 10px 0 !important;
+}
+
+/* SOCAR Logo Injection */
+.swagger-ui .topbar-wrapper a.link img {
+    display: none !important; /* Hide default swagger logo */
+}
+
+.swagger-ui .topbar-wrapper a.link::after {
+    content: "SOCAR GUARDIAN";
+    color: white;
+    font-weight: 800;
+    font-size: 20px;
+    letter-spacing: 2px;
+    margin-left: 10px;
+}
+
+/* Information Section */
+.swagger-ui .info .title, 
+.swagger-ui .info p, 
+.swagger-ui .info li,
+.swagger-ui .info h1, 
+.swagger-ui .info h2, 
+.swagger-ui .info h3, 
+.swagger-ui .info h4, 
+.swagger-ui .info h5 {
+    color: var(--text-color) !important;
+}
+
+.swagger-ui .info .title small pre {
+    background: #334155 !important;
+    color: #FDE047 !important;
+}
+
+/* Operations Blocks */
+.swagger-ui .opblock {
+    background: var(--surface-color) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    margin-bottom: 12px !important;
+    border-radius: var(--border-radius) !important;
+}
+
+.swagger-ui .opblock-tag {
+    color: var(--text-color) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Path & Description */
+.swagger-ui .opblock .opblock-summary-path,
+.swagger-ui .opblock .opblock-summary-description {
+    color: #CBD5E1 !important;
+}
+
+/* Authorize Button */
+.swagger-ui .btn.authorize {
+    background-color: transparent !important;
+    color: #10B981 !important;
+    border-color: #10B981 !important;
+    border-radius: 8px;
+}
+
+.swagger-ui .btn.authorize svg {
+    fill: #10B981 !important;
+}
+
+/* Models Section - Beyaz Leke Kesin Çözüm */
+.swagger-ui section.models {
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background-color: var(--surface-color) !important;
+    border-radius: var(--border-radius) !important;
+}
+
+.swagger-ui section.models *,
+.swagger-ui section.models span,
+.swagger-ui section.models button,
+.swagger-ui section.models a,
+.swagger-ui .model-box, 
+.swagger-ui .model-box *,
+.swagger-ui .model-title, 
+.swagger-ui .model-title *,
+.swagger-ui .model-toggle,
+.swagger-ui .model-toggle * {
+    background-color: transparent !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.swagger-ui .model-title {
+    color: #FDE047 !important;
+    font-weight: bold !important;
+}
+
+/* Parametre Kutuları ve Girdi Alanları Fix */
+.swagger-ui input, 
+.swagger-ui select, 
+.swagger-ui textarea,
+.swagger-ui .parameter__extension,
+.swagger-ui .parameter__in {
+    background: #020617 !important;
+    color: #F1F5F9 !important;
+    border: 1px solid #334155 !important;
+    border-radius: 6px !important;
+}
+
+.swagger-ui .opblock-description-wrapper p,
+.swagger-ui .opblock-description-wrapper,
+.swagger-ui .opblock-external-docs-wrapper,
+.swagger-ui .opblock-title_normal {
+    color: #CBD5E1 !important;
+    background: transparent !important;
+}
+
+.swagger-ui .response-col_status,
+.swagger-ui .response-col_description {
+    color: #F1F5F9 !important;
+}
+
+/* JSON / Code Blocks */
+.swagger-ui .microlight, .swagger-ui pre, .swagger-ui code {
+    background: #020617 !important;
+    color: #38BDF8 !important;
+    border-radius: 8px;
+}
+
+/* JSON / Code Blocks */
+.swagger-ui .microlight, .swagger-ui pre {
+    background: #020617 !important;
+    color: #38BDF8 !important;
+}

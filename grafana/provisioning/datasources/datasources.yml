@@ -1,0 +1,24 @@
+apiVersion: 1
+
+datasources:
+  - name: InfluxDB
+    type: influxdb
+    access: proxy
+    url: http://influxdb:8086
+    isDefault: true
+    jsonData:
+      version: Flux
+      organization: socar
+      defaultBucket: sensors
+    secureJsonData:
+      token: my-super-secret-auth-token
+  
+  - name: PostgreSQL
+    type: postgres
+    url: postgres:5432
+    database: socar_db
+    user: admin
+    secureJsonData:
+      password: adminadmin
+    jsonData:
+      sslmode: disable

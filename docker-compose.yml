@@ -1,0 +1,146 @@
+# SOCAR SOCKET Deployment Stack
+
+services:
+  # 1. MQTT Broker (Sensör Haberleşme Protokolü)
+  mosquitto:
+    image: eclipse-mosquitto:2.0.15
+    container_name: socar_mosquitto
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+    restart: unless-stopped
+
+  # 2. InfluxDB (Sensörlerin zaman serisi verisi için TSDB)
+  influxdb:
+    image: influxdb:2.7
+    container_name: socar_influxdb
+    ports:
+      - "8086:8086"
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=adminadmin
+      - DOCKER_INFLUXDB_INIT_ORG=socar
+      - DOCKER_INFLUXDB_INIT_BUCKET=sensors
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=my-super-secret-auth-token
+    volumes:
+      - influxdb_data:/var/lib/influxdb2
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8086/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # 3. PostgreSQL (Kullanıcılar, Roller ve Alarm Logları için İlişkisel DB)
+  postgres:
+    image: postgres:15
+    container_name: socar_postgres
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=adminadmin
+      - POSTGRES_DB=socar_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d socar_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # 4. Grafana (Endüstriyel Veri Görselleştirme Arayüzü)
+  grafana:
+    image: grafana/grafana:9.5.6
+    container_name: socar_grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=adminadmin
+      - GF_USERS_DEFAULT_LANGUAGE=tr-TR
+      - GF_ANALYTICS_REPORTING_ENABLED=false
+      - GF_NEWS_NEWS_FEED_ENABLED=false
+      - GF_USERS_HELP_ENABLED=false
+      - GF_ANALYTICS_CHECK_FOR_UPDATES=false
+      - GF_SERVER_APP_NAME=SOCAR Proje
+      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/etc/grafana/provisioning/dashboards/home.json
+      - GF_FEATURE_TOGGLES_ENABLE=disableNewsPanel
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - influxdb
+      - postgres
+    restart: unless-stopped
+
+  # 5. Python Backend (API & Veri Koordinasyon & Simülasyon)
+  backend:
+    build: ./backend
+    container_name: socar_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/app:/app
+    environment:
+      - MQTT_BROKER=mosquitto
+      - INFLUXDB_URL=http://influxdb:8086
+      - DATABASE_URL=postgresql://admin:adminadmin@postgres:5432/socar_db
+    depends_on:
+      mosquitto:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      influxdb:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/status')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+  # 6. Industrial Simulator (MQTT Yayıncı - Sensör Simülasyonu)
+  simulator:
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile.simulator
+    container_name: socar_industrial_simulator
+    volumes:
+      - ./backend/app:/app/app
+    environment:
+      - MQTT_BROKER=mosquitto
+    depends_on:
+      - mosquitto
+    restart: unless-stopped
+
+  # 7. Swagger UI (Bağımsız Dokümantasyon Hostu)
+  docs:
+    image: swaggerapi/swagger-ui
+    container_name: socar_docs
+    ports:
+      - "8001:8080"
+    volumes:
+      - ./docs/custom.css:/usr/share/nginx/html/custom.css
+      - ./docs/index.html:/usr/share/nginx/html/index.html
+    environment:
+      - API_URL=http://localhost:8000/openapi.json
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  mosquitto_data:
+  mosquitto_log:
+  influxdb_data:
+  postgres_data:
+  grafana_data:
