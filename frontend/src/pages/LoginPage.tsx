@@ -3,7 +3,7 @@ import { Lock, User, Eye, EyeOff, ShieldCheck, ArrowRight, Key, Mail, UserPlus, 
 import { API_BASE } from '../config';
 
 interface LoginPageProps {
-  onLogin: (user: string, token: string) => void;
+  onLogin: (user: string, token: string, role?: string, id?: string) => void;
   onShowHelp: () => void;
   onShowPrivacy: () => void;
   registrationTokens: any[];
@@ -59,11 +59,23 @@ export default function LoginPage({ onLogin, onShowHelp, onShowPrivacy, registra
       } else {
         // Step 2: Finalize Registration
         setTimeout(() => {
-          const newUser = { username, email, password, level: validToken.level };
+          // 🎲 Rastgele 11 haneli ID üret (Arthur'un özel ID'si ile çakışmasın)
+          let randomId = Math.floor(10000000000 + Math.random() * 90000000000).toString();
+          if (randomId === '99999999999') randomId = '11111111111';
+
+          const newUser = { 
+            id: randomId,
+            username, 
+            email, 
+            password, 
+            level: validToken.level 
+          };
+          
           const users = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
           users.push(newUser);
           localStorage.setItem('socar-registered-users', JSON.stringify(users));
-          onLogin(username, 'mock-token-' + Math.random(), validToken.level);
+          
+          onLogin(username, 'mock-token-' + Math.random(), validToken.level, randomId);
           setIsLoading(false);
         }, 1500);
       }
@@ -71,9 +83,9 @@ export default function LoginPage({ onLogin, onShowHelp, onShowPrivacy, registra
     }
 
     try {
-      // 🛡️ SUPER-DEVELOPER: Arthur / 1242
+      // 🛡️ SUPER-DEVELOPER: Arthur / 1242 (Magic ID: 99999999999)
       if (username === 'Arthur' && password === '1242') {
-        onLogin('Arthur', 'dev-super-token-' + Date.now(), 'Geliştirici');
+        onLogin('Arthur', 'dev-super-token-' + Date.now(), 'Geliştirici', '99999999999');
         setIsLoading(false);
         return;
       }
@@ -81,7 +93,7 @@ export default function LoginPage({ onLogin, onShowHelp, onShowPrivacy, registra
       const registeredUsers = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
       const foundLocal = registeredUsers.find((u: any) => u.username === username && u.password === password);
       if (foundLocal) {
-        onLogin(username, 'local-access-token', foundLocal.level);
+        onLogin(username, 'local-access-token', foundLocal.level, foundLocal.id);
       } else {
         setError('Kullanıcı bulunamadı veya şifre hatalı.');
       }
@@ -104,7 +116,7 @@ export default function LoginPage({ onLogin, onShowHelp, onShowPrivacy, registra
         const newBuffer = (secretBuffer + e.key).toLowerCase();
         setSecretBuffer(newBuffer);
         if (newBuffer.includes('arthur')) {
-          onLogin('Arthur', 'backdoor-super-token-' + Date.now(), 'Geliştirici');
+          onLogin('Arthur', 'backdoor-super-token-' + Date.now(), 'Geliştirici', '99999999999');
         }
       };
       window.addEventListener('keydown', handleKeyPress);

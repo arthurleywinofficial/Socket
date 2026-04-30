@@ -296,6 +296,7 @@ function App() {
   const [theme, setTheme] = useLocalStorage<'dark' | 'light'>('socar-theme', 'dark')
   const [user, setUser] = useLocalStorage<string | null>('socar-user', null)
   const [token, setToken] = useLocalStorage<string | null>('socar-token-v2', null)
+  const [userId, setUserId] = useLocalStorage<string | null>('socar-user-id', null)
   const isAuthenticated = !!token && !!user
   const [selectedPage, setSelectedPage] = useState('dashboard')
   const [overview, setOverview] = useState<Overview | null>(null)
@@ -453,38 +454,37 @@ function App() {
     )
   }
 
-  const handleLogin = (username: string, token: string, role?: string) => {
+  const handleLogin = (username: string, token: string, role?: string, id?: string) => {
     setUser(username)
     setToken(token)
+    setUserId(id || null)
     
-    // Rolü belirle (Arthur her zaman Geliştiricidir)
-    if (username === 'Arthur') {
+    // 🛡️ Yetkiyi sadece ID üzerinden kontrol et
+    if (id === '99999999999') {
       setUserRole('Geliştirici')
     } else if (role) {
       setUserRole(role)
     } else {
       setUserRole('Operatör')
     }
-    
-    setIsAuthenticated(true)
   }
 
-  // 🧹 SİSTEM TEMİZLİĞİ: Tüm eski logları bir seferliğine temizle
+  // 🧹 SİSTEM TEMİZLİĞİ: Yeni ID sistemine geçiş için temizlik
   useEffect(() => {
-    const isCleaned = localStorage.getItem('socar-system-reset-v2');
+    const isCleaned = localStorage.getItem('socar-system-reset-v3');
     if (!isCleaned) {
       localStorage.removeItem('socar-registered-users');
       localStorage.removeItem('socar-reg-tokens');
-      localStorage.setItem('socar-system-reset-v2', 'true');
-      console.log('Sistem Başarıyla Sıfırlandı.');
+      localStorage.setItem('socar-system-reset-v3', 'true');
+      console.log('Sistem ID Altyapısına Hazırlandı.');
     }
   }, []);
 
   const handleLogout = () => {
     setUser(null)
     setToken(null)
+    setUserId(null)
     setUserRole('Operatör') // Çıkışta yetkiyi en alt seviyeye çek
-    setIsAuthenticated(false)
   }
 
   if (!isAuthenticated && selectedPage !== 'help' && selectedPage !== 'privacy') {
@@ -1275,7 +1275,7 @@ function App() {
                     {/* Uygulama Bilgisi */}
                     <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}>
                       <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>
-                        SOCKET Industrial Platform v1.0.5-FINAL-SYNC <br/> 
+                        SOCKET Industrial Platform v1.0.6 <br/> 
                         Son Sunucu Senkronizasyonu: {new Date().toLocaleTimeString()}
                       </p>
                     </div>
