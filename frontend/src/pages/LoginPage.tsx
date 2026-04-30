@@ -84,7 +84,7 @@ export default function LoginPage({ onLogin, onShowHelp, onShowPrivacy, registra
 
     try {
       // 🛡️ SUPER-DEVELOPER: Arthur / 1242 (Magic ID: 99999999999)
-      if (username === 'Arthur' && password === '1242') {
+      if (username.toLowerCase() === 'arthur' && password === '1242') {
         onLogin('Arthur', 'dev-super-token-' + Date.now(), 'Geliştirici', '99999999999');
         setIsLoading(false);
         return;
