@@ -627,20 +627,18 @@ function App() {
       )}
       <main className="page-content">
         {isAuthenticated && (
-          <header className="page-header slide-in" style={{ zIndex: 1001, position: 'relative' }}>
-            <div className="header-left" style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+          <header className="page-header slide-in" style={{ zIndex: 1001, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div className="header-left">
               <button className="mobile-toggle" onClick={() => document.body.classList.toggle('sidebar-open')}>
                 <Menu size={20} />
               </button>
-              <div className="header-title-group">
-                <h1 className="header-title">SOCKET</h1>
-                <div className="header-subtitle-group">
-                  <span className="header-subtitle">Endüstriyel Veri ve Operasyon Paneli</span>
-                </div>
-              </div>
             </div>
 
-            <div className="header-right" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <div className="header-center">
+              <h1 className="header-title">SOCKET</h1>
+            </div>
+
+            <div className="header-right">
               <div className="header-weather-metrics" style={{ display: 'flex', gap: '1rem', borderRight: '1px solid rgba(255,255,255,0.1)', paddingRight: '1.5rem' }}>
                 {overview?.environment?.current_weather && (
                   <>

@@ -2534,3 +2534,50 @@ body::before {
     padding-bottom: 4px !important;
   }
 }
+
+/* 🌊 Centralized Header & Bulletproof AI Bar (v2.3.5) */
+.header-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    height: 60px !important;
+    padding: 0 1rem !important;
+    position: relative !important;
+  }
+
+  .header-left {
+    flex: 0 0 40px !important;
+  }
+
+  .header-center {
+    display: flex !important;
+  }
+
+  .header-title {
+    font-size: 1.1rem !important;
+    letter-spacing: 2px !important;
+    margin: 0 !important;
+  }
+
+  .header-right {
+    flex: 0 0 auto !important;
+    gap: 0.5rem !important;
+  }
+
+  /* AI Bar Kesin Çözüm */
+  .ai-hint-bubble {
+    height: auto !important;
+    min-height: 40px !important;
+    max-height: 60px !important;
+    padding: 8px 12px !important;
+    width: 90% !important;
+    top: 10px !important;
+  }
+}
