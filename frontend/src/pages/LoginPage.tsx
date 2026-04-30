@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Lock, User, Eye, EyeOff, ShieldCheck, ArrowRight, Key, Mail, UserPlus, ArrowLeft } from 'lucide-react';
 import { API_BASE } from '../config';
+import { supabase } from '../lib/supabase';
 
 interface LoginPageProps {
   onLogin: (user: string, token: string, role?: string, id?: string) => void;
@@ -57,27 +58,46 @@ export default function LoginPage({ onLogin, onShowHelp, onShowPrivacy, registra
         }
         setIsLoading(false);
       } else {
-        // Step 2: Finalize Registration
-        setTimeout(() => {
-          // 🎲 Rastgele 11 haneli ID üret (Arthur'un özel ID'si ile çakışmasın)
-          let randomId = Math.floor(10000000000 + Math.random() * 90000000000).toString();
-          if (randomId === '99999999999') randomId = '11111111111';
+        // Step 2: Finalize Registration with Supabase
+        try {
+          const { data, error: signUpError } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                username,
+                level: validToken.level,
+                full_name: username
+              }
+            }
+          });
 
-          const newUser = { 
-            id: randomId,
-            username, 
-            email, 
-            password, 
-            level: validToken.level 
-          };
-          
-          const users = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
-          users.push(newUser);
-          localStorage.setItem('socar-registered-users', JSON.stringify(users));
-          
-          onLogin(username, 'mock-token-' + Math.random(), validToken.level || 'Operatör', randomId || '');
+          if (signUpError) {
+            setError(signUpError.message);
+            setIsLoading(false);
+            return;
+          }
+
+          if (data.user) {
+            // Local fallback logic (optional, keeping for compatibility)
+            const newUser = { 
+              id: data.user.id,
+              username, 
+              email, 
+              password, 
+              level: validToken.level 
+            };
+            const users = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
+            users.push(newUser);
+            localStorage.setItem('socar-registered-users', JSON.stringify(users));
+            
+            onLogin(username, data.session?.access_token || 'sb-token', validToken.level, data.user.id);
+          }
+        } catch (err: any) {
+          setError(err.message || 'Kayıt sırasında bir hata oluştu.');
+        } finally {
           setIsLoading(false);
-        }, 1500);
+        }
       }
       return;
     }
@@ -90,12 +110,28 @@ export default function LoginPage({ onLogin, onShowHelp, onShowPrivacy, registra
         return;
       }
 
+      // ☁️ SUPABASE CLOUD AUTH
+      const loginEmail = username.includes('@') ? username : `${username}@socar.local`;
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: loginEmail,
+        password: password
+      });
+
+      if (!authError && authData.user) {
+        const role = authData.user.user_metadata?.level || 'Operatör';
+        const displayName = authData.user.user_metadata?.username || username;
+        onLogin(displayName, authData.session?.access_token || 'sb-token', role, authData.user.id);
+        setIsLoading(false);
+        return;
+      }
+
+      // 🛡️ LOCAL FALLBACK (Legacy or Local-only users)
       const registeredUsers = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
-      const foundLocal = registeredUsers.find((u: any) => u.username === username && u.password === password);
+      const foundLocal = registeredUsers.find((u: any) => (u.username === username || u.email === username) && u.password === password);
       if (foundLocal) {
-        onLogin(username, 'local-access-token', foundLocal.level || 'Operatör', foundLocal.userId || '');
+        onLogin(foundLocal.username, 'local-access-token', foundLocal.level || 'Operatör', foundLocal.id || foundLocal.userId || '');
       } else {
-        setError('Kullanıcı bulunamadı veya şifre hatalı.');
+        setError(authError?.message || 'Kullanıcı bulunamadı veya şifre hatalı.');
       }
     } catch (err) {
       setError('Sistem bağlantı hatası.');
