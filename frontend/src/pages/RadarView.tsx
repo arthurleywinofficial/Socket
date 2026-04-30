@@ -1,48 +1,43 @@
 import React, { useState, useEffect } from 'react'
-import { Radar, ShieldAlert, Activity, Wifi, Settings, RefreshCw, Zap, Box, Layers, Database, Cpu, Map as MapIcon, Maximize2 } from 'lucide-react'
+import { Radar, ShieldAlert, Activity, Wifi, Settings, RefreshCw, Zap, Box, Layers, Map as MapIcon, Compass } from 'lucide-react'
 
 const RadarView: React.FC = () => {
-  const [status, setStatus] = useState('Standby') // Standby, Calibration, Monitoring, Mapping, Alert
+  const [status, setStatus] = useState('Standby') // Standby, Monitoring, Mapping, Alert
   const [immobilTime, setImmobilTime] = useState(0)
   const [csiData, setCsiData] = useState<number[]>([])
-  const [meshData, setMeshData] = useState({ x: 50, y: 50, posture: 'Standing', confidence: 0.98 })
+  const [meshData, setMeshData] = useState({ x: 50, y: 50, posture: 'Standing' })
   
-  // Dynamic Mapping State
-  const [detectedWalls, setDetectedWalls] = useState<{x: number, y: number, w: number, h: number}[]>([])
+  // Architectural Mapping State (Connected Points)
+  const [mapPoints, setMapPoints] = useState<{x: number, y: number}[]>([])
   const [mappingProgress, setMappingProgress] = useState(0)
 
   // InvisPose Signal Simulation
   useEffect(() => {
     const interval = setInterval(() => {
       setCsiData(prev => {
-        const baseNoise = Math.random() * 20
-        const signalMod = status === 'Monitoring' || status === 'Mapping' ? Math.sin(Date.now() / 500) * 15 : 0
-        const next = [...prev, 40 + baseNoise + signalMod].slice(-40)
+        const next = [...prev, 30 + Math.random() * 40].slice(-40)
         return next
       })
-    }, 80)
+    }, 100)
     return () => clearInterval(interval)
-  }, [status])
+  }, [])
 
-  // Dynamic Mapping Mode Logic (Randomized Discovery)
+  // Architectural SLAM Logic
   useEffect(() => {
     let interval: any
     if (status === 'Mapping' && mappingProgress < 100) {
       interval = setInterval(() => {
         setMappingProgress(prev => {
-          const next = prev + 4
+          const next = prev + 5
           
-          // Rastgele girinti ve duvar segmentleri oluştur
-          if (next % 12 === 0) {
-            const isHorizontal = Math.random() > 0.5
-            const newWall = {
-              x: 10 + Math.random() * 70,
-              y: 10 + Math.random() * 70,
-              w: isHorizontal ? 10 + Math.random() * 40 : 2 + Math.random() * 3,
-              h: isHorizontal ? 2 + Math.random() * 3 : 10 + Math.random() * 40
-            }
-            setDetectedWalls(prevWalls => [...prevWalls, newWall])
-          }
+          // Mimari hat oluştur (Bağlı noktalar)
+          const points = [
+            { x: 20, y: 20 }, { x: 80, y: 20 }, { x: 80, y: 40 }, 
+            { x: 90, y: 40 }, { x: 90, y: 80 }, { x: 20, y: 80 }, { x: 20, y: 20 }
+          ]
+          
+          const pointIndex = Math.floor((next / 100) * points.length)
+          setMapPoints(points.slice(0, pointIndex + 1))
 
           if (next >= 100) setStatus('Monitoring')
           return next
@@ -55,117 +50,114 @@ const RadarView: React.FC = () => {
   return (
     <div className="radar-view fade-in" style={{ padding: '1.5rem', color: 'white', display: 'grid', gridTemplateColumns: '1fr 400px', gap: '1.5rem', height: 'calc(100vh - 120px)', background: '#05070a' }}>
       <style>{`
-        .invis-grid {
-          background-image: radial-gradient(rgba(0, 212, 255, 0.03) 1px, transparent 1px);
-          background-size: 20px 20px;
+        .floor-plan-container {
+          background: #0a0d14;
           border-radius: 24px;
           border: 1px solid rgba(255,255,255,0.05);
           position: relative;
           overflow: hidden;
-          background: #080a0f;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
-        .wall-segment {
+        .grid-layer {
           position: absolute;
-          background: var(--accent);
-          opacity: 0.4;
-          box-shadow: 0 0 15px var(--accent);
-          transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-          border-radius: 2px;
+          width: 100%;
+          height: 100%;
+          background-image: linear-gradient(rgba(0, 212, 255, 0.05) 1px, transparent 1px),
+                            linear-gradient(90deg, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
+          background-size: 40px 40px;
+          opacity: 0.5;
         }
-        @keyframes scan-line {
-          0% { transform: translateY(-100%); }
-          100% { transform: translateY(100%); }
-        }
-        .skeleton-part {
+        .wall-line {
+          fill: rgba(0, 212, 255, 0.05);
           stroke: var(--accent);
-          stroke-width: 2.5;
-          fill: none;
+          stroke-width: 3;
+          stroke-linejoin: round;
           stroke-linecap: round;
-          filter: drop-shadow(0 0 8px var(--accent));
+          filter: drop-shadow(0 0 10px var(--accent));
+          transition: all 0.5s ease;
         }
-        .signal-hop {
-          position: absolute;
-          width: 4px;
-          height: 4px;
-          background: white;
-          border-radius: 50%;
-          opacity: 0.8;
-          filter: blur(1px);
-          animation: hop 0.5s ease-out;
+        @keyframes radar-pulse {
+          0% { transform: scale(0.8); opacity: 0.5; }
+          100% { transform: scale(1.2); opacity: 0; }
         }
-        @keyframes hop {
-          0% { transform: scale(1); opacity: 1; }
-          100% { transform: scale(10); opacity: 0; }
+        .person-marker {
+          transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
         }
       `}</style>
 
-      {/* 🧬 InvisPose 3D Reconstruction & Mapping Area */}
-      <div className="invis-grid">
-        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', background: 'linear-gradient(rgba(0,212,255,0.05) 0%, transparent 10%, transparent 90%, rgba(0,212,255,0.05) 100%)' }}></div>
-        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '50px', background: 'linear-gradient(rgba(0,212,255,0.1), transparent)', animation: 'scan-line 4s linear infinite', zIndex: 2 }}></div>
+      {/* 📐 Architectural Floor Plan Area */}
+      <div className="floor-plan-container">
+        <div className="grid-layer"></div>
+        
+        <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
+          {/* Odanın Poligon Hattı */}
+          {mapPoints.length > 1 && (
+            <polyline 
+              points={mapPoints.map(p => `${p.x},${p.y}`).join(' ')} 
+              className="wall-line"
+            />
+          )}
 
-        {/* Dynamic Wall Segments */}
-        {detectedWalls.map((wall, i) => (
-          <div key={i} className="wall-segment" style={{ left: `${wall.x}%`, top: `${wall.y}%`, width: `${wall.w}%`, height: `${wall.h}%` }}></div>
-        ))}
+          {/* İnsan Pozisyonu */}
+          {(status === 'Monitoring' || status === 'Alert') && (
+            <g className="person-marker" transform={`translate(${meshData.x}, ${meshData.y})`}>
+              <circle r="3" fill="var(--accent)" />
+              <circle r="8" fill="none" stroke="var(--accent)" strokeWidth="0.5">
+                <animate attributeName="r" from="3" to="15" dur="1.5s" repeatCount="indefinite" />
+                <animate attributeName="opacity" from="1" to="0" dur="1.5s" repeatCount="indefinite" />
+              </circle>
+              {/* Basit İskelet */}
+              <g stroke="var(--accent)" strokeWidth="1" opacity="0.8">
+                <circle cx="0" cy="-5" r="1.5" fill="none" />
+                <line x1="0" y1="-3.5" x2="0" y2="2" />
+                <line x1="-3" y1="0" x2="3" y2="0" />
+                <line x1="0" y1="2" x2="-2" y2="6" />
+                <line x1="0" y1="2" x2="2" y2="6" />
+              </g>
+            </g>
+          )}
+        </svg>
 
-        {/* Labels & Metadata */}
-        <div style={{ position: 'absolute', top: '1.5rem', left: '1.5rem', zIndex: 5 }}>
-          <div style={{ fontSize: '0.9rem', fontWeight: 'bold', color: 'var(--accent)', letterSpacing: '2px' }}>WIFI-SLAM DYNAMIC DISCOVERY</div>
-          <div style={{ fontSize: '0.65rem', opacity: 0.5 }}>SIGNAL_PATH: CSI_HOP_MATRIX_{mappingProgress > 0 ? mappingProgress : 'IDLE'}</div>
+        <div style={{ position: 'absolute', top: '1.5rem', left: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+          <Compass className="spin" size={20} color="var(--accent)" />
+          <div style={{ letterSpacing: '2px', fontSize: '0.8rem', fontWeight: 'bold' }}>WIFI-SLAM ARCHITECTURAL MAP</div>
         </div>
 
-        {/* Real-time Skeleton */}
-        {(status === 'Monitoring' || status === 'Alert') && (
-          <div style={{ position: 'absolute', top: `${meshData.y}%`, left: `${meshData.x}%`, transform: 'translate(-50%, -50%)', transition: 'all 1.5s cubic-bezier(0.4, 0, 0.2, 1)' }}>
-            <svg width="120" height="120" viewBox="0 0 100 100">
-               <g className="skeleton-part">
-                  <circle cx="50" cy="15" r="7" />
-                  <line x1="50" y1="22" x2="50" y2="55" />
-                  <line x1="50" y1="30" x2="30" y2="45" />
-                  <line x1="50" y1="30" x2="70" y2="45" />
-                  <line x1="50" y1="55" x2="40" y2="85" />
-                  <line x1="50" y1="55" x2="60" y2="85" />
-               </g>
-            </svg>
-          </div>
-        )}
-
         {status === 'Mapping' && (
-          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', textAlign: 'center' }}>
-            <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--accent)', marginBottom: '0.5rem', letterSpacing: '2px' }}>KEŞFEDİLİYOR... %{mappingProgress}</div>
-            <div style={{ width: '200px', height: '2px', background: 'rgba(255,255,255,0.05)', borderRadius: '1px' }}>
+          <div style={{ position: 'absolute', bottom: '2rem', textAlign: 'center', width: '100%' }}>
+            <div style={{ fontSize: '1rem', color: 'var(--accent)', fontWeight: 'bold', marginBottom: '0.5rem' }}>ODA PLANI ÇIKARILIYOR... %{mappingProgress}</div>
+            <div style={{ width: '300px', height: '2px', background: 'rgba(255,255,255,0.05)', margin: '0 auto', overflow: 'hidden' }}>
               <div style={{ width: `${mappingProgress}%`, height: '100%', background: 'var(--accent)', transition: 'width 0.3s' }}></div>
             </div>
-            <div style={{ marginTop: '0.5rem', fontSize: '0.6rem', opacity: 0.4 }}>MIMO Antenna Array Discovery Mode</div>
           </div>
         )}
       </div>
 
-      {/* 📡 Environmental Telemetry Area */}
+      {/* 📡 Telemetry & Logic Control */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)', padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-          <h3 style={{ fontSize: '0.85rem', opacity: 0.5, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <MapIcon size={16} /> ASİMETRİK SLAM ANALİZİ
+        <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)', padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+          <h3 style={{ fontSize: '0.9rem', opacity: 0.5, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <MapIcon size={16} /> KAT PLANI VERİLERİ
           </h3>
 
-          <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-            <span style={{ fontSize: '0.65rem', opacity: 0.4 }}>Tespit Edilen Segment</span>
-            <div style={{ fontSize: '1.2rem', fontWeight: 'bold' }}>{detectedWalls.length} Unsur</div>
+          <div style={{ padding: '1.2rem', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+            <div style={{ fontSize: '0.7rem', opacity: 0.4, marginBottom: '0.3rem' }}>Oda Alanı (Tahmini)</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>24.5 m²</div>
           </div>
 
-          <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-            <span style={{ fontSize: '0.65rem', opacity: 0.4 }}>Yansıma Gücü (Path Loss)</span>
-            <div style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--accent)' }}>{(Math.random() * -10 - 40).toFixed(1)} dBm</div>
+          <div style={{ padding: '1.2rem', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
+            <div style={{ fontSize: '0.7rem', opacity: 0.4, marginBottom: '0.3rem' }}>Sinyal Gücü (CSI)</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent)' }}>-52 dBm</div>
           </div>
 
-          <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-            <button onClick={() => { setStatus('Mapping'); setDetectedWalls([]); setMappingProgress(0); }} className="premium-btn" style={{ width: '100%', padding: '1rem', background: 'var(--accent)', color: 'black', border: 'none', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
-              YENİDEN TARA (KEŞFET)
+          <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <button onClick={() => { setStatus('Mapping'); setMapPoints([]); setMappingProgress(0); }} className="premium-btn" style={{ width: '100%', padding: '1rem', background: 'var(--accent)', color: 'black', border: 'none', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
+              KAT PLANINI ÇIKAR
             </button>
-            
-            <button onClick={() => { setStatus('Standby'); setDetectedWalls([]); setMappingProgress(0); }} style={{ width: '100%', padding: '1rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '12px', cursor: 'pointer' }}>
-              VERİLERİ SIFIRLA
+            <button onClick={() => { setStatus('Standby'); setMapPoints([]); setMappingProgress(0); }} style={{ width: '100%', padding: '1rem', background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '12px', cursor: 'pointer' }}>
+              HARİTAYI TEMİZLE
             </button>
           </div>
         </div>
