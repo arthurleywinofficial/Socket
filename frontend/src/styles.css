@@ -1450,6 +1450,21 @@ html[data-theme='light'] .themed-select-menu::-webkit-scrollbar-thumb {
   gap: 1.5rem;
 }
 
+/* 🌊 Fluid & Safe Mobile Overrides */
+@media (max-width: 768px) {
+  html { font-size: 14px; }
+  h1, h2, h3 { letter-spacing: 0px !important; }
+  .panel-header { padding-bottom: 8px !important; margin-bottom: 8px !important; }
+  .card { border-width: 0.5px !important; }
+  
+  /* Taşmaları engelle */
+  span, p, strong {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
 @media (max-width: 768px) {
   .live-charts-grid {
     grid-template-columns: 1fr;

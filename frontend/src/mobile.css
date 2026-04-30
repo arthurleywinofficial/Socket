@@ -1,132 +1,115 @@
-/* 📱 SOCKET MOBILE OPTIMIZATIONS (Isolated) */
-
-@media (max-width: 1024px) {
+/* 📱 SOCKET Premium Mobile Core (v1.9.7) */
+@media (max-width: 768px) {
   :root {
-    font-size: 19px; /* Mobildeki %120 zoom etkisi */
+    --header-height: 60px;
+    --sidebar-width: 0px;
   }
 
-  .app-shell {
-    grid-template-columns: 1fr;
-    padding: 10px;
-    gap: 10px;
-    height: auto;
-    overflow: visible;
+  body {
+    font-size: 13px;
+    overflow-x: hidden;
   }
 
-  .sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 85%;
-    max-width: 320px;
-    height: 100vh;
-    border-radius: 0 24px 24px 0;
-    transform: translateX(-105%);
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 2000;
-    box-shadow: 20px 0 50px rgba(0,0,0,0.5);
-  }
-
-  body.sidebar-open .sidebar {
-    transform: translateX(0);
-  }
-
-  .mobile-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(6px);
-    z-index: 1999;
-  }
-
-  body.sidebar-open .mobile-overlay {
-    display: block;
-  }
-
+  /* 🏗️ Layout Overhaul */
   .page-content {
-    padding: 10px;
-    height: auto;
+    padding: 10px !important;
+    margin-left: 0 !important;
+    width: 100vw !important;
   }
 
   .page-header {
-    flex-direction: column;
-    padding: 15px;
-    border-radius: 16px;
-    align-items: flex-start;
-  }
-
-  .header-left {
-    width: 100%;
-    display: flex;
-    align-items: center !important;
-    gap: 12px !important;
-    flex-wrap: wrap;
+    height: var(--header-height);
+    padding: 0 15px !important;
+    gap: 10px !important;
   }
 
   .header-title {
-    font-size: 1.6rem !important;
-    margin: 0 !important;
+    font-size: 1.1rem !important;
   }
 
-  .page-header p {
-    font-size: 0.8rem;
-    margin-top: 2px;
+  .header-subtitle {
+    display: none; /* Mobilde uzun açıklamaları gizle */
   }
 
-  .header-right {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center; /* Dikeyde tam merkezleme */
-    width: 100%;
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid var(--border-color);
-    gap: 10px;
+  /* 📦 Card Shrinkage */
+  .dashboard-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
   }
 
-  .header-right > * {
-    flex-shrink: 0;
+  .panel.card {
+    grid-column: span 12 !important;
+    padding: 15px !important;
+    border-radius: 20px !important;
+    min-height: auto !important;
   }
 
-  /* Rozet ve butonların hizasını eşitle */
-  .status-badge, .theme-toggle, .user-profile-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 42px !important;
-    margin: 0 !important;
+  .panel-header h2 {
+    font-size: 0.85rem !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
   }
 
-  .header-weather-metrics {
-    display: none !important;
+  /* 📊 Metric Optimization */
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
   }
 
+  .kpi-box {
+    padding: 10px !important;
+  }
+
+  .kpi-box strong {
+    font-size: 1.1rem !important;
+  }
+
+  .kpi-box span {
+    font-size: 0.65rem !important;
+  }
+
+  /* 📡 Radar Mobile Fix */
+  .radar-view {
+    display: flex !important;
+    flex-direction: column !important;
+    height: auto !important;
+    gap: 15px !important;
+  }
+
+  .radar-container {
+    height: 300px !important;
+    border-radius: 20px !important;
+  }
+
+  /* 💬 AI Assistant Mobile */
+  .ai-assistant-wrapper {
+    width: 90% !important;
+    right: 5% !important;
+    bottom: 20px !important;
+    height: 400px !important;
+  }
+
+  /* 🚀 Navigation */
   .mobile-toggle {
     display: flex !important;
   }
 
-  .dashboard-grid {
-    grid-template-columns: 1fr !important;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+  .sidebar {
+    transform: translateX(-100%);
+    z-index: 10000;
   }
 
-  .dashboard-grid > div {
-    grid-column: span 12 !important;
-    min-height: auto !important;
-    padding: 15px !important;
+  .sidebar-open .sidebar {
+    transform: translateX(0);
+    width: 280px !important;
   }
 
-  .timeseries-chart {
-    height: 250px;
-  }
-
-  .ai-assistant-container {
-    bottom: 15px;
-    right: 15px;
+  /* 🚫 Prevent Overflow */
+  * {
+    max-width: 100%;
+    box-sizing: border-box;
   }
 }
