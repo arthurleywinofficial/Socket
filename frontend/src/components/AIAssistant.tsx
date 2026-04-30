@@ -219,10 +219,19 @@ ${getSystemContext()}`;
 
   return (
     <div className="ai-assistant-container">
+      <style>{`
         .ai-fab {
           width: 50px !important;
           height: 50px !important;
-          ...
+          background: #00d4ff !important;
+          color: black !important;
+          border-radius: 50% !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+          box-shadow: 0 10px 30px rgba(0,212,255,0.4) !important;
+          border: 2px solid white !important;
+          cursor: pointer !important;
         }
       `}</style>
       {showHint && (
