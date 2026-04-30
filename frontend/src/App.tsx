@@ -449,6 +449,11 @@ function App() {
 
   return (
     <div className="app-shell" data-theme={theme} style={!isAuthenticated ? { gridTemplateColumns: '1fr', padding: '2rem' } : {}}>
+      {/* Mobile Overlay */}
+      <div 
+        className="mobile-overlay" 
+        onClick={() => document.body.classList.remove('sidebar-open')}
+      />
       {isAuthenticated && (
         <Sidebar 
           menu={MENU} 
