@@ -1,115 +1,72 @@
-/* 📱 SOCKET Premium Mobile Core (v1.9.7) */
+/* 📱 SOCKET Ultra-Fix Mobile Layout (v1.9.8) */
 @media (max-width: 768px) {
   :root {
     --header-height: 60px;
-    --sidebar-width: 0px;
+    --sidebar-width: 0px !important;
   }
 
-  body {
-    font-size: 13px;
-    overflow-x: hidden;
+  /* 🚫 Ekran Kaymasını Engelle */
+  html, body {
+    overflow-x: hidden !important;
+    position: relative;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
-  /* 🏗️ Layout Overhaul */
+  /* 🏗️ İçerik Alanı */
   .page-content {
-    padding: 10px !important;
     margin-left: 0 !important;
-    width: 100vw !important;
-  }
-
-  .page-header {
-    height: var(--header-height);
-    padding: 0 15px !important;
-    gap: 10px !important;
-  }
-
-  .header-title {
-    font-size: 1.1rem !important;
-  }
-
-  .header-subtitle {
-    display: none; /* Mobilde uzun açıklamaları gizle */
-  }
-
-  /* 📦 Card Shrinkage */
-  .dashboard-grid {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 12px !important;
-  }
-
-  .panel.card {
-    grid-column: span 12 !important;
-    padding: 15px !important;
-    border-radius: 20px !important;
-    min-height: auto !important;
-  }
-
-  .panel-header h2 {
-    font-size: 0.85rem !important;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 150px;
-  }
-
-  /* 📊 Metric Optimization */
-  .kpi-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 8px !important;
-  }
-
-  .kpi-box {
     padding: 10px !important;
+    width: 100vw !important;
+    min-height: calc(100vh - var(--header-height));
+    position: relative;
+    left: 0 !important;
+    transform: none !important;
   }
 
-  .kpi-box strong {
-    font-size: 1.1rem !important;
-  }
-
-  .kpi-box span {
-    font-size: 0.65rem !important;
-  }
-
-  /* 📡 Radar Mobile Fix */
-  .radar-view {
-    display: flex !important;
-    flex-direction: column !important;
-    height: auto !important;
-    gap: 15px !important;
-  }
-
-  .radar-container {
-    height: 300px !important;
-    border-radius: 20px !important;
-  }
-
-  /* 💬 AI Assistant Mobile */
-  .ai-assistant-wrapper {
-    width: 90% !important;
-    right: 5% !important;
-    bottom: 20px !important;
-    height: 400px !important;
-  }
-
-  /* 🚀 Navigation */
-  .mobile-toggle {
-    display: flex !important;
-  }
-
+  /* 📦 Sidebar Fix (İçeriği itmemesi için fixed yapıyoruz) */
   .sidebar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 280px !important;
     transform: translateX(-100%);
-    z-index: 10000;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 99999 !important;
+    box-shadow: 20px 0 50px rgba(0,0,0,0.5);
   }
 
   .sidebar-open .sidebar {
-    transform: translateX(0);
-    width: 280px !important;
+    transform: translateX(0) !important;
   }
 
-  /* 🚫 Prevent Overflow */
-  * {
-    max-width: 100%;
-    box-sizing: border-box;
+  /* 🌑 Siyahlık Yapan Overlay Fix */
+  .mobile-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(4px);
+    z-index: 99998;
+  }
+
+  .sidebar-open .mobile-overlay {
+    display: block !important;
+  }
+
+  /* 📊 Kartların Sığması İçin Force Fix */
+  .dashboard-grid {
+    display: block !important; /* Grid yerine block akış */
+  }
+
+  .panel.card {
+    width: 100% !important;
+    margin-bottom: 12px !important;
+    box-sizing: border-box !important;
   }
 }
