@@ -2327,5 +2327,23 @@ body::before {
   }
   
   html { font-size: 13px; }
-  .panel.card { padding: 16px !important; }
+  /* Form ve Input Grupları - Mobilde Alt Alta */
+  .info-list > div, 
+  .profile-input-group,
+  div[style*="display: flex"][style*="gap: 0.5rem"],
+  div[style*="display: flex"][style*="gap: 1rem"] {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+  }
+
+  .button, button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  input[type="text"], input[type="password"] {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
 }
