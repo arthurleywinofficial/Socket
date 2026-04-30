@@ -1,9 +1,11 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+// 🛡️ KESİN ÇÖZÜM: Vercel ortam değişkenleri bazen derleme sırasında gecikebilir.
+// Bu yüzden anahtarları doğrudan buraya mühürlüyoruz. v1.7.3
+const supabaseUrl = 'https://yislfzdxipwciaurgnbu.supabase.co'
+const supabaseAnonKey = 'sb_publishable_wCN3qpn26EqSdxnssTppmw_WCRRaMzT'
 
-// 🛡️ AKILLI KORUMA: Anahtarlar yoksa uygulamayı kilitlemeyen sahte bir istemci döndür
+// 🛡️ AKILLI KORUMA: Eğer anahtarlar bir şekilde yanlışsa veya eksikse çökmemesi için
 const createSafeClient = () => {
   if (!supabaseUrl || !supabaseAnonKey || supabaseUrl.includes('YOUR_')) {
     console.warn('Supabase credentials missing. Running in MOCK mode.')
@@ -13,7 +15,7 @@ const createSafeClient = () => {
         signUp: async () => ({ data: { user: null }, error: { message: 'Supabase Not Configured' } }),
         signOut: async () => ({ error: null }),
         signInWithOAuth: async (options: any) => { 
-          alert(`Supabase henüz yapılandırılmamış. ${options.provider} girişi için lütfen Vercel'den anahtarları girin.`);
+          alert(`Supabase henüz yapılandırılmamış. ${options.provider} girişi için lütfen anahtarları kontrol edin.`);
           return { data: { url: null }, error: { message: 'Supabase Not Configured' } };
         },
         onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
