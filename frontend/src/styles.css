@@ -2527,3 +2527,10 @@ body::before {
     display: none !important;
   }
 }
+
+/* 🌊 UI Polish: Spacing and Title Padding (v2.3.1) */
+@media (max-width: 768px) {
+  .header-title {
+    padding-bottom: 4px !important;
+  }
+}

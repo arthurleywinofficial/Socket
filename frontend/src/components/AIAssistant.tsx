@@ -282,50 +282,45 @@ ${getSystemContext()}`;
         .ai-assistant-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 10000; font-family: 'Inter', sans-serif; }
         .ai-hint-bubble {
           position: fixed; 
-          top: 1rem; 
+          top: 0.75rem; 
           left: 50%;
           transform: translateX(-50%);
-          background: rgba(0, 212, 255, 0.95); 
+          background: #00d4ff; 
           color: #000;
-          padding: 10px 16px; 
-          border-radius: 14px; 
-          font-size: 0.85rem; 
-          font-weight: 700; 
-          width: 90%;
-          max-width: 450px;
+          padding: 8px 12px; 
+          border-radius: 12px; 
+          font-size: 0.8rem; 
+          font-weight: 800; 
+          width: 94%;
+          max-width: 400px;
           display: flex; 
           align-items: center; 
           justify-content: space-between;
-          gap: 10px; 
-          box-shadow: 0 10px 30px rgba(0,212,255,0.3);
-          cursor: pointer; 
-          z-index: 999999;
-          border: 1px solid rgba(255,255,255,0.3);
-          backdrop-filter: blur(10px);
-          animation: slideDown 0.4s ease-out;
+          gap: 8px; 
+          box-shadow: 0 10px 30px rgba(0,212,255,0.4);
+          z-index: 1000000;
+          border: 1px solid rgba(255,255,255,0.4);
         }
         .hint-content {
           display: flex;
           align-items: center;
-          gap: 8px;
+          gap: 6px;
           flex: 1;
+          min-width: 0; /* İçeriğin daralmasına izin ver */
         }
         .hint-content span {
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
-          line-height: 1;
         }
         .hint-close {
-          display: flex;
-          align-items: center;
-          justify-content: center;
+          flex-shrink: 0; /* Butonun küçülmesini engelle */
+          background: rgba(0,0,0,0.2) !important;
+          color: #000 !important;
+          border-radius: 6px;
           padding: 4px;
-          background: rgba(0,0,0,0.05);
-          border-radius: 50%;
-          transition: 0.2s;
+          display: flex;
         }
-        .hint-close:hover { background: rgba(0,0,0,0.15); }
         .ai-hint-bubble:hover { transform: translateX(-50%) scale(1.05); background: #fff; }
         @keyframes slideDown { from { transform: translate(-50%, -100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
         .ai-fab {
