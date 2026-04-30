@@ -2629,3 +2629,52 @@ body::before {
     height: 28px !important;
   }
 }
+
+/* 👑 Royal Header Optimization (v2.3.7) */
+@media (max-width: 768px) {
+  .page-header {
+    height: 96px !important;
+    padding: 0 1.5rem !important;
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  .header-left {
+    flex: 1 !important;
+    display: flex !important;
+    justify-content: flex-start !important;
+  }
+
+  .header-center {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    width: auto !important;
+    display: flex !important;
+    justify-content: center !important;
+    z-index: 10 !important;
+  }
+
+  .header-title {
+    font-size: 1.3rem !important;
+    letter-spacing: 4px !important;
+    margin: 0 !important;
+    text-shadow: 0 0 15px rgba(0, 212, 255, 0.4) !important;
+  }
+
+  .header-right {
+    flex: 1 !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    gap: 0.75rem !important;
+  }
+
+  /* Butonların etrafını ferahlat */
+  .mobile-toggle, .user-profile-btn {
+    margin: 0 !important;
+  }
+}
