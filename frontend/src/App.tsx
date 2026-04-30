@@ -474,12 +474,12 @@ function App() {
   useEffect(() => {
     fetchMetrics()
     // 🚀 SİSTEME İLK ADIM: Herhangi bir auth durumundan bağımsız ilk yükleme
-    const hasSeenStartup = sessionStorage.getItem('socar-global-startup-v2');
+    const hasSeenStartup = sessionStorage.getItem('socar-global-startup-v3');
     if (!hasSeenStartup) {
       setShowStartup(true);
       setTimeout(() => {
         setShowStartup(false);
-        sessionStorage.setItem('socar-global-startup-v2', 'true');
+        sessionStorage.setItem('socar-global-startup-v3', 'true');
       }, 3500);
     }
   }, [])
@@ -1426,7 +1426,7 @@ function App() {
                         </div>
                         <div className="kpi-box" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <span style={{ margin: 0, fontSize: '0.85rem' }}>AI Önerileri</span>
-                         x"x"xut type="checkbox" defaultChecked />
+                          <input type="checkbox" defaultChecked />
                         </div>
                       </div>
                     </section>
@@ -1435,7 +1435,7 @@ function App() {
                     {/* Uygulama Bilgisi */}
                     <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}>
                       <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>
-                        SOCKET Industrial Platform v1.4.0 <br />
+                        SOCKET Industrial Platform v1.4.2 <br />
                         Son Sunucu Senkronizasyonu: {new Date().toLocaleTimeString()}
                       </p>
                     </div>
@@ -1529,7 +1529,7 @@ function App() {
                       </button>
                     )}
                     <div style={{ marginTop: '2rem', textAlign: 'center', opacity: 0.3, fontSize: '0.7rem' }}>
-                      SOCKET Industrial Platform v1.4.0
+                      SOCKET Industrial Platform v1.4.2
                     </div>
                   </div>
                 </div>
@@ -1568,7 +1568,7 @@ function App() {
                       </button>
                     )}
                     <div style={{ marginTop: '2rem', textAlign: 'center', opacity: 0.3, fontSize: '0.7rem' }}>
-                      SOCKET Industrial Platform v1.4.0
+                      SOCKET Industrial Platform v1.4.2
                     </div>
                   </div>
                 </div>
