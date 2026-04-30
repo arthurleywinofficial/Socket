@@ -2143,3 +2143,97 @@ html[data-theme='light'] .selector-dropdown {
 @keyframes spin {
   100% { transform: rotate(360deg); }
 }
+
+/* 💎 SOCKET Ultra-Premium Design System (v2.2.0) */
+:root {
+  --accent-glow: rgba(0, 212, 255, 0.4);
+  --panel-bg: rgba(13, 17, 23, 0.75);
+}
+
+/* 🌊 Canlı Arka Plan Akışı */
+body {
+  background: #05070a !important;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(0, 212, 255, 0.03) 0%, transparent 50%);
+  animation: bg-drift 20s linear infinite;
+  z-index: -1;
+  pointer-events: none;
+}
+
+@keyframes bg-drift {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ✨ Ultra-Premium Kartlar */
+.panel.card {
+  background: var(--panel-bg) !important;
+  backdrop-filter: blur(25px) !important;
+  border: 1px solid rgba(0, 212, 255, 0.1) !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0, 212, 255, 0.02) !important;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+.panel.card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(0, 212, 255, 0.3) !important;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 212, 255, 0.1) !important;
+}
+
+/* 📊 Metrik Kutuları (Glass-morphism) */
+.kpi-box, .info-list > div {
+  background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%) !important;
+  border: 1px solid rgba(255,255,255,0.05) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-box::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.05), transparent);
+  transition: 0.5s;
+}
+
+.kpi-box:hover::after {
+  left: 100%;
+}
+
+/* 🏔️ Header Şıklığı */
+.page-header {
+  background: rgba(13, 17, 23, 0.8) !important;
+  border: 1px solid rgba(0, 212, 255, 0.15) !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+}
+
+.header-title {
+  text-shadow: 0 0 20px var(--accent-glow) !important;
+  letter-spacing: 2px !important;
+}
+
+/* 📱 Mobil Uyarlaması */
+@media (max-width: 768px) {
+  .panel.card {
+    padding: 24px !important;
+    border-radius: 28px !important;
+  }
+  
+  .kpi-box strong {
+    font-size: 1.6rem !important;
+    background: linear-gradient(to bottom, #fff, #a5f3fc);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}
