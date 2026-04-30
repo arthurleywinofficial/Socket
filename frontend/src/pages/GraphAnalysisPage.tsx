@@ -73,7 +73,11 @@ export default function GraphAnalysisPage() {
     try {
       const res = await fetch(`${API_BASE}/api/home/metrics/list`)
       const data = await res.json()
-      setAvailableMetrics(data)
+      if (Array.isArray(data) && data.length > 0) {
+        setAvailableMetrics(data)
+      } else {
+        throw new Error('Empty metrics')
+      }
     } catch (e) {
       // 🛡️ Fallback Metrik Listesi
       setAvailableMetrics([
@@ -102,6 +106,8 @@ export default function GraphAnalysisPage() {
           const res = await fetch(url)
           if (!res.ok) throw new Error('API Error');
           const data = await res.json()
+          if (!Array.isArray(data) || data.length === 0) throw new Error('No history data');
+          
           const metricDetails = availableMetrics.find(m => m.id === metricId)
           
           return {

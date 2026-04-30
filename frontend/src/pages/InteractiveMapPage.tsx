@@ -64,14 +64,15 @@ export default function InteractiveMapPage() {
     try {
       const res = await fetch(`${API_BASE}/api/home/map/zones`);
       const data = await res.json();
-      if (Array.isArray(data)) {
+      if (Array.isArray(data) && data.length > 0) {
         setZones(data);
-        if (data.length > 0 && !selectedZone) setSelectedZone(data[0]);
+        if (!selectedZone) setSelectedZone(data[0]);
       } else {
-        throw new Error('Invalid data');
+        // Veri boş gelirse de yedek veriyi tetikle
+        throw new Error('Empty or invalid data');
       }
     } catch {
-      // 🛡️ Fallback: API gelmezse haritayı boş bırakma
+      // 🛡️ Fallback: API boş veya hatalıysa haritayı doldur
       const mockZones: ZoneData[] = [
         { id: 'z1', name: 'Zone-1 (Rafineri)', x_pct: 30, y_pct: 60, personnel: ['Ahmet Y.', 'Mehmet K.'], emergencies: [], profit_loss: 12500, is_bypassed: false, is_downtime: false },
         { id: 'z2', name: 'Zone-2 (Lojistik)', x_pct: 45, y_pct: 70, personnel: ['Ayşe T.', 'Fatma S.'], emergencies: ['Sensör Hatası'], profit_loss: -2300, is_bypassed: true, is_downtime: false },
