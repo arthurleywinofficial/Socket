@@ -473,16 +473,16 @@ function App() {
 
   useEffect(() => {
     fetchMetrics()
-    // 🚀 İlk Giriş Loading Kontrolü
-    const hasSeenLoading = sessionStorage.getItem('socar-startup-done');
-    if (isAuthenticated && !hasSeenLoading) {
+    // 🚀 SİSTEME İLK ADIM: Herhangi bir auth durumundan bağımsız ilk yükleme
+    const hasSeenStartup = sessionStorage.getItem('socar-global-startup-v2');
+    if (!hasSeenStartup) {
       setShowStartup(true);
       setTimeout(() => {
         setShowStartup(false);
-        sessionStorage.setItem('socar-startup-done', 'true');
+        sessionStorage.setItem('socar-global-startup-v2', 'true');
       }, 3500);
     }
-  }, [isAuthenticated])
+  }, [])
 
   useEffect(() => {
     fetchOverview()
@@ -560,9 +560,7 @@ function App() {
   const pageTitle = MENU.flatMap(section => section.items).find(item => item.id === selectedPage)?.label ?? 'Dashboard'
 
   return (
-  return (
     <div className={`app-shell ${!isAuthenticated ? 'unauthenticated' : ''}`} data-theme={theme}>
-      {/* 🚀 STARTUP LOADING OVERLAY (En Üst Katman) */}
       {/* 🚀 STARTUP LOADING OVERLAY (En Üst Katman) */}
       {showStartup && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: '#0a0d14', zIndex: 999999, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -573,16 +571,25 @@ function App() {
             }
             .s-logo-container {
               position: relative;
-              width: 120px;
-              height: 160px;
-              margin-bottom: 2rem;
+              width: 100px;
+              height: 120px;
+              margin-bottom: 4rem; /* Alttaki bar ile mesafeyi artırdık */
             }
           `}</style>
           
           <div className="s-logo-container">
-            <svg width="100%" height="100%" viewBox="0 0 100 160" style={{ animation: 's-glow 2s infinite' }}>
-              <path d="M75,40 C75,20 25,20 25,60 C25,100 75,90 75,130 C75,170 25,170 25,150" stroke="rgba(255,255,255,0.03)" strokeWidth="18" fill="none" strokeLinecap="round" />
-              <path d="M75,40 C75,20 25,20 25,60 C25,100 75,90 75,130 C75,170 25,170 25,150" stroke="var(--accent)" strokeWidth="18" fill="none" strokeLinecap="round" style={{ strokeDasharray: '600', strokeDashoffset: '600', animation: 'dash 3.5s linear forwards' }} />
+            <svg width="100%" height="100%" viewBox="0 0 100 120" style={{ animation: 's-glow 2s infinite' }}>
+              {/* Daha Geometrik ve Modern S Formu */}
+              <path d="M75,25 L35,25 C25,25 25,45 35,45 L65,45 C75,45 75,65 65,65 L25,65" stroke="rgba(255,255,255,0.03)" strokeWidth="14" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M75,25 L35,25 C25,25 25,45 35,45 L65,45 C75,45 75,65 65,65 L25,65" stroke="var(--accent)" strokeWidth="14" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ strokeDasharray: '400', strokeDashoffset: '400', animation: 'dash 3.5s ease-out forwards' }} />
+              
+              {/* Dekoratif Enerji Noktaları */}
+              <circle cx="75" cy="25" r="3" fill="var(--accent)" style={{ opacity: 0.5 }}>
+                <animate attributeName="opacity" values="0.2;1;0.2" dur="2s" repeatCount="indefinite" />
+              </circle>
+              <circle cx="25" cy="65" r="3" fill="var(--accent)" style={{ opacity: 0.5 }}>
+                <animate attributeName="opacity" values="0.2;1;0.2" dur="2s" repeatCount="indefinite" delay="1s" />
+              </circle>
             </svg>
             <style>{`
               @keyframes dash {
@@ -1428,7 +1435,7 @@ function App() {
                     {/* Uygulama Bilgisi */}
                     <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}>
                       <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>
-                        SOCKET Industrial Platform v1.3.3 <br/> 
+                        SOCKET Industrial Platform v1.3.5 <br/> 
                         Son Sunucu Senkronizasyonu: {new Date().toLocaleTimeString()}
                       </p>
                     </div>
@@ -1521,6 +1528,9 @@ function App() {
                         Giriş Ekranına Dön
                       </button>
                     )}
+                    <div style={{ marginTop: '2rem', textAlign: 'center', opacity: 0.3, fontSize: '0.7rem' }}>
+                      SOCKET Industrial Platform v1.3.5
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1557,6 +1567,9 @@ function App() {
                         Giriş Ekranına Dön
                       </button>
                     )}
+                    <div style={{ marginTop: '2rem', textAlign: 'center', opacity: 0.3, fontSize: '0.7rem' }}>
+                      SOCKET Industrial Platform v1.3.5
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1580,7 +1593,6 @@ function App() {
         className="mobile-overlay" 
         onClick={() => document.body.classList.remove('sidebar-open')}
       >
-        )}
 
         {/* 🎭 SİSTEM MODAL PENCERESİ */}
         {modal.isOpen && (
