@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Activity, BarChart2, Bell, ChartLine, ChartNoAxesCombined, CircleDollarSign, Cloud, LayoutGrid, Moon, Settings2, ShieldAlert, SunMedium, Users, SlidersHorizontal, Map, HelpCircle, Shield, Lock, Thermometer, Droplets, RefreshCw, Clock, AlertTriangle, LifeBuoy, Menu } from 'lucide-react'
+import { Activity, BarChart2, Bell, ChartLine, ChartNoAxesCombined, CircleDollarSign, Cloud, LayoutGrid, Moon, Settings2, ShieldAlert, SunMedium, Users, SlidersHorizontal, Map, HelpCircle, Shield, Lock, Thermometer, Droplets, RefreshCw, Clock, AlertTriangle, LifeBuoy, Menu, User } from 'lucide-react'
 import { Line } from 'react-chartjs-2'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Filler, Legend } from 'chart.js'
 import Sidebar from './components/Sidebar'
@@ -306,10 +306,36 @@ function App() {
   const [selectedLiveMetrics, setSelectedLiveMetrics] = useState<string[]>(['Temp-Zone1', 'Electricity', 'Pipeline-Pressure'])
   const [liveHistoryStore, setLiveHistoryStore] = useState<Record<string, {x: number, y: number}[]>>({})
   const [connectivity, setConnectivity] = useState<{ status: string; latency: number | null }>({ status: 'Bağlanıyor', latency: null })
+  const [announcements, setAnnouncements] = useState<any[]>([])
+  
+  // Profil Düzenleme State'leri
+  const [newUsername, setNewUsername] = useState(user || '')
+  const [passwords, setPasswords] = useState({ old: '', new: '', confirm: '' })
+  const [updateStatus, setUpdateStatus] = useState<{ type: 'success' | 'error' | null; msg: string }>({ type: null, msg: '' })
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
   }, [theme])
+
+  const fetchAnnouncements = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/announcements`)
+      const data = await res.json()
+      setAnnouncements(data)
+    } catch (e) {
+      // Fallback Duyurular
+      setAnnouncements([
+        { id: 1, title: 'Sistem Güncellemesi', content: 'SOCKET v1.0.1 yayına alındı. Performans iyileştirmeleri yapıldı.', type: 'info', created_at: new Date().toISOString() },
+        { id: 2, title: 'Güvenlik Uyarısı', content: 'Zone-3 bölgesindeki sensör bakımları tamamlanmıştır.', type: 'warning', created_at: new Date().toISOString() }
+      ])
+    }
+  }
+
+  useEffect(() => {
+    if (selectedPage === 'notifications') {
+      fetchAnnouncements()
+    }
+  }, [selectedPage])
 
   const fetchMetrics = async () => {
     try {
@@ -448,12 +474,7 @@ function App() {
   const pageTitle = MENU.flatMap(section => section.items).find(item => item.id === selectedPage)?.label ?? 'Dashboard'
 
   return (
-    <div className="app-shell" data-theme={theme} style={!isAuthenticated ? { gridTemplateColumns: '1fr', padding: '2rem' } : {}}>
-      {/* Mobile Overlay */}
-      <div 
-        className="mobile-overlay" 
-        onClick={() => document.body.classList.remove('sidebar-open')}
-      />
+    <div className="app-shell" data-theme={theme}>
       {isAuthenticated && (
         <Sidebar 
           menu={MENU} 
@@ -463,10 +484,10 @@ function App() {
           toggleTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
         />
       )}
-      <main className="page-content" style={!isAuthenticated ? { maxWidth: '800px', margin: '0 auto', width: '100%' } : {}}>
+      <main className="page-content">
         {isAuthenticated && (
           <header className="page-header slide-in">
-            <div className="header-left" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <div className="header-left" style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
               <button className="mobile-toggle" onClick={() => document.body.classList.toggle('sidebar-open')}>
                 <Menu size={20} />
               </button>
@@ -528,8 +549,8 @@ function App() {
           <>
             {selectedPage === 'dashboard' && (
               <div className="dashboard-grid">
-                {/* 1. Operasyon Özeti (3/12) */}
-                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 3' }}>
+                {/* 1. Operasyon Özeti (4/12) */}
+                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 4' }}>
                   <div className="panel-header">
                     <h2>Operasyon Özeti</h2>
                     <Activity size={16} />
@@ -546,8 +567,8 @@ function App() {
                   </div>
                 </div>
 
-                {/* 2. Finansal KPI (3/12) */}
-                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 3' }}>
+                {/* 2. Finansal KPI (4/12) */}
+                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 4' }}>
                   <div className="panel-header">
                     <h2>Finansal Durum</h2>
                     <CircleDollarSign size={16} />
@@ -564,8 +585,8 @@ function App() {
                   </div>
                 </div>
 
-                {/* 3. Güvenlik & Alarmlar (3/12) */}
-                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 3' }}>
+                {/* 3. Güvenlik & Alarmlar (4/12) */}
+                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 4' }}>
                   <div className="panel-header">
                     <h2>Sistem Güvenliği</h2>
                     <ShieldAlert size={16} color={displayOverview.safety?.active_alarms > 0 ? '#ef4444' : 'var(--accent)'} />
@@ -582,8 +603,8 @@ function App() {
                   </div>
                 </div>
 
-                {/* 4. Simülatör Verileri (3/12) */}
-                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 3' }}>
+                {/* 4. Simülatör Verileri (6/12) */}
+                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 6' }}>
                   <div className="panel-header">
                     <h2>Kritik Simülatör Sensörleri</h2>
                     <SlidersHorizontal size={16} />
@@ -604,8 +625,8 @@ function App() {
                   </div>
                 </div>
 
-                {/* 5. Üretim Hattı (3/12) */}
-                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 3' }}>
+                {/* 5. Üretim Hattı (6/12) */}
+                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 6' }}>
                   <div className="panel-header">
                     <h2>Üretim Hattı Akışı</h2>
                     <BarChart2 size={16} />
@@ -626,8 +647,8 @@ function App() {
                   </div>
                 </div>
 
-                {/* 6. Lojistik & Stok (3/12) */}
-                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 3' }}>
+                {/* 6. Lojistik & Stok (6/12) */}
+                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 6' }}>
                   <div className="panel-header">
                     <h2>Lojistik & Envanter</h2>
                     <Users size={16} />
@@ -648,8 +669,8 @@ function App() {
                   </div>
                 </div>
 
-                {/* 7. Çevresel Veriler (3/12) */}
-                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 3' }}>
+                {/* 7. Çevresel Veriler (6/12) */}
+                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 6' }}>
                   <div className="panel-header">
                     <h2>Çevresel İzleme</h2>
                     <Cloud size={16} />
@@ -861,14 +882,236 @@ function App() {
               </div>
             )}
 
-            {(selectedPage === 'profile' || selectedPage === 'settings' || selectedPage === 'notifications') && (
-              <div className="card fade-in-up" style={{ minHeight: '400px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem' }}>
-                <div style={{ padding: '2rem', borderRadius: '50%', background: 'rgba(255,255,255,0.05)' }}>
-                  <Settings2 size={48} className="spin-icon" style={{ opacity: 0.2 }} />
+            {selectedPage === 'profile' && (
+              <div className="fade-in-up" style={{ maxWidth: '600px', margin: '0 auto', width: '100%' }}>
+                <div className="panel card">
+                  <div className="panel-header" style={{ marginBottom: '1.5rem' }}>
+                    <h2>Hesap Yönetimi</h2>
+                    <User size={20} />
+                  </div>
+                  
+                  {updateStatus.type && (
+                    <div style={{ padding: '1rem', borderRadius: '12px', background: updateStatus.type === 'success' ? 'var(--success-soft)' : 'var(--danger-soft)', border: `1px solid ${updateStatus.type === 'success' ? 'var(--success)' : 'var(--danger)'}`, marginBottom: '1.5rem', color: updateStatus.type === 'success' ? 'var(--success)' : 'var(--danger)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      {updateStatus.type === 'success' ? <RefreshCw size={16} /> : <AlertTriangle size={16} />}
+                      {updateStatus.msg}
+                    </div>
+                  )}
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                    {/* Profil Bilgileri */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+                      <div style={{ width: '64px', height: '64px', borderRadius: '20px', background: 'linear-gradient(135deg, var(--accent), #1b2d58)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '1.5rem', fontWeight: 'bold' }}>
+                        {user?.[0]?.toUpperCase()}
+                      </div>
+                      <div style={{ flex: 1 }}>
+                        <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>Görünen İsim</label>
+                        <div style={{ display: 'flex', gap: '0.5rem' }}>
+                          <input 
+                            type="text" 
+                            className="button" 
+                            style={{ flex: 1, background: 'rgba(255,255,255,0.03)', textAlign: 'left', cursor: 'text' }}
+                            value={newUsername}
+                            onChange={(e) => setNewUsername(e.target.value)}
+                          />
+                          <button 
+                            className="button button-primary" 
+                            style={{ padding: '0 1.5rem' }}
+                            onClick={() => {
+                              setUser(newUsername);
+                              setUpdateStatus({ type: 'success', msg: 'Kullanıcı adı başarıyla güncellendi.' });
+                              setTimeout(() => setUpdateStatus({ type: null, msg: '' }), 3000);
+                            }}
+                          >
+                            Güncelle
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Şifre Değiştirme */}
+                    <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
+                      <h3 style={{ fontSize: '1rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <Lock size={16} /> Şifre Değiştir
+                      </h3>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <div>
+                          <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>Mevcut Şifre</label>
+                          <input 
+                            type="password" 
+                            className="button" 
+                            style={{ width: '100%', background: 'rgba(255,255,255,0.03)', textAlign: 'left', cursor: 'text' }}
+                            placeholder="Mevcut şifrenizi girin"
+                            value={passwords.old}
+                            onChange={(e) => setPasswords({...passwords, old: e.target.value})}
+                          />
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                          <div>
+                            <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>Yeni Şifre</label>
+                            <input 
+                              type="password" 
+                              className="button" 
+                              style={{ width: '100%', background: 'rgba(255,255,255,0.03)', textAlign: 'left', cursor: 'text' }}
+                              placeholder="••••••••"
+                              value={passwords.new}
+                              onChange={(e) => setPasswords({...passwords, new: e.target.value})}
+                            />
+                          </div>
+                          <div>
+                            <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>Şifre Onay</label>
+                            <input 
+                              type="password" 
+                              className="button" 
+                              style={{ width: '100%', background: 'rgba(255,255,255,0.03)', textAlign: 'left', cursor: 'text' }}
+                              placeholder="••••••••"
+                              value={passwords.confirm}
+                              onChange={(e) => setPasswords({...passwords, confirm: e.target.value})}
+                            />
+                          </div>
+                        </div>
+                        <button 
+                          className="button" 
+                          style={{ background: 'var(--accent-soft)', color: 'var(--accent)', border: '1px solid var(--accent)' }}
+                          onClick={() => {
+                            // Mock şifre kontrolü (Varsayılan şifre: admin123)
+                            if (passwords.old !== 'admin123') {
+                              setUpdateStatus({ type: 'error', msg: 'Mevcut şifreniz hatalı.' });
+                            } else if (passwords.new !== passwords.confirm) {
+                              setUpdateStatus({ type: 'error', msg: 'Yeni şifreler eşleşmiyor.' });
+                            } else if (passwords.new.length < 4) {
+                              setUpdateStatus({ type: 'error', msg: 'Yeni şifre en az 4 karakter olmalıdır.' });
+                            } else {
+                              setUpdateStatus({ type: 'success', msg: 'Şifreniz başarıyla güncellendi.' });
+                              setPasswords({ old: '', new: '', confirm: '' });
+                            }
+                            setTimeout(() => setUpdateStatus({ type: null, msg: '' }), 4000);
+                          }}
+                        >
+                          Güvenli Şifre Güncelleme
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Bilgi Kartı */}
+                    <div style={{ background: 'rgba(0, 212, 255, 0.05)', borderRadius: '16px', padding: '1rem', border: '1px solid rgba(0, 212, 255, 0.1)' }}>
+                      <p style={{ fontSize: '0.8rem', margin: 0, color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+                        <strong>Güvenlik Notu:</strong> Hesabınız SOCAR merkezi kimlik doğrulama sistemine bağlıdır. Şifre değişiklikleri tüm bağlı servisleri etkileyebilir.
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <h2 style={{ fontSize: '1.5rem', fontWeight: 700 }}>{selectedPage.charAt(0).toUpperCase() + selectedPage.slice(1)} Paneli</h2>
-                <p style={{ color: 'var(--text-secondary)' }}>Bu sayfa şuanlık geliştirme aşamasındadır.</p>
-                <button className="button button-primary" onClick={() => setSelectedPage('dashboard')}>Dashboard'a Dön</button>
+              </div>
+            )}
+
+            {selectedPage === 'settings' && (
+              <div className="fade-in-up" style={{ maxWidth: '700px', margin: '0 auto', width: '100%' }}>
+                <div className="panel card">
+                  <div className="panel-header" style={{ marginBottom: '2rem' }}>
+                    <h2>Sistem Ayarları</h2>
+                    <Settings2 size={20} />
+                  </div>
+                  
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                    {/* Görünüm ve Tema */}
+                    <section>
+                      <h3 style={{ fontSize: '0.9rem', color: 'var(--accent)', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Görünüm ve Arayüz</h3>
+                      <div className="info-list" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                        <div className="kpi-box" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div>
+                            <span style={{ margin: 0 }}>Karanlık Tema</span>
+                            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0 }}>Göz yorgunluğunu azaltmak için gece modu</p>
+                          </div>
+                          <button className={`button ${theme === 'dark' ? 'button-primary' : ''}`} onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}>
+                            {theme === 'dark' ? 'Aktif' : 'Etkinleştir'}
+                          </button>
+                        </div>
+                        <div className="kpi-box" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div>
+                            <span style={{ margin: 0 }}>Arayüz Ölçeği</span>
+                            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0 }}>Kartların ve yazıların yoğunluk seviyesi</p>
+                          </div>
+                          <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <button className="button" style={{ padding: '0.4rem 1rem' }}>Kompakt</button>
+                            <button className="button button-primary" style={{ padding: '0.4rem 1rem' }}>Standart</button>
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+
+                    {/* Veri ve Performans */}
+                    <section style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
+                      <h3 style={{ fontSize: '0.9rem', color: 'var(--accent)', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Veri ve Performans</h3>
+                      <div className="info-list" style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                        <div className="kpi-box" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div>
+                            <span style={{ margin: 0 }}>Veri Yenileme Hızı</span>
+                            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', margin: 0 }}>Sensör verilerinin saniye bazlı güncelleme sıklığı</p>
+                          </div>
+                          <select className="button" style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)', color: '#fff' }}>
+                            <option>1 Saniye (Gerçek Zamanlı)</option>
+                            <option selected>5 Saniye (Önerilen)</option>
+                            <option>15 Saniye (Enerji Tasarrufu)</option>
+                          </select>
+                        </div>
+                      </div>
+                    </section>
+
+                    {/* Bildirim Kanalları */}
+                    <section style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
+                      <h3 style={{ fontSize: '0.9rem', color: 'var(--accent)', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Bildirim ve Uyarılar</h3>
+                      <div className="info-list" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className="kpi-box" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ margin: 0, fontSize: '0.85rem' }}>Kritik Alarmlar</span>
+                          <input type="checkbox" defaultChecked />
+                        </div>
+                        <div className="kpi-box" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ margin: 0, fontSize: '0.85rem' }}>Sistem Duyuruları</span>
+                          <input type="checkbox" defaultChecked />
+                        </div>
+                        <div className="kpi-box" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ margin: 0, fontSize: '0.85rem' }}>E-Posta Özetleri</span>
+                          <input type="checkbox" />
+                        </div>
+                        <div className="kpi-box" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <span style={{ margin: 0, fontSize: '0.85rem' }}>AI Önerileri</span>
+                          <input type="checkbox" defaultChecked />
+                        </div>
+                      </div>
+                    </section>
+
+                    {/* Uygulama Bilgisi */}
+                    <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}>
+                      <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>
+                        SOCKET Industrial Platform v1.0.3-LIVE-FORCE <br/> 
+                        Son Sunucu Senkronizasyonu: {new Date().toLocaleTimeString()}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {selectedPage === 'notifications' && (
+              <div className="fade-in-up" style={{ maxWidth: '800px', margin: '0 auto', width: '100%' }}>
+                <div className="panel card">
+                  <div className="panel-header" style={{ marginBottom: '1.5rem' }}>
+                    <h2>Duyurular ve Bildirimler</h2>
+                    <Bell size={20} />
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    {announcements.length > 0 ? announcements.map((ann: any) => (
+                      <div key={ann.id} style={{ padding: '1.25rem', borderRadius: '16px', background: 'rgba(255,255,255,0.03)', border: `1px solid ${ann.type === 'warning' ? 'rgba(245,158,11,0.2)' : 'var(--border-color)'}` }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                          <strong style={{ color: ann.type === 'warning' ? 'var(--warning)' : 'var(--accent)' }}>{ann.title}</strong>
+                          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>{formatDate(ann.created_at)}</span>
+                        </div>
+                        <p style={{ margin: 0, fontSize: '0.9rem', lineHeight: 1.5, color: 'var(--text-primary)' }}>{ann.content}</p>
+                      </div>
+                    )) : (
+                      <p style={{ textAlign: 'center', padding: '2rem', color: 'var(--text-secondary)' }}>Henüz yeni bir duyuru bulunmuyor.</p>
+                    )}
+                  </div>
+                </div>
               </div>
             )}
 
@@ -985,6 +1228,12 @@ function App() {
         )}
         {isAuthenticated && <CrisisSimulator token={token} />}
       </main>
+
+      {/* Mobile Overlay (Grid akışını bozmaması için sonda) */}
+      <div 
+        className="mobile-overlay" 
+        onClick={() => document.body.classList.remove('sidebar-open')}
+      />
     </div>
   )
 }
