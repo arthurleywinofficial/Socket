@@ -588,7 +588,7 @@ function App() {
                 <animate attributeName="opacity" values="0.2;1;0.2" dur="2s" repeatCount="indefinite" />
               </circle>
               <circle cx="25" cy="65" r="3" fill="var(--accent)" style={{ opacity: 0.5 }}>
-                <animate attributeName="opacity" values="0.2;1;0.2" dur="2s" repeatCount="indefinite" delay="1s" />
+                <animate attributeName="opacity" values="0.2;1;0.2" dur="2s" repeatCount="indefinite" begin="1s" />
               </circle>
             </svg>
             <style>{`
@@ -1435,7 +1435,7 @@ function App() {
                     {/* Uygulama Bilgisi */}
                     <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}>
                       <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>
-                        SOCKET Industrial Platform v1.3.6 <br/> 
+                        SOCKET Industrial Platform v1.3.7 <br/> 
                         Son Sunucu Senkronizasyonu: {new Date().toLocaleTimeString()}
                       </p>
                     </div>
@@ -1529,7 +1529,7 @@ function App() {
                       </button>
                     )}
                     <div style={{ marginTop: '2rem', textAlign: 'center', opacity: 0.3, fontSize: '0.7rem' }}>
-                      SOCKET Industrial Platform v1.3.6
+                      SOCKET Industrial Platform v1.3.7
                     </div>
                   </div>
                 </div>
@@ -1568,7 +1568,7 @@ function App() {
                       </button>
                     )}
                     <div style={{ marginTop: '2rem', textAlign: 'center', opacity: 0.3, fontSize: '0.7rem' }}>
-                      SOCKET Industrial Platform v1.3.6
+                      SOCKET Industrial Platform v1.3.7
                     </div>
                   </div>
                 </div>
