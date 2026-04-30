@@ -221,54 +221,52 @@ ${getSystemContext()}`;
     <div className="ai-assistant-container">
       {showHint && (
         <div 
-          className="socket-ai-alert-v2 fade-in"
+          id="socket-alert-ultra"
           style={{
             position: 'fixed',
-            top: '120px',
+            top: '150px',
             left: '50%',
             transform: 'translateX(-50%)',
             background: '#00d4ff',
             color: '#000',
-            padding: '0 12px',
+            padding: '10px 16px',
             borderRadius: '12px',
-            fontSize: '0.85rem',
-            fontWeight: '800',
-            width: '92%',
-            maxWidth: '380px',
-            height: '48px',
+            fontSize: '14px',
+            fontWeight: '900',
+            width: '90%',
+            maxWidth: '360px',
+            height: '50px',
+            minHeight: '50px',
+            maxHeight: '50px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'space-between',
-            boxShadow: '0 10px 40px rgba(0,212,255,0.4)',
-            zIndex: 999999,
-            border: '2px solid rgba(255,255,255,0.4)',
-            overflow: 'hidden'
+            boxShadow: '0 15px 50px rgba(0,212,255,0.5)',
+            zIndex: 9999999,
+            border: '2px solid white',
+            animation: 'none'
           }}
         >
-          <div 
-            className="hint-content" 
-            onClick={() => { setIsOpen(true); handleSend("Mevcut alarmları ve durumu analiz et."); }} 
-            style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1, cursor: 'pointer', overflow: 'hidden' }}
-          >
-            <AlertCircle size={18} style={{ flexShrink: 0 }} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, overflow: 'hidden' }}>
+            <AlertCircle size={20} style={{ flexShrink: 0 }} />
             <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{hintText}</span>
           </div>
           <button 
-            className="hint-close" 
             onClick={(e) => { e.stopPropagation(); setShowHint(false); }}
             style={{ 
-              background: 'rgba(0,0,0,0.1)', 
+              background: 'black', 
+              color: 'white',
               border: 'none', 
-              borderRadius: '8px', 
-              padding: '6px', 
+              borderRadius: '6px', 
+              padding: '6px 10px', 
               cursor: 'pointer', 
-              display: 'flex', 
-              marginLeft: '0.5rem',
+              marginLeft: '10px',
               flexShrink: 0,
-              color: '#000'
+              fontSize: '12px',
+              fontWeight: 'bold'
             }}
           >
-            <X size={16} />
+            KAPAT
           </button>
         </div>
       )}
