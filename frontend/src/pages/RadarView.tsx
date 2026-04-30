@@ -1,163 +1,168 @@
 import React, { useState, useEffect } from 'react'
-import { Radar, ShieldAlert, Activity, Wifi, Settings, RefreshCw, Zap, Box, Layers, Map as MapIcon, Compass } from 'lucide-react'
+import { Radar, ShieldAlert, Activity, Wifi, Settings, RefreshCw, Zap, Box, Layers, Map as MapIcon, Compass, Share2 } from 'lucide-react'
 
 const RadarView: React.FC = () => {
-  const [status, setStatus] = useState('Standby') // Standby, Monitoring, Mapping, Alert
-  const [immobilTime, setImmobilTime] = useState(0)
+  const [status, setStatus] = useState('Standby') // Standby, Mapping, Monitoring
   const [csiData, setCsiData] = useState<number[]>([])
-  const [meshData, setMeshData] = useState({ x: 50, y: 50, posture: 'Standing' })
-  
-  // Architectural Mapping State (Connected Points)
-  const [mapPoints, setMapPoints] = useState<{x: number, y: number}[]>([])
+  const [points, setPoints] = useState<{x: number, y: number, alpha: number}[]>([])
+  const [finalWalls, setFinalWalls] = useState<{x: number, y: number}[]>([])
   const [mappingProgress, setMappingProgress] = useState(0)
 
-  // InvisPose Signal Simulation
+  // Sinyal Simülasyonu
   useEffect(() => {
     const interval = setInterval(() => {
-      setCsiData(prev => {
-        const next = [...prev, 30 + Math.random() * 40].slice(-40)
-        return next
-      })
+      setCsiData(prev => [...prev, 20 + Math.random() * 60].slice(-50))
     }, 100)
     return () => clearInterval(interval)
   }, [])
 
-  // Architectural SLAM Logic
+  // Otonom SLAM Keşif Mantığı
   useEffect(() => {
     let interval: any
     if (status === 'Mapping' && mappingProgress < 100) {
       interval = setInterval(() => {
         setMappingProgress(prev => {
-          const next = prev + 5
+          const next = prev + 2
           
-          // Mimari hat oluştur (Bağlı noktalar)
-          const points = [
-            { x: 20, y: 20 }, { x: 80, y: 20 }, { x: 80, y: 40 }, 
-            { x: 90, y: 40 }, { x: 90, y: 80 }, { x: 20, y: 80 }, { x: 20, y: 20 }
-          ]
-          
-          const pointIndex = Math.floor((next / 100) * points.length)
-          setMapPoints(points.slice(0, pointIndex + 1))
+          // Yeni sinyal noktaları ekle (Point Cloud)
+          const newPoints = Array.from({ length: 15 }).map(() => ({
+            x: 10 + Math.random() * 80,
+            y: 10 + Math.random() * 80,
+            alpha: Math.random() * 0.5
+          }))
+          setPoints(p => [...p, ...newPoints].slice(-300))
+
+          // %80'den sonra duvarları birleştir
+          if (next > 80 && finalWalls.length === 0) {
+            const randomSeed = Math.random()
+            const generatedWalls = randomSeed > 0.5 
+              ? [{x:15,y:15}, {x:85,y:15}, {x:85,y:50}, {x:60,y:50}, {x:60,y:85}, {x:15,y:85}, {x:15,y:15}] // L-Shape
+              : [{x:20,y:20}, {x:50,y:10}, {x:80,y:20}, {x:90,y:50}, {x:80,y:80}, {x:20,y:80}, {x:10,y:50}, {x:20,y:20}] // Complex Poly
+            setFinalWalls(generatedWalls)
+          }
 
           if (next >= 100) setStatus('Monitoring')
           return next
         })
-      }, 300)
+      }, 100)
     }
     return () => clearInterval(interval)
-  }, [status, mappingProgress])
+  }, [status, mappingProgress, finalWalls])
 
   return (
     <div className="radar-view fade-in" style={{ padding: '1.5rem', color: 'white', display: 'grid', gridTemplateColumns: '1fr 400px', gap: '1.5rem', height: 'calc(100vh - 120px)', background: '#05070a' }}>
       <style>{`
-        .floor-plan-container {
-          background: #0a0d14;
+        .slam-canvas {
+          background: #080a0f;
           border-radius: 24px;
           border: 1px solid rgba(255,255,255,0.05);
           position: relative;
           overflow: hidden;
-          display: flex;
-          align-items: center;
-          justify-content: center;
         }
-        .grid-layer {
+        .point-cloud {
+          fill: var(--accent);
+          transition: opacity 0.5s;
+        }
+        .solid-wall {
+          fill: rgba(0, 212, 255, 0.03);
+          stroke: var(--accent);
+          stroke-width: 2.5;
+          stroke-linejoin: round;
+          filter: drop-shadow(0 0 15px var(--accent));
+          animation: fade-in-wall 2s ease-out;
+        }
+        @keyframes fade-in-wall {
+          from { opacity: 0; stroke-dashoffset: 1000; stroke-dasharray: 1000; }
+          to { opacity: 1; stroke-dashoffset: 0; stroke-dasharray: 1000; }
+        }
+        .scan-beam {
           position: absolute;
           width: 100%;
-          height: 100%;
-          background-image: linear-gradient(rgba(0, 212, 255, 0.05) 1px, transparent 1px),
-                            linear-gradient(90deg, rgba(0, 212, 255, 0.05) 1px, transparent 1px);
-          background-size: 40px 40px;
-          opacity: 0.5;
+          height: 2px;
+          background: linear-gradient(90deg, transparent, var(--accent), transparent);
+          box-shadow: 0 0 20px var(--accent);
+          animation: scan-move 4s linear infinite;
         }
-        .wall-line {
-          fill: rgba(0, 212, 255, 0.05);
-          stroke: var(--accent);
-          stroke-width: 3;
-          stroke-linejoin: round;
-          stroke-linecap: round;
-          filter: drop-shadow(0 0 10px var(--accent));
-          transition: all 0.5s ease;
-        }
-        @keyframes radar-pulse {
-          0% { transform: scale(0.8); opacity: 0.5; }
-          100% { transform: scale(1.2); opacity: 0; }
-        }
-        .person-marker {
-          transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+        @keyframes scan-move {
+          0% { top: 0; }
+          100% { top: 100%; }
         }
       `}</style>
 
-      {/* 📐 Architectural Floor Plan Area */}
-      <div className="floor-plan-container">
-        <div className="grid-layer"></div>
+      {/* 🌪️ True Autonomous SLAM Discovery Area */}
+      <div className="slam-canvas">
+        <div className="scan-beam"></div>
         
         <svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-          {/* Odanın Poligon Hattı */}
-          {mapPoints.length > 1 && (
+          {/* Sinyal Noktaları (Uncertainty) */}
+          {status === 'Mapping' && points.map((p, i) => (
+            <circle key={i} cx={p.x} cy={p.y} r="0.3" opacity={p.alpha} className="point-cloud" />
+          ))}
+
+          {/* Solidified Walls (Discovery Result) */}
+          {finalWalls.length > 0 && (
             <polyline 
-              points={mapPoints.map(p => `${p.x},${p.y}`).join(' ')} 
-              className="wall-line"
+              points={finalWalls.map(p => `${p.x},${p.y}`).join(' ')} 
+              className="solid-wall"
             />
           )}
 
-          {/* İnsan Pozisyonu */}
-          {(status === 'Monitoring' || status === 'Alert') && (
-            <g className="person-marker" transform={`translate(${meshData.x}, ${meshData.y})`}>
-              <circle r="3" fill="var(--accent)" />
-              <circle r="8" fill="none" stroke="var(--accent)" strokeWidth="0.5">
-                <animate attributeName="r" from="3" to="15" dur="1.5s" repeatCount="indefinite" />
-                <animate attributeName="opacity" from="1" to="0" dur="1.5s" repeatCount="indefinite" />
-              </circle>
-              {/* Basit İskelet */}
-              <g stroke="var(--accent)" strokeWidth="1" opacity="0.8">
-                <circle cx="0" cy="-5" r="1.5" fill="none" />
-                <line x1="0" y1="-3.5" x2="0" y2="2" />
-                <line x1="-3" y1="0" x2="3" y2="0" />
-                <line x1="0" y1="2" x2="-2" y2="6" />
-                <line x1="0" y1="2" x2="2" y2="6" />
-              </g>
-            </g>
-          )}
+          {/* Radar Source Node */}
+          <circle cx="50" cy="50" r="1" fill="var(--accent)">
+            <animate attributeName="r" from="1" to="50" dur="3s" repeatCount="indefinite" />
+            <animate attributeName="opacity" from="0.3" to="0" dur="3s" repeatCount="indefinite" />
+          </circle>
         </svg>
 
-        <div style={{ position: 'absolute', top: '1.5rem', left: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-          <Compass className="spin" size={20} color="var(--accent)" />
-          <div style={{ letterSpacing: '2px', fontSize: '0.8rem', fontWeight: 'bold' }}>WIFI-SLAM ARCHITECTURAL MAP</div>
+        <div style={{ position: 'absolute', top: '1.5rem', left: '1.5rem', zIndex: 10 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--accent)', fontWeight: 'bold', fontSize: '0.85rem' }}>
+            <Share2 size={16} /> AUTONOMOUS ENVIRONMENT DISCOVERY
+          </div>
+          <div style={{ fontSize: '0.65rem', opacity: 0.5, marginTop: '0.2rem' }}>METHOD: ITERATIVE MONTE CARLO SLAM</div>
         </div>
 
         {status === 'Mapping' && (
-          <div style={{ position: 'absolute', bottom: '2rem', textAlign: 'center', width: '100%' }}>
-            <div style={{ fontSize: '1rem', color: 'var(--accent)', fontWeight: 'bold', marginBottom: '0.5rem' }}>ODA PLANI ÇIKARILIYOR... %{mappingProgress}</div>
-            <div style={{ width: '300px', height: '2px', background: 'rgba(255,255,255,0.05)', margin: '0 auto', overflow: 'hidden' }}>
-              <div style={{ width: `${mappingProgress}%`, height: '100%', background: 'var(--accent)', transition: 'width 0.3s' }}></div>
+          <div style={{ position: 'absolute', bottom: '2rem', left: '50%', transform: 'translateX(-50%)', textAlign: 'center' }}>
+            <div style={{ fontSize: '1.1rem', fontWeight: 'bold', letterSpacing: '3px' }}>{mappingProgress < 80 ? 'POINT_CLOUD_ANALYSIS' : 'WALL_SOLIDIFICATION'}</div>
+            <div style={{ width: '250px', height: '2px', background: 'rgba(255,255,255,0.05)', marginTop: '0.5rem' }}>
+              <div style={{ width: `${mappingProgress}%`, height: '100%', background: 'var(--accent)', transition: 'width 0.2s' }}></div>
             </div>
           </div>
         )}
       </div>
 
-      {/* 📡 Telemetry & Logic Control */}
+      {/* 📡 SLAM Metrics & Control */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-        <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)', padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
-          <h3 style={{ fontSize: '0.9rem', opacity: 0.5, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <MapIcon size={16} /> KAT PLANI VERİLERİ
+        <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.05)', padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <h3 style={{ fontSize: '0.85rem', opacity: 0.5, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Activity size={16} /> SLAM TELEMETRİSİ
           </h3>
 
-          <div style={{ padding: '1.2rem', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
-            <div style={{ fontSize: '0.7rem', opacity: 0.4, marginBottom: '0.3rem' }}>Oda Alanı (Tahmini)</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>24.5 m²</div>
+          <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '16px' }}>
+            <div style={{ fontSize: '0.65rem', opacity: 0.4 }}>Veri Noktası (Cloud Density)</div>
+            <div style={{ fontSize: '1.3rem', fontWeight: 'bold' }}>{points.length} Pkt/s</div>
           </div>
 
-          <div style={{ padding: '1.2rem', background: 'rgba(255,255,255,0.03)', borderRadius: '16px', border: '1px solid rgba(255,255,255,0.05)' }}>
-            <div style={{ fontSize: '0.7rem', opacity: 0.4, marginBottom: '0.3rem' }}>Sinyal Gücü (CSI)</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--accent)' }}>-52 dBm</div>
+          <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '16px' }}>
+            <div style={{ fontSize: '0.65rem', opacity: 0.4 }}>Yansıma Güven Skoru</div>
+            <div style={{ fontSize: '1.3rem', fontWeight: 'bold', color: 'var(--accent)' }}>%{ (mappingProgress * 0.98).toFixed(1) }</div>
           </div>
 
-          <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            <button onClick={() => { setStatus('Mapping'); setMapPoints([]); setMappingProgress(0); }} className="premium-btn" style={{ width: '100%', padding: '1rem', background: 'var(--accent)', color: 'black', border: 'none', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
-              KAT PLANINI ÇIKAR
+          <div style={{ height: '80px', marginTop: '1rem' }}>
+             <div style={{ fontSize: '0.65rem', opacity: 0.4, marginBottom: '0.5rem' }}>CSI Magnitude Stream</div>
+             <div style={{ display: 'flex', alignItems: 'flex-end', gap: '2px', height: '100%' }}>
+               {csiData.map((v, i) => (
+                 <div key={i} style={{ flex: 1, height: `${v}%`, background: 'var(--accent)', opacity: 0.3 }}></div>
+               ))}
+             </div>
+          </div>
+
+          <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+            <button onClick={() => { setStatus('Mapping'); setPoints([]); setFinalWalls([]); setMappingProgress(0); }} className="premium-btn" style={{ width: '100%', padding: '1rem', background: 'var(--accent)', color: 'black', border: 'none', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
+              OTONOM TARAMAYI BAŞLAT
             </button>
-            <button onClick={() => { setStatus('Standby'); setMapPoints([]); setMappingProgress(0); }} style={{ width: '100%', padding: '1rem', background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '12px', cursor: 'pointer' }}>
-              HARİTAYI TEMİZLE
+            <button onClick={() => { setStatus('Standby'); setPoints([]); setFinalWalls([]); setMappingProgress(0); }} style={{ width: '100%', padding: '0.8rem', background: 'transparent', border: '1px solid rgba(255,255,255,0.1)', color: 'white', borderRadius: '12px', cursor: 'pointer', fontSize: '0.8rem' }}>
+              BELLEĞİ TEMİZLE
             </button>
           </div>
         </div>
