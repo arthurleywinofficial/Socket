@@ -219,6 +219,12 @@ ${getSystemContext()}`;
 
   return (
     <div className="ai-assistant-container">
+        .ai-fab {
+          width: 50px !important;
+          height: 50px !important;
+          ...
+        }
+      `}</style>
       {showHint && (
         <div 
           id="socket-alert-ultra"
@@ -227,25 +233,23 @@ ${getSystemContext()}`;
             top: '160px !important',
             left: '50% !important',
             transform: 'translateX(-50%) !important',
-            background: '#00d4ff !important',
+            background: 'rgba(0, 212, 255, 0.95) !important',
             color: '#000 !important',
             padding: '0 12px !important',
-            borderRadius: '10px !important',
-            width: '92% !important',
-            maxWidth: '360px !important',
-            height: '50px !important',
-            minHeight: '50px !important',
-            maxHeight: '50px !important',
-            display: 'grid !important',
-            gridTemplateColumns: '1fr 80px !important',
+            borderRadius: '12px !important',
+            width: '90% !important',
+            maxWidth: '350px !important',
+            height: '44px !important',
+            display: 'flex !important',
             alignItems: 'center !important',
-            boxShadow: '0 10px 40px rgba(0,212,255,0.5) !important',
+            justifyContent: 'space-between !important',
+            boxShadow: '0 10px 40px rgba(0,212,255,0.4) !important',
             zIndex: '99999999 !important',
-            border: '2px solid white !important',
-            boxSizing: 'border-box !important'
+            border: '1px solid white !important',
+            backdropFilter: 'blur(10px) !important'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, overflow: 'hidden' }}>
             <AlertCircle size={18} style={{ flexShrink: 0 }} />
             <span style={{ 
               whiteSpace: 'nowrap', 
@@ -261,15 +265,16 @@ ${getSystemContext()}`;
               background: '#000 !important', 
               color: '#fff !important',
               border: 'none !important', 
-              borderRadius: '5px !important', 
-              height: '32px !important',
-              width: '80px !important',
+              borderRadius: '50% !important', 
+              height: '28px !important',
+              width: '28px !important',
               cursor: 'pointer !important', 
-              fontSize: '11px !important',
-              fontWeight: '900 !important'
+              display: 'flex !important',
+              alignItems: 'center !important',
+              justifyContent: 'center !important'
             }}
           >
-            KAPAT
+            <X size={14} />
           </button>
         </div>
       )}

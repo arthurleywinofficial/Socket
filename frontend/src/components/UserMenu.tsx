@@ -33,20 +33,20 @@ const UserMenu: React.FC<UserMenuProps> = ({ username, userRole, onLogout, onNav
       <button 
         className="user-profile-btn" 
         onClick={() => setIsOpen(!isOpen)}
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.75rem',
-          padding: '0.5rem 1.25rem',
-          borderRadius: '16px',
-          background: theme === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
-          border: `1px solid ${theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+        style={{ 
+          padding: '4px', 
+          width: '44px', 
+          height: '44px', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          borderRadius: '12px',
+          background: 'rgba(0, 212, 255, 0.1)',
+          border: '1px solid rgba(0, 212, 255, 0.2)',
           cursor: 'pointer',
-          transition: '0.2s',
-          height: '48px'
+          transition: '0.2s'
         }}
       >
-        <div className="user-avatar" style={{
           width: '32px',
           height: '32px',
           borderRadius: '10px',
