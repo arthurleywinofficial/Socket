@@ -319,6 +319,7 @@ function App() {
   const [generatedToken, setGeneratedToken] = useState<string | null>(null)
   const [isRegistering, setIsRegistering] = useState(false)
   const [userRole, setUserRole] = useLocalStorage<string>('socar-user-role', 'Operatör')
+  const [showStartup, setShowStartup] = useState(false)
   
   // 🎭 Gelişmiş Modal Sistemi State'leri
   const [modal, setModal] = useState<{
@@ -472,7 +473,16 @@ function App() {
 
   useEffect(() => {
     fetchMetrics()
-  }, [])
+    // 🚀 İlk Giriş Loading Kontrolü
+    const hasSeenLoading = sessionStorage.getItem('socar-startup-done');
+    if (isAuthenticated && !hasSeenLoading) {
+      setShowStartup(true);
+      setTimeout(() => {
+        setShowStartup(false);
+        sessionStorage.setItem('socar-startup-done', 'true');
+      }, 3500);
+    }
+  }, [isAuthenticated])
 
   useEffect(() => {
     fetchOverview()
@@ -1338,7 +1348,7 @@ function App() {
                               </div>
                               <button className="button btn-sm" onClick={() => {
                                 navigator.clipboard.writeText(generatedToken);
-                                alert('Token kopyalandı!');
+                                setModal({ isOpen: true, type: 'alert', title: 'Kopyalandı', message: 'Davet kodu panoya kopyalandı.' });
                               }}>Kopyala</button>
                             </div>
                           )}
@@ -1371,71 +1381,11 @@ function App() {
                       </div>
                     </section>
 
-                    {/* 🛡️ GELİŞTİRİCİ ÖZEL: Merkezi Kullanıcı Denetimi */}
-                    {userRole === 'Geliştirici' && (
-                      <section style={{ borderTop: '1px solid var(--accent)', paddingTop: '1.5rem', marginTop: '1rem' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-                          <h3 style={{ fontSize: '0.9rem', color: 'var(--accent)', margin: 0, textTransform: 'uppercase', fontWeight: 'bold' }}>🛡️ Geliştirici Denetim Terminali</h3>
-                          <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '20px', background: 'var(--accent)', color: '#000' }}>SUPER-ADMIN</span>
-                        </div>
-                        <div className="panel" style={{ background: 'rgba(0, 212, 255, 0.03)', borderRadius: '24px', border: '1px solid rgba(0, 212, 255, 0.2)', padding: '1.5rem' }}>
-                          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Sistemdeki tüm kayıtlı kullanıcıların yönetimi:</p>
-                          <div style={{ overflowX: 'auto' }}>
-                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
-                              <thead>
-                                <tr style={{ textAlign: 'left', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                                  <th style={{ padding: '0.75rem' }}>Kullanıcı</th>
-                                  <th style={{ padding: '0.75rem' }}>Yetki</th>
-                                  <th style={{ padding: '0.75rem' }}>Şifre</th>
-                                  <th style={{ padding: '1rem', textAlign: 'right' }}>İşlem</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {(JSON.parse(localStorage.getItem('socar-registered-users') || '[]')).map((u: any, idx: number) => (
-                                  <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                    <td style={{ padding: '0.75rem', fontWeight: 'bold' }}>{u.username}</td>
-                                    <td style={{ padding: '0.75rem' }}>
-                                      <span style={{ padding: '2px 8px', borderRadius: '4px', background: u.level === 'Geliştirici' ? 'var(--accent)' : 'rgba(255,255,255,0.1)', color: u.level === 'Geliştirici' ? '#000' : '#fff', fontSize: '0.7rem' }}>
-                                        {u.level}
-                                      </span>
-                                    </td>
-                                    <td style={{ padding: '0.75rem', fontFamily: 'monospace', color: 'var(--accent)' }}>{u.password}</td>
-                                    <td style={{ padding: '0.75rem', textAlign: 'right' }}>
-                                      <button className="button btn-sm" style={{ padding: '4px 12px', fontSize: '0.7rem', borderRadius: '8px' }} onClick={() => {
-                                        const newPass = prompt(`${u.username} için yeni şifre:`, u.password);
-                                        if (newPass) {
-                                          const users = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
-                                          const userIdx = users.findIndex((usr: any) => usr.username === u.username);
-                                          if (userIdx !== -1) {
-                                            users[userIdx].password = newPass;
-                                            localStorage.setItem('socar-registered-users', JSON.stringify(users));
-                                            alert('Şifre güncellendi!');
-                                            window.location.reload();
-                                          }
-                                        }
-                                      }}>Düzenle</button>
-                                      <button className="button btn-sm" style={{ marginLeft: '0.5rem', background: 'rgba(255,0,0,0.1)', color: 'red', border: '1px solid rgba(255,0,0,0.2)' }} onClick={() => {
-                                        if (confirm(`${u.username} kullanıcısını silmek istediğinize emin misiniz?`)) {
-                                          const users = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
-                                          const filtered = users.filter((usr: any) => usr.username !== u.username);
-                                          localStorage.setItem('socar-registered-users', JSON.stringify(filtered));
-                                          window.location.reload();
-                                        }
-                                      }}>Sil</button>
-                                    </td>
-                                  </tr>
-                                ))}
-                              </tbody>
-                            </table>
-                          </div>
-                        </div>
-                      </section>
-                    )}
 
                     {/* Uygulama Bilgisi */}
                     <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}>
                       <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>
-                        SOCKET Industrial Platform v1.2.9 <br/> 
+                        SOCKET Industrial Platform v1.3.0 <br/> 
                         Son Sunucu Senkronizasyonu: {new Date().toLocaleTimeString()}
                       </p>
                     </div>
@@ -1587,6 +1537,74 @@ function App() {
         className="mobile-overlay" 
         onClick={() => document.body.classList.remove('sidebar-open')}
       >
+        {/* 🚀 STARTUP LOADING OVERLAY */}
+        {showStartup && (
+          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: '#0a0d14', zIndex: 100000, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <style>{`
+              @keyframes s-fill {
+                0% { height: 0%; opacity: 0; }
+                100% { height: 100%; opacity: 1; }
+              }
+              @keyframes s-glow {
+                0%, 100% { filter: drop-shadow(0 0 10px var(--accent)); }
+                50% { filter: drop-shadow(0 0 30px var(--accent)); }
+              }
+              .s-logo-container {
+                position: relative;
+                width: 120px;
+                height: 160px;
+                margin-bottom: 2rem;
+              }
+              .s-logo-bg {
+                position: absolute;
+                width: 100%;
+                height: 100%;
+                fill: none;
+                stroke: rgba(255,255,255,0.05);
+                stroke-width: 8;
+              }
+              .s-logo-fill {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                background: linear-gradient(to top, var(--accent), #00d4ff);
+                clip-path: url(#s-mask);
+                animation: s-fill 3s ease-out forwards;
+              }
+            `}</style>
+            
+            <div className="s-logo-container">
+              <svg width="100%" height="100%" viewBox="0 0 100 140" style={{ animation: 's-glow 2s infinite' }}>
+                <defs>
+                  <clipPath id="s-mask">
+                    <path d="M80,30 C80,10 20,10 20,30 C20,50 80,50 80,70 C80,90 20,90 20,110 C20,130 80,130 80,110" stroke="white" strokeWidth="15" fill="none" />
+                  </clipPath>
+                </defs>
+                <path d="M80,30 C80,10 20,10 20,30 C20,50 80,50 80,70 C80,90 20,90 20,110 C20,130 80,130 80,110" stroke="rgba(255,255,255,0.05)" strokeWidth="15" fill="none" />
+                <path d="M80,30 C80,10 20,10 20,30 C20,50 80,50 80,70 C80,90 20,90 20,110 C20,130 80,130 80,110" stroke="var(--accent)" strokeWidth="15" fill="none" style={{ strokeDasharray: '400', strokeDashoffset: '400', animation: 'dash 3.5s linear forwards' }} />
+              </svg>
+              <style>{`
+                @keyframes dash {
+                  to { stroke-dashoffset: 0; }
+                }
+              `}</style>
+            </div>
+
+            <div style={{ width: '200px', height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden' }}>
+              <div style={{ width: '0%', height: '100%', background: 'var(--accent)', borderRadius: '10px', animation: 'bar-fill 3.5s ease-out forwards' }} />
+            </div>
+            <p style={{ marginTop: '1.5rem', color: 'var(--text-secondary)', fontSize: '0.85rem', letterSpacing: '2px', textTransform: 'uppercase', opacity: 0.8 }}>
+              Sistem Verileri Senkronize Ediliyor
+            </p>
+            <style>{`
+              @keyframes bar-fill {
+                0% { width: 0%; }
+                100% { width: 100%; }
+              }
+            `}</style>
+          </div>
+        )}
+
         {/* 🎭 SİSTEM MODAL PENCERESİ */}
         {modal.isOpen && (
           <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
