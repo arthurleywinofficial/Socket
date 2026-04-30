@@ -2347,3 +2347,108 @@ body::before {
     box-sizing: border-box !important;
   }
 }
+
+/* 🌊 Fluid & Safe Mobile Overrides (v2.2.8) */
+@media (max-width: 768px) {
+  .app-shell {
+    display: block !important;
+    grid-template-columns: 1fr !important;
+  }
+  
+  .page-header {
+    padding: 0.5rem 0.75rem !important;
+    flex-wrap: nowrap !important;
+    justify-content: space-between !important;
+    height: 64px !important;
+    display: flex !important;
+  }
+
+  .header-left {
+    flex: 0 1 auto !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+  }
+
+  .header-title-group {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .header-title {
+    display: block !important;
+    font-size: 1.1rem !important;
+    margin: 0 !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+
+  .header-subtitle-group, .header-weather-metrics, .theme-toggle {
+    display: none !important;
+  }
+
+  .header-right {
+    gap: 0.4rem !important;
+    flex: 1 1 auto !important;
+    justify-content: flex-end !important;
+    display: flex !important;
+  }
+
+  .mobile-toggle {
+    display: flex !important;
+    padding: 6px !important;
+    z-index: 2000 !important;
+  }
+
+  .status-badge {
+    padding: 0.3rem !important;
+    min-width: auto !important;
+    background: transparent !important;
+  }
+
+  .status-badge span {
+    display: none !important;
+  }
+
+  .user-profile-btn {
+    padding: 4px 6px !important;
+    height: 36px !important;
+    gap: 4px !important;
+    border-radius: 10px !important;
+  }
+
+  .user-profile-btn span:last-child {
+    display: none !important;
+  }
+
+  .user-profile-btn span:first-child {
+    font-size: 0.7rem !important;
+    max-width: 50px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Form ve Input Grupları - Mobilde Alt Alta */
+  .info-list > div, 
+  .profile-input-group,
+  div[style*="display: flex"][style*="gap: 0.5rem"],
+  div[style*="display: flex"][style*="gap: 1rem"] {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+  }
+
+  .button, button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  input[type="text"], input[type="password"] {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  html { font-size: 13px; }
+  .panel.card { padding: 16px !important; }
+}
