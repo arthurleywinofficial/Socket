@@ -1,1 +1,2 @@
-export const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://intention-drawn-circus-hip.trycloudflare.com';
+// v1.4.3 - Zorunlu Tünel Güncellemesi (Vercel .env ezme)
+export const API_BASE = 'https://intention-drawn-circus-hip.trycloudflare.com'; 
