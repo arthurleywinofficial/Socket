@@ -1442,7 +1442,7 @@ function App() {
                     {/* Uygulama Bilgisi */}
                     <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}>
                       <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>
-                        SOCKET Industrial Platform v1.8.2 <br />
+                        SOCKET Industrial Platform v1.8.3 <br />
                         Son Sunucu Senkronizasyonu: {new Date().toLocaleTimeString()}
                       </p>
                     </div>
@@ -1536,7 +1536,7 @@ function App() {
                       </button>
                     )}
                     <div style={{ marginTop: '2rem', textAlign: 'center', opacity: 0.3, fontSize: '0.7rem' }}>
-                      SOCKET Industrial Platform v1.8.2
+                      SOCKET Industrial Platform v1.8.3
                     </div>
                   </div>
                 </div>
@@ -1575,7 +1575,7 @@ function App() {
                       </button>
                     )}
                     <div style={{ marginTop: '2rem', textAlign: 'center', opacity: 0.3, fontSize: '0.7rem' }}>
-                      SOCKET Industrial Platform v1.8.2
+                      SOCKET Industrial Platform v1.8.3
                     </div>
                   </div>
                 </div>
