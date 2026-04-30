@@ -2678,3 +2678,49 @@ body::before {
     margin: 0 !important;
   }
 }
+
+/* 🛡️ Bulletproof Header Perfection (v2.3.8) */
+.page-header {
+  height: 80px;
+  padding: 0 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1001;
+}
+
+@media (max-width: 768px) {
+  .page-header {
+    height: 96px !important;
+    padding: 0 1rem !important;
+  }
+
+  .header-center {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 10 !important;
+    pointer-events: none; /* Altındaki butonlara tıklanabilsin */
+  }
+
+  .header-title {
+    font-size: 1.3rem !important;
+    letter-spacing: 4px !important;
+    background: linear-gradient(to right, #fff, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .header-right {
+    position: relative !important;
+    z-index: 20 !important; /* Yazının üstünde/yanında kalsın ama ezilmesin */
+    gap: 0.5rem !important;
+  }
+
+  /* Kırmızı noktanın yazıyla çakışmasını engelle */
+  .status-badge {
+    margin-right: 4px !important;
+  }
+}

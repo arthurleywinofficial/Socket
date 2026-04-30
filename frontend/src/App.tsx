@@ -627,7 +627,7 @@ function App() {
       )}
       <main className="page-content">
         {isAuthenticated && (
-          <header className="page-header slide-in" style={{ zIndex: 1001, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <header className="page-header slide-in">
             <div className="header-left">
               <button className="mobile-toggle" onClick={() => document.body.classList.toggle('sidebar-open')}>
                 <Menu size={20} />
