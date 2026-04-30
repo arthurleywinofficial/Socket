@@ -46,13 +46,30 @@ interface Metric {
 
 export default function GraphAnalysisPage() {
   const [availableMetrics, setAvailableMetrics] = useState<Metric[]>([
-    { id: 'Temp-Zone1', name: 'Sıcaklık - Bölge 1', unit: '°C', color: '#ff4d4d' },
-    { id: 'Electricity', name: 'Elektrik Tüketimi', unit: 'kWh', color: '#00d4ff' },
-    { id: 'Water', name: 'Su Kullanımı', unit: 'm³', color: '#3399ff' },
-    { id: 'Pipeline-Pressure', name: 'Boru Hattı Basıncı', unit: 'bar', color: '#ffcc00' },
-    { id: 'Gas-Flow', name: 'Gaz Akış Hızı', unit: 'm³/sa', color: '#10b981' },
+    // Üretim
+    { id: 'Temp-Zone1', name: 'Sıcaklık - Bölge 1', unit: '°C', color: '#ff4d4d', category: 'Üretim' } as any,
+    { id: 'Electricity', name: 'Elektrik Tüketimi', unit: 'kWh', color: '#00d4ff', category: 'Üretim' } as any,
+    { id: 'Gas-Flow', name: 'Gaz Akış Hızı', unit: 'm³/sa', color: '#10b981', category: 'Üretim' } as any,
+    { id: 'Vibration', name: 'Motor Titreşimi', unit: 'mm/s', color: '#f59e0b', category: 'Üretim' } as any,
+    { id: 'Oil-Pressure', name: 'Yağ Basıncı', unit: 'bar', color: '#6366f1', category: 'Üretim' } as any,
+    
+    // Çevresel
+    { id: 'Humidity', name: 'Nem Oranı', unit: '%', color: '#3b82f6', category: 'Çevresel' } as any,
+    { id: 'Air-Quality', name: 'Hava Kalitesi (PM2.5)', unit: 'µg/m³', color: '#8b5cf6', category: 'Çevresel' } as any,
+    { id: 'Noise-Level', name: 'Gürültü Seviyesi', unit: 'dB', color: '#ec4899', category: 'Çevresel' } as any,
+    { id: 'Gas-H2S', name: 'H2S Gaz Seviyesi', unit: 'ppm', color: '#ef4444', category: 'Çevresel' } as any,
+    
+    // Lojistik
+    { id: 'Water', name: 'Su Kullanımı', unit: 'm³', color: '#0ea5e9', category: 'Lojistik' } as any,
+    { id: 'Tank-Level', name: 'Depo Doluluk Oranı', unit: '%', color: '#f97316', category: 'Lojistik' } as any,
+    { id: 'Steam-Pressure', name: 'Buhar Basıncı', unit: 'psi', color: '#d946ef', category: 'Lojistik' } as any,
+    
+    // Güvenlik
+    { id: 'Radiation', name: 'Radyasyon Dozu', unit: 'µSv/h', color: '#84cc16', category: 'Güvenlik' } as any,
+    { id: 'Signal-Strength', name: 'Sinyal Gücü', unit: 'dBm', color: '#06b6d4', category: 'Güvenlik' } as any,
+    { id: 'CPU-Load', name: 'Sistem Yükü', unit: '%', color: '#64748b', category: 'Güvenlik' } as any,
   ])
-  const [selectedMetrics, setSelectedMetrics] = useState<string[]>(['Temp-Zone1'])
+  const [selectedMetrics, setSelectedMetrics] = useState<string[]>(['Temp-Zone1', 'Electricity'])
   const [chartData, setChartData] = useState<any>(null)
   const [range, setRange] = useState(1) // hours
   const [isLoading, setIsLoading] = useState(true)
@@ -85,14 +102,25 @@ export default function GraphAnalysisPage() {
         throw new Error('Empty metrics')
       }
     } catch (e) {
-      // 🛡️ Fallback Metrik Listesi
-      setAvailableMetrics([
-        { id: 'Temp-Zone1', name: 'Sıcaklık - Bölge 1', unit: '°C', color: '#ff4d4d' },
-        { id: 'Electricity', name: 'Elektrik Tüketimi', unit: 'kWh', color: '#00d4ff' },
-        { id: 'Water', name: 'Su Kullanımı', unit: 'm³', color: '#3399ff' },
-        { id: 'Pipeline-Pressure', name: 'Boru Hattı Basıncı', unit: 'bar', color: '#ffcc00' },
-        { id: 'Gas-Flow', name: 'Gaz Akış Hızı', unit: 'm³/sa', color: '#10b981' },
-      ])
+      // 🛡️ Fallback Metrik Listesi (Expanded v1.2.0)
+      const expandedMetrics = [
+        { id: 'Temp-Zone1', name: 'Sıcaklık - Bölge 1', unit: '°C', color: '#ff4d4d', category: 'Üretim' },
+        { id: 'Electricity', name: 'Elektrik Tüketimi', unit: 'kWh', color: '#00d4ff', category: 'Üretim' },
+        { id: 'Gas-Flow', name: 'Gaz Akış Hızı', unit: 'm³/sa', color: '#10b981', category: 'Üretim' },
+        { id: 'Vibration', name: 'Motor Titreşimi', unit: 'mm/s', color: '#f59e0b', category: 'Üretim' },
+        { id: 'Oil-Pressure', name: 'Yağ Basıncı', unit: 'bar', color: '#6366f1', category: 'Üretim' },
+        { id: 'Humidity', name: 'Nem Oranı', unit: '%', color: '#3b82f6', category: 'Çevresel' },
+        { id: 'Air-Quality', name: 'Hava Kalitesi (PM2.5)', unit: 'µg/m³', color: '#8b5cf6', category: 'Çevresel' },
+        { id: 'Noise-Level', name: 'Gürültü Seviyesi', unit: 'dB', color: '#ec4899', category: 'Çevresel' },
+        { id: 'Gas-H2S', name: 'H2S Gaz Seviyesi', unit: 'ppm', color: '#ef4444', category: 'Çevresel' },
+        { id: 'Water', name: 'Su Kullanımı', unit: 'm³', color: '#0ea5e9', category: 'Lojistik' },
+        { id: 'Tank-Level', name: 'Depo Doluluk Oranı', unit: '%', color: '#f97316', category: 'Lojistik' },
+        { id: 'Steam-Pressure', name: 'Buhar Basıncı', unit: 'psi', color: '#d946ef', category: 'Lojistik' },
+        { id: 'Radiation', name: 'Radyasyon Dozu', unit: 'µSv/h', color: '#84cc16', category: 'Güvenlik' },
+        { id: 'Signal-Strength', name: 'Sinyal Gücü', unit: 'dBm', color: '#06b6d4', category: 'Güvenlik' },
+        { id: 'CPU-Load', name: 'Sistem Yükü', unit: '%', color: '#64748b', category: 'Güvenlik' },
+      ];
+      setAvailableMetrics(expandedMetrics as any);
     }
   }
 
@@ -129,9 +157,11 @@ export default function GraphAnalysisPage() {
         })
       )
 
-      setChartData({
-        datasets
-      })
+      if (datasets.length > 0) {
+        setChartData({ datasets })
+      } else {
+        throw new Error('Empty datasets')
+      }
     } catch (e) {
       // 🛡️ Fallback: API hatasında simüle edilmiş veri üret
       const mockDatasets = selectedMetrics.map(metricId => {
