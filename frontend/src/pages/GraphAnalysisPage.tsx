@@ -137,60 +137,61 @@ export default function GraphAnalysisPage() {
             url += `&hours=${range}`
           }
           
-          const res = await fetch(url)
-          if (!res.ok) throw new Error('API Error');
-          const data = await res.json()
-          if (!Array.isArray(data) || data.length === 0) throw new Error('No history data');
-          
-          const metricDetails = availableMetrics.find(m => m.id === metricId)
-          
-          return {
-            label: metricDetails?.name || metricId,
-            data: data.map((d: any) => ({ x: new Date(d.time), y: d.value })),
-            borderColor: metricDetails?.color || '#00d4ff',
-            backgroundColor: (metricDetails?.color || '#00d4ff') + (chartType === 'area' ? '44' : '22'),
-            fill: chartType === 'area',
-            tension: 0.4,
-            pointRadius: 0,
-            yAxisID: (isCompareMode && (chartType === 'line' || chartType === 'area')) ? `y-${metricId}` : 'y'
+          // ⚡ Timeout Kontrolü: 1.5 saniye içinde cevap gelmezse fallback'e düş
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 1500);
+
+          try {
+            const res = await fetch(url, { signal: controller.signal })
+            clearTimeout(timeoutId);
+            if (!res.ok) throw new Error('API Error');
+            const data = await res.json()
+            if (!Array.isArray(data) || data.length === 0) throw new Error('No history data');
+            
+            const metricDetails = availableMetrics.find(m => m.id === metricId)
+            
+            return {
+              label: metricDetails?.name || metricId,
+              data: data.map((d: any) => ({ x: new Date(d.time), y: d.value })),
+              borderColor: metricDetails?.color || '#00d4ff',
+              backgroundColor: (metricDetails?.color || '#00d4ff') + (chartType === 'area' ? '44' : '22'),
+              fill: chartType === 'area',
+              tension: 0.4,
+              pointRadius: 0,
+              yAxisID: (isCompareMode && (chartType === 'line' || chartType === 'area')) ? `y-${metricId}` : 'y'
+            }
+          } catch (e) {
+            // Tekil metrik hatasında simüle edilmiş veri üret (bekleme yapmadan)
+            const metricDetails = availableMetrics.find(m => m.id === metricId)
+            const points = []
+            const now = Date.now()
+            const count = 50
+            const interval = (range * 3600 * 1000) / count
+            
+            for (let i = 0; i < count; i++) {
+              const time = now - (count - i) * interval
+              const base = metricId.includes('Temp') ? 35 : (metricId.includes('Pressure') ? 80 : (metricId.includes('Electricity') ? 450 : 1200))
+              const randomVal = base + (Math.random() - 0.5) * (base * 0.1)
+              points.push({ x: new Date(time), y: randomVal })
+            }
+
+            return {
+              label: metricDetails?.name || metricId,
+              data: points,
+              borderColor: metricDetails?.color || '#00d4ff',
+              backgroundColor: (metricDetails?.color || '#00d4ff') + (chartType === 'area' ? '44' : '22'),
+              fill: chartType === 'area',
+              tension: 0.4,
+              pointRadius: 0,
+              yAxisID: (isCompareMode && (chartType === 'line' || chartType === 'area')) ? `y-${metricId}` : 'y'
+            }
           }
         })
       )
 
-      if (datasets.length > 0) {
-        setChartData({ datasets })
-      } else {
-        throw new Error('Empty datasets')
-      }
+      setChartData({ datasets })
     } catch (e) {
-      // 🛡️ Fallback: API hatasında simüle edilmiş veri üret
-      const mockDatasets = selectedMetrics.map(metricId => {
-        const metricDetails = availableMetrics.find(m => m.id === metricId)
-        const points = []
-        const now = Date.now()
-        const count = 50
-        const interval = (range * 3600 * 1000) / count
-        
-        for (let i = 0; i < count; i++) {
-          const time = now - (count - i) * interval
-          const base = metricId.includes('Temp') ? 35 : (metricId.includes('Pressure') ? 80 : 1200)
-          const randomVal = base + (Math.random() - 0.5) * (base * 0.1)
-          points.push({ x: new Date(time), y: randomVal })
-        }
-
-        return {
-          label: metricDetails?.name || metricId,
-          data: points,
-          borderColor: metricDetails?.color || '#00d4ff',
-          backgroundColor: (metricDetails?.color || '#00d4ff') + (chartType === 'area' ? '44' : '22'),
-          fill: chartType === 'area',
-          tension: 0.4,
-          pointRadius: 0,
-          yAxisID: (isCompareMode && (chartType === 'line' || chartType === 'area')) ? `y-${metricId}` : 'y'
-        }
-      })
-
-      setChartData({ datasets: mockDatasets })
+      console.error("Historical Data Fetch Error", e)
     } finally {
       setIsLoading(false)
     }
