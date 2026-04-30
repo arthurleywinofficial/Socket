@@ -25,7 +25,7 @@ const ErrorPage = ({ error, resetErrorBoundary }: { error: Error, resetErrorBoun
       </div>
       <h1>Sistem Kritik Hatası</h1>
       <p className="error-desc">Operasyonel panelde beklenmedik bir teknik aksaklık oluştu.</p>
-      
+
       <div className="error-details">
         <code>{error.message}</code>
       </div>
@@ -285,9 +285,9 @@ function formatDate(iso: string | null) {
   try {
     const d = new Date(iso)
     if (isNaN(d.getTime())) return iso
-    return d.toLocaleString('tr-TR', { 
+    return d.toLocaleString('tr-TR', {
       day: '2-digit', month: '2-digit', year: 'numeric',
-      hour: '2-digit', minute: '2-digit', second: '2-digit' 
+      hour: '2-digit', minute: '2-digit', second: '2-digit'
     })
   } catch { return iso }
 }
@@ -305,10 +305,10 @@ function App() {
   const [range, setRange] = useState(60)
   const [availableMetrics, setAvailableMetrics] = useState<Metric[]>([])
   const [selectedLiveMetrics, setSelectedLiveMetrics] = useState<string[]>(['Temp-Zone1', 'Electricity', 'Pipeline-Pressure'])
-  const [liveHistoryStore, setLiveHistoryStore] = useState<Record<string, {x: number, y: number}[]>>({})
+  const [liveHistoryStore, setLiveHistoryStore] = useState<Record<string, { x: number, y: number }[]>>({})
   const [connectivity, setConnectivity] = useState<{ status: string; latency: number | null }>({ status: 'Bağlanıyor', latency: null })
   const [announcements, setAnnouncements] = useState<any[]>([])
-  
+
   // Profil Düzenleme State'leri
   const [newUsername, setNewUsername] = useState(user || '')
   const [passwords, setPasswords] = useState({ old: '', new: '', confirm: '' })
@@ -320,7 +320,7 @@ function App() {
   const [isRegistering, setIsRegistering] = useState(false)
   const [userRole, setUserRole] = useLocalStorage<string>('socar-user-role', 'Operatör')
   const [showStartup, setShowStartup] = useState(false)
-  
+
   // 🎭 Gelişmiş Modal Sistemi State'leri
   const [modal, setModal] = useState<{
     isOpen: boolean;
@@ -392,14 +392,14 @@ function App() {
   const fetchOverview = async () => {
     setIsUpdating(true)
     try {
-      const response = await fetch(`${API_BASE}/api/home/overview`, { 
+      const response = await fetch(`${API_BASE}/api/home/overview`, {
         cache: 'no-cache',
         signal: AbortSignal.timeout(4000) // 4 saniye timeout
       })
       if (!response.ok) throw new Error('Network error')
       const data = (await response.json()) as Overview
       setOverview(data)
-      
+
       // Live History Store Güncelleme
       updateLiveHistory(data)
 
@@ -420,12 +420,12 @@ function App() {
 
   const updateLiveHistory = (data: Overview) => {
     const timestamp = Math.floor(Date.now() / 1000)
-    setLiveHistoryStore((prev: Record<string, {x: number, y: number}[]>) => {
+    setLiveHistoryStore((prev: Record<string, { x: number, y: number }[]>) => {
       const newStore = { ...prev }
-      
+
       // Tüm kategorilerdeki metrikleri tara ve seçili olanları bul
       const allValues: Record<string, number> = {}
-      
+
       // Simulator
       if (data.simulator) Object.entries(data.simulator).forEach(([k, v]) => allValues[k] = v as number)
       // Energy
@@ -491,8 +491,8 @@ function App() {
   }, [selectedLiveMetrics])
 
   const toggleLiveMetric = (id: string) => {
-    setSelectedLiveMetrics(prev => 
-      prev.includes(id) 
+    setSelectedLiveMetrics(prev =>
+      prev.includes(id)
         ? prev.filter(m => m !== id)
         : [...prev, id]
     )
@@ -502,7 +502,7 @@ function App() {
     setUser(username)
     setToken(token)
     setUserId(id || null)
-    
+
     // 🛡️ Yetkiyi sadece ID üzerinden kontrol et
     if (id === '99999999999') {
       setUserRole('Geliştirici')
@@ -519,7 +519,7 @@ function App() {
     if (!isCleaned) {
       localStorage.removeItem('socar-registered-users');
       localStorage.removeItem('socar-reg-tokens');
-      
+
       // 🛡️ Test Hesabını Geri Yükle (Rastgele Karmaşık ID ile)
       const randomTestId = Math.floor(10000000000 + Math.random() * 90000000000).toString();
       const testUser = {
@@ -529,7 +529,7 @@ function App() {
         level: 'Birim Yöneticisi'
       };
       localStorage.setItem('socar-registered-users', JSON.stringify([testUser]));
-      
+
       localStorage.setItem('socar-system-reset-v5', 'true');
       console.log('Sistem ID v5 Altyapısına Hazırlandı (Rastgele ID) ve Deneme hesabı geri yüklendi.');
     }
@@ -544,9 +544,9 @@ function App() {
 
   if (!isAuthenticated && selectedPage !== 'help' && selectedPage !== 'privacy') {
     return (
-      <LoginPage 
-        onLogin={handleLogin} 
-        onShowHelp={() => setSelectedPage('help')} 
+      <LoginPage
+        onLogin={handleLogin}
+        onShowHelp={() => setSelectedPage('help')}
         onShowPrivacy={() => setSelectedPage('privacy')}
         registrationTokens={registrationTokens}
       />
@@ -576,13 +576,13 @@ function App() {
               margin-bottom: 4rem; /* Alttaki bar ile mesafeyi artırdık */
             }
           `}</style>
-          
+
           <div className="s-logo-container">
             <svg width="100%" height="100%" viewBox="0 0 100 120" style={{ animation: 's-glow 2s infinite' }}>
               {/* Daha Geometrik ve Modern S Formu */}
               <path d="M75,25 L35,25 C25,25 25,45 35,45 L65,45 C75,45 75,65 65,65 L25,65" stroke="rgba(255,255,255,0.03)" strokeWidth="14" fill="none" strokeLinecap="round" strokeLinejoin="round" />
               <path d="M75,25 L35,25 C25,25 25,45 35,45 L65,45 C75,45 75,65 65,65 L25,65" stroke="var(--accent)" strokeWidth="14" fill="none" strokeLinecap="round" strokeLinejoin="round" style={{ strokeDasharray: '400', strokeDashoffset: '400', animation: 'dash 3.5s ease-out forwards' }} />
-              
+
               {/* Dekoratif Enerji Noktaları */}
               <circle cx="75" cy="25" r="3" fill="var(--accent)" style={{ opacity: 0.5 }}>
                 <animate attributeName="opacity" values="0.2;1;0.2" dur="2s" repeatCount="indefinite" />
@@ -612,11 +612,11 @@ function App() {
       )}
 
       {isAuthenticated && (
-        <Sidebar 
-          menu={MENU} 
-          selected={selectedPage} 
-          onSelect={setSelectedPage} 
-          theme={theme} 
+        <Sidebar
+          menu={MENU}
+          selected={selectedPage}
+          onSelect={setSelectedPage}
+          theme={theme}
           toggleTheme={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
         />
       )}
@@ -634,7 +634,7 @@ function App() {
                 </div>
               </div>
             </div>
-            
+
             <div className="header-right" style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
               <div className="header-weather-metrics" style={{ display: 'flex', gap: '1rem', borderRight: '1px solid rgba(255,255,255,0.1)', paddingRight: '1.5rem' }}>
                 {overview?.environment?.current_weather && (
@@ -651,9 +651,9 @@ function App() {
                 )}
               </div>
 
-              <div className={`status-badge ${connectivity.status === 'Online' ? 'online' : 'offline'}`} style={{ 
-                display: 'flex', alignItems: 'center', gap: '0.6rem', background: 'rgba(255,255,255,0.05)', 
-                padding: '0.6rem 1rem', borderRadius: '12px', fontSize: '0.9rem', fontWeight: 600 
+              <div className={`status-badge ${connectivity.status === 'Online' ? 'online' : 'offline'}`} style={{
+                display: 'flex', alignItems: 'center', gap: '0.6rem', background: 'rgba(255,255,255,0.05)',
+                padding: '0.6rem 1rem', borderRadius: '12px', fontSize: '0.9rem', fontWeight: 600
               }}>
                 <div className="status-dot" style={{ width: '10px', height: '10px', borderRadius: '50%', background: connectivity.status === 'Online' ? '#10b981' : '#ef4444' }} />
                 <span>{connectivity.status}</span>
@@ -662,23 +662,23 @@ function App() {
 
               <div className="header-actions" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                 <button className="theme-toggle" onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')} title="Temayı Değiştir" style={{
-                  height: '48px', padding: '0 1rem', borderRadius: '14px', 
+                  height: '48px', padding: '0 1rem', borderRadius: '14px',
                   border: `1px solid ${theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
-                  background: theme === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)', 
-                  color: theme === 'dark' ? '#fff' : '#0f172a', 
+                  background: theme === 'dark' ? 'rgba(255,255,255,0.03)' : 'rgba(0,0,0,0.03)',
+                  color: theme === 'dark' ? '#fff' : '#0f172a',
                   cursor: 'pointer', display: 'flex', alignItems: 'center',
                   transition: '0.2s'
                 }}>
                   {theme === 'dark' ? <SunMedium size={20} /> : <Moon size={20} />}
                 </button>
-                <UserMenu 
-                username={user || ''} 
-                userRole={userRole}
-                onLogout={handleLogout} 
-                onNavigate={setSelectedPage}
-                theme={theme}
-              />
-</div>
+                <UserMenu
+                  username={user || ''}
+                  userRole={userRole}
+                  onLogout={handleLogout}
+                  onNavigate={setSelectedPage}
+                  theme={theme}
+                />
+              </div>
             </div>
           </header>
         )}
@@ -843,7 +843,7 @@ function App() {
                     <Activity size={18} />
                   </div>
                   <p className="panel-description">İzlemek istediğiniz metrikleri seçin. Veriler 5 saniyelik periyotlarla güncellenmektedir.</p>
-                  <LiveMetricSelector 
+                  <LiveMetricSelector
                     availableMetrics={availableMetrics}
                     selectedMetrics={selectedLiveMetrics}
                     onToggle={toggleLiveMetric}
@@ -861,7 +861,7 @@ function App() {
                             title={metric?.name || id}
                             data={data}
                             range={60}
-                            onChangeRange={() => {}}
+                            onChangeRange={() => { }}
                             color={metric?.color}
                           />
                         </div>
@@ -1031,7 +1031,7 @@ function App() {
                     <h2>Hesap Yönetimi</h2>
                     <User size={20} />
                   </div>
-                  
+
                   {updateStatus.type && (
                     <div style={{ padding: '1rem', borderRadius: '12px', background: updateStatus.type === 'success' ? 'var(--success-soft)' : 'var(--danger-soft)', border: `1px solid ${updateStatus.type === 'success' ? 'var(--success)' : 'var(--danger)'}`, marginBottom: '1.5rem', color: updateStatus.type === 'success' ? 'var(--success)' : 'var(--danger)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                       {updateStatus.type === 'success' ? <RefreshCw size={16} /> : <AlertTriangle size={16} />}
@@ -1051,15 +1051,15 @@ function App() {
                           <span style={{ fontSize: '0.7rem', color: 'var(--accent)', fontFamily: 'monospace', opacity: 0.8 }}>ID: {userId || 'Tanımlanmadı'}</span>
                         </div>
                         <div style={{ display: 'flex', gap: '0.5rem' }}>
-                          <input 
-                            type="text" 
-                            className="button" 
+                          <input
+                            type="text"
+                            className="button"
                             style={{ flex: 1, background: 'rgba(255,255,255,0.03)', textAlign: 'left', cursor: 'text' }}
                             value={newUsername}
                             onChange={(e) => setNewUsername(e.target.value)}
                           />
-                          <button 
-                            className="button button-primary" 
+                          <button
+                            className="button button-primary"
                             style={{ padding: '0 1.5rem' }}
                             onClick={() => {
                               if (!newUsername.trim()) return;
@@ -1089,41 +1089,41 @@ function App() {
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                         <div>
                           <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>Mevcut Şifre</label>
-                          <input 
-                            type="password" 
-                            className="button" 
+                          <input
+                            type="password"
+                            className="button"
                             style={{ width: '100%', background: 'rgba(255,255,255,0.03)', textAlign: 'left', cursor: 'text' }}
                             placeholder="Mevcut şifrenizi girin"
                             value={passwords.old}
-                            onChange={(e) => setPasswords({...passwords, old: e.target.value})}
+                            onChange={(e) => setPasswords({ ...passwords, old: e.target.value })}
                           />
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                           <div>
                             <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>Yeni Şifre</label>
-                            <input 
-                              type="password" 
-                              className="button" 
+                            <input
+                              type="password"
+                              className="button"
                               style={{ width: '100%', background: 'rgba(255,255,255,0.03)', textAlign: 'left', cursor: 'text' }}
                               placeholder="••••••••"
                               value={passwords.new}
-                              onChange={(e) => setPasswords({...passwords, new: e.target.value})}
+                              onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
                             />
                           </div>
                           <div>
                             <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>Şifre Onay</label>
-                            <input 
-                              type="password" 
-                              className="button" 
+                            <input
+                              type="password"
+                              className="button"
                               style={{ width: '100%', background: 'rgba(255,255,255,0.03)', textAlign: 'left', cursor: 'text' }}
                               placeholder="••••••••"
                               value={passwords.confirm}
-                              onChange={(e) => setPasswords({...passwords, confirm: e.target.value})}
+                              onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
                             />
                           </div>
                         </div>
-                        <button 
-                          className="button" 
+                        <button
+                          className="button"
                           style={{ background: 'var(--accent-soft)', color: 'var(--accent)', border: '1px solid var(--accent)' }}
                           onClick={() => {
                             const users = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
@@ -1145,7 +1145,7 @@ function App() {
                                 users.push({ username: user, password: passwords.new, level: userRole });
                               }
                               localStorage.setItem('socar-registered-users', JSON.stringify(users));
-                              
+
                               setUpdateStatus({ type: 'success', msg: 'Şifreniz başarıyla değiştirildi ve kaydedildi.' });
                               setPasswords({ old: '', new: '', confirm: '' });
                             }
@@ -1178,7 +1178,7 @@ function App() {
                     </div>
                     <Settings2 size={20} />
                   </div>
-                  
+
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                     {/* Görünüm ve Tema */}
                     <section>
@@ -1238,7 +1238,7 @@ function App() {
                                 </h4>
                                 <span style={{ fontSize: '0.65rem', background: 'var(--accent)', color: '#000', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 'bold' }}>SUPER-ADMIN</span>
                               </div>
-                              
+
                               <div style={{ overflowX: 'auto' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
                                   <thead>
@@ -1262,9 +1262,9 @@ function App() {
                                           </span>
                                         </td>
                                         <td style={{ padding: '1rem', fontFamily: 'monospace' }}>
-                                          <span 
-                                            title="Şifreyi Göster" 
-                                            style={{ cursor: 'pointer', color: 'var(--accent)', letterSpacing: '0.1em' }} 
+                                          <span
+                                            title="Şifreyi Göster"
+                                            style={{ cursor: 'pointer', color: 'var(--accent)', letterSpacing: '0.1em' }}
                                             onClick={() => setModal({
                                               isOpen: true,
                                               type: 'alert',
@@ -1342,22 +1342,22 @@ function App() {
                             </div>
                           )}
                           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem', marginTop: '1.5rem' }}>Yeni bir personel kaydı için davetiye token'ı üretin.</p>
-                          
+
                           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
                             <div style={{ flex: 1, minWidth: '200px' }}>
                               <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>Kıdem Seviyesi</label>
-                              <select 
-                                id="reg-level" 
-                                className="button" 
-                                style={{ 
-                                  width: '100%', 
-                                  background: '#1a1e2e', 
-                                  color: '#fff', 
+                              <select
+                                id="reg-level"
+                                className="button"
+                                style={{
+                                  width: '100%',
+                                  background: '#1a1e2e',
+                                  color: '#fff',
                                   border: '1px solid var(--border-color)',
                                   cursor: 'pointer',
                                   paddingRight: '2rem',
                                   borderRadius: '14px',
-                                  colorScheme: 'dark' 
+                                  colorScheme: 'dark'
                                 }}
                               >
                                 <option value="Operatör">Operatör</option>
@@ -1374,20 +1374,20 @@ function App() {
                                 }
                               `}</style>
                             </div>
-                              <button 
-                                className="button button-primary" 
-                                style={{ height: '48px' }}
-                                onClick={() => {
-                                  const level = (document.getElementById('reg-level') as HTMLSelectElement).value;
-                                  const levelCode = level === 'Operatör' ? 'OP' : level === 'Saha Mühendisi' ? 'EN' : level === 'Geliştirici' ? 'DV' : 'MG';
-                                  const randomStr = Math.random().toString(36).substr(2, 6).toUpperCase();
-                                  const token = `SOCAR-${levelCode}-${randomStr}`;
-                                  setRegistrationTokens([...registrationTokens, { token, level, used: false }]);
-                                  setGeneratedToken(token);
-                                }}
-                              >
-                                Token Üret
-                              </button>
+                            <button
+                              className="button button-primary"
+                              style={{ height: '48px' }}
+                              onClick={() => {
+                                const level = (document.getElementById('reg-level') as HTMLSelectElement).value;
+                                const levelCode = level === 'Operatör' ? 'OP' : level === 'Saha Mühendisi' ? 'EN' : level === 'Geliştirici' ? 'DV' : 'MG';
+                                const randomStr = Math.random().toString(36).substr(2, 6).toUpperCase();
+                                const token = `SOCAR-${levelCode}-${randomStr}`;
+                                setRegistrationTokens([...registrationTokens, { token, level, used: false }]);
+                                setGeneratedToken(token);
+                              }}
+                            >
+                              Token Üret
+                            </button>
                           </div>
 
                           {generatedToken && (
@@ -1426,7 +1426,7 @@ function App() {
                         </div>
                         <div className="kpi-box" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                           <span style={{ margin: 0, fontSize: '0.85rem' }}>AI Önerileri</span>
-                          <input type="checkbox" defaultChecked />
+                         x"x"xut type="checkbox" defaultChecked />
                         </div>
                       </div>
                     </section>
@@ -1435,7 +1435,7 @@ function App() {
                     {/* Uygulama Bilgisi */}
                     <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}>
                       <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>
-                        SOCKET Industrial Platform v1.3.9 <br/> 
+                        SOCKET Industrial Platform v1.4.0 <br />
                         Son Sunucu Senkronizasyonu: {new Date().toLocaleTimeString()}
                       </p>
                     </div>
@@ -1505,23 +1505,23 @@ function App() {
                   <div className="help-content" style={{ padding: '1rem 0', color: 'var(--text-secondary)', lineHeight: '1.8' }}>
                     <h3>Sistem Özeti</h3>
                     <p style={{ marginTop: '0.5rem' }}>
-                      <strong>SOCKET</strong>, endüstriyel tesislerin dijital ikizi üzerinden gerçek zamanlı izleme, personel güvenliği 
-                      ve operasyonel verimlilik analizi yapan entegre bir takip platformudur. 
+                      <strong>SOCKET</strong>, endüstriyel tesislerin dijital ikizi üzerinden gerçek zamanlı izleme, personel güvenliği
+                      ve operasyonel verimlilik analizi yapan entegre bir takip platformudur.
                       Sistem, sensörlerden gelen IoT verilerini anlamlandırarak kritik durumlarda erken uyarı sağlar.
                     </p>
                     <div style={{ marginTop: '2rem', padding: '1.5rem', background: 'rgba(0, 212, 255, 0.05)', borderRadius: '12px', border: '1px solid rgba(0, 212, 255, 0.15)' }}>
                       <strong style={{ color: 'var(--accent)', display: 'block', marginBottom: '0.5rem' }}>Erişim Bilgileri Hakkında</strong>
                       <p>
-                        Sisteme giriş için gerekli kullanıcı adı ve şifre bilgileri, güvenlik politikalarımız gereği sadece 
+                        Sisteme giriş için gerekli kullanıcı adı ve şifre bilgileri, güvenlik politikalarımız gereği sadece
                         yetkili birim sorumluları tarafından kurumsal e-posta yoluyla iletilmektedir.
                       </p>
                       <p style={{ marginTop: '1rem' }}>
-                        Bilgi talebi veya teknik destek için <strong>it.support@socar.com.tr</strong> adresine veya 
+                        Bilgi talebi veya teknik destek için <strong>it.support@socar.com.tr</strong> adresine veya
                         ilgili departman yöneticinize başvurabilirsiniz.
                       </p>
                     </div>
                     {!isAuthenticated && (
-                      <button 
+                      <button
                         onClick={() => setSelectedPage('dashboard')}
                         style={{ marginTop: '2rem', background: 'var(--accent)', color: '#000', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer' }}
                       >
@@ -1529,7 +1529,7 @@ function App() {
                       </button>
                     )}
                     <div style={{ marginTop: '2rem', textAlign: 'center', opacity: 0.3, fontSize: '0.7rem' }}>
-                      SOCKET Industrial Platform v1.3.9
+                      SOCKET Industrial Platform v1.4.0
                     </div>
                   </div>
                 </div>
@@ -1560,7 +1560,7 @@ function App() {
                       </div>
                     </div>
                     {!isAuthenticated && (
-                      <button 
+                      <button
                         onClick={() => setSelectedPage('dashboard')}
                         style={{ marginTop: '2rem', background: 'var(--accent)', color: '#000', border: 'none', padding: '0.75rem 1.5rem', borderRadius: '10px', fontWeight: 'bold', cursor: 'pointer' }}
                       >
@@ -1568,7 +1568,7 @@ function App() {
                       </button>
                     )}
                     <div style={{ marginTop: '2rem', textAlign: 'center', opacity: 0.3, fontSize: '0.7rem' }}>
-                      SOCKET Industrial Platform v1.3.9
+                      SOCKET Industrial Platform v1.4.0
                     </div>
                   </div>
                 </div>
@@ -1577,9 +1577,9 @@ function App() {
           </>
         )}
         {isAuthenticated && (
-          <AIAssistant 
-            onNavigate={setSelectedPage} 
-            systemStatus={overview} 
+          <AIAssistant
+            onNavigate={setSelectedPage}
+            systemStatus={overview}
             toggleMetric={toggleLiveMetric}
             selectedMetrics={selectedLiveMetrics}
             token={token}
@@ -1589,8 +1589,8 @@ function App() {
       </main>
 
       {/* Mobile Overlay (Grid akışını bozmaması için sonda) */}
-      <div 
-        className="mobile-overlay" 
+      <div
+        className="mobile-overlay"
         onClick={() => document.body.classList.remove('sidebar-open')}
       >
 
@@ -1602,31 +1602,31 @@ function App() {
                 <Shield color="var(--accent)" size={24} />
                 <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#fff' }}>{modal.title}</h3>
               </div>
-              
+
               <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '2rem' }}>
                 {modal.message}
               </p>
 
               {modal.type === 'prompt' && (
-                <input 
-                  type="text" 
-                  className="button" 
+                <input
+                  type="text"
+                  className="button"
                   autoFocus
                   style={{ width: '100%', background: 'rgba(255,255,255,0.03)', textAlign: 'left', marginBottom: '1.5rem', cursor: 'text' }}
                   value={modal.value}
-                  onChange={(e) => setModal({...modal, value: e.target.value})}
+                  onChange={(e) => setModal({ ...modal, value: e.target.value })}
                 />
               )}
 
               <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
                 {(modal.type === 'confirm' || modal.type === 'prompt') && (
-                  <button className="button" style={{ flex: 1 }} onClick={() => setModal({...modal, isOpen: false})}>Vazgeç</button>
+                  <button className="button" style={{ flex: 1 }} onClick={() => setModal({ ...modal, isOpen: false })}>Vazgeç</button>
                 )}
-                <button 
-                  className="button button-primary" 
-                  style={{ flex: 1 }} 
+                <button
+                  className="button button-primary"
+                  style={{ flex: 1 }}
                   onClick={() => {
-                    setModal({...modal, isOpen: false});
+                    setModal({ ...modal, isOpen: false });
                     if (modal.onAction) modal.onAction(modal.value);
                   }}
                 >
@@ -1648,4 +1648,4 @@ export default function AppWrapper() {
     </ErrorBoundary>
   )
 }
- 
+
