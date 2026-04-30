@@ -220,17 +220,55 @@ ${getSystemContext()}`;
   return (
     <div className="ai-assistant-container">
       {showHint && (
-        <div className="socket-ai-alert-v2 fade-in">
-          <div className="hint-content" onClick={() => { setIsOpen(true); handleSend("Mevcut alarmları ve durumu analiz et."); }} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1 }}>
-            <AlertCircle size={16} />
-            <span>{hintText}</span>
+        <div 
+          className="socket-ai-alert-v2 fade-in"
+          style={{
+            position: 'fixed',
+            top: '120px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: '#00d4ff',
+            color: '#000',
+            padding: '0 12px',
+            borderRadius: '12px',
+            fontSize: '0.85rem',
+            fontWeight: '800',
+            width: '92%',
+            maxWidth: '380px',
+            height: '48px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            boxShadow: '0 10px 40px rgba(0,212,255,0.4)',
+            zIndex: 999999,
+            border: '2px solid rgba(255,255,255,0.4)',
+            overflow: 'hidden'
+          }}
+        >
+          <div 
+            className="hint-content" 
+            onClick={() => { setIsOpen(true); handleSend("Mevcut alarmları ve durumu analiz et."); }} 
+            style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1, cursor: 'pointer', overflow: 'hidden' }}
+          >
+            <AlertCircle size={18} style={{ flexShrink: 0 }} />
+            <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{hintText}</span>
           </div>
           <button 
             className="hint-close" 
             onClick={(e) => { e.stopPropagation(); setShowHint(false); }}
-            style={{ background: 'rgba(0,0,0,0.1)', border: 'none', borderRadius: '50%', padding: '4px', cursor: 'pointer', display: 'flex', marginLeft: '0.5rem' }}
+            style={{ 
+              background: 'rgba(0,0,0,0.1)', 
+              border: 'none', 
+              borderRadius: '8px', 
+              padding: '6px', 
+              cursor: 'pointer', 
+              display: 'flex', 
+              marginLeft: '0.5rem',
+              flexShrink: 0,
+              color: '#000'
+            }}
           >
-            <X size={14} />
+            <X size={16} />
           </button>
         </div>
       )}
