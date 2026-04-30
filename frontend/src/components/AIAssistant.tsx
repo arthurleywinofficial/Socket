@@ -270,7 +270,7 @@ ${getSystemContext()}`;
       )}
 
       <style>{`
-        .ai-assistant-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 1000; font-family: 'Inter', sans-serif; }
+        .ai-assistant-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 10000; font-family: 'Inter', sans-serif; }
         .ai-hint-bubble {
           position: fixed; 
           top: 2rem; 

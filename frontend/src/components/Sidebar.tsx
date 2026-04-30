@@ -55,7 +55,7 @@ const Sidebar: FC<Props> = ({ menu, selected, onSelect, theme, toggleTheme }) =>
       </nav>
 
       <div className="sidebar-footer">
-        <span>v1.1.0</span>
+        <span>v1.1.1</span>
       </div>
     </aside>
   )
