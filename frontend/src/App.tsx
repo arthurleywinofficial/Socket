@@ -471,12 +471,22 @@ function App() {
 
   // 🧹 SİSTEM TEMİZLİĞİ: Yeni ID sistemine geçiş için temizlik
   useEffect(() => {
-    const isCleaned = localStorage.getItem('socar-system-reset-v3');
+    const isCleaned = localStorage.getItem('socar-system-reset-v4');
     if (!isCleaned) {
       localStorage.removeItem('socar-registered-users');
       localStorage.removeItem('socar-reg-tokens');
-      localStorage.setItem('socar-system-reset-v3', 'true');
-      console.log('Sistem ID Altyapısına Hazırlandı.');
+      
+      // 🛡️ Test Hesabını Geri Yükle (Yeni ID ile)
+      const testUser = {
+        userId: '10000000001',
+        username: 'Deneme',
+        password: '1234',
+        level: 'Birim Yöneticisi'
+      };
+      localStorage.setItem('socar-registered-users', JSON.stringify([testUser]));
+      
+      localStorage.setItem('socar-system-reset-v4', 'true');
+      console.log('Sistem ID v4 Altyapısına Hazırlandı ve Deneme hesabı geri yüklendi.');
     }
   }, []);
 
@@ -1351,7 +1361,7 @@ function App() {
                     {/* Uygulama Bilgisi */}
                     <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}>
                       <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>
-                        SOCKET Industrial Platform v1.2.5 <br/> 
+                        SOCKET Industrial Platform v1.2.6 <br/> 
                         Son Sunucu Senkronizasyonu: {new Date().toLocaleTimeString()}
                       </p>
                     </div>
