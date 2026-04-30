@@ -93,7 +93,7 @@ export default function LoginPage({ onLogin, onShowHelp, onShowPrivacy, registra
       const registeredUsers = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
       const foundLocal = registeredUsers.find((u: any) => u.username === username && u.password === password);
       if (foundLocal) {
-        onLogin(username, 'local-access-token', foundLocal.level, foundLocal.id);
+        onLogin(username, 'local-access-token', foundLocal.level, foundLocal.userId);
       } else {
         setError('Kullanıcı bulunamadı veya şifre hatalı.');
       }
