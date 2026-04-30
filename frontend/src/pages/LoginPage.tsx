@@ -30,13 +30,20 @@ export default function LoginPage({ onLogin, onShowHelp, onShowPrivacy, registra
     if (isRegisterMode) {
       if (regStep === 1) {
         // Step 1: Validate Token
-        const found = registrationTokens.find(t => t.token === regToken && !t.used);
-        if (found) {
-          setValidToken(found);
+        const cleanToken = regToken.trim().toUpperCase();
+        const parts = cleanToken.split('-');
+        
+        // SOCAR - [KIDEM] - [RANDOM]
+        const isSocarToken = parts[0] === 'SOCAR';
+        const levelCode = parts[1]; // OP, EN, MG
+
+        if (isSocarToken && ['OP', 'EN', 'MG'].includes(levelCode)) {
+          const levelMap: any = { 'OP': 'Operatör', 'EN': 'Saha Mühendisi', 'MG': 'Birim Yöneticisi' };
+          setValidToken({ level: levelMap[levelCode], token: cleanToken });
           setRegStep(2);
           setError('');
         } else {
-          setError('Geçersiz veya kullanılmış davet kodu.');
+          setError('Geçersiz davet kodu formatı. Lütfen adminin verdiği tam kodu girin.');
         }
         setIsLoading(false);
       } else {

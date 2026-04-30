@@ -1065,31 +1065,53 @@ function App() {
                     {/* 🆕 Kullanıcı Yönetimi (Admin Only) */}
                     <section style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
                       <h3 style={{ fontSize: '0.9rem', color: 'var(--accent)', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Kullanıcı Yönetimi & Davet</h3>
-                      <div className="panel" style={{ background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+                      <div className="panel" style={{ background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '24px', border: '1px solid var(--border-color)' }}>
                         <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Yeni bir personel kaydı için davetiye token'ı üretin.</p>
                         
                         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
                           <div style={{ flex: 1, minWidth: '200px' }}>
                             <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>Kıdem Seviyesi</label>
-                            <select id="reg-level" className="button" style={{ width: '100%', background: 'rgba(255,255,255,0.05)' }}>
+                            <select 
+                              id="reg-level" 
+                              className="button" 
+                              style={{ 
+                                width: '100%', 
+                                background: '#1a1e2e', 
+                                color: '#fff', 
+                                border: '1px solid var(--border-color)',
+                                cursor: 'pointer',
+                                paddingRight: '2rem',
+                                borderRadius: '14px',
+                                colorScheme: 'dark' /* Tarayıcıya karanlık modda olduğunu zorla bildir */
+                              }}
+                            >
                               <option value="Operatör">Operatör</option>
                               <option value="Mühendis">Saha Mühendisi</option>
                               <option value="Yönetici">Birim Yöneticisi</option>
                             </select>
+                            <style>{`
+                              #reg-level option {
+                                background-color: #1a1e2e !important;
+                                color: white !important;
+                              }
+                            `}</style>
                           </div>
-                          <button 
-                            className="button button-primary" 
-                            style={{ height: '48px' }}
-                            onClick={() => {
-                              const level = (document.getElementById('reg-level') as HTMLSelectElement).value;
-                              const token = 'SOCAR-' + Math.random().toString(36).substr(2, 9).toUpperCase();
-                              const newToken = { token, level, createdAt: new Date().toISOString(), used: false };
-                              setRegistrationTokens([...registrationTokens, newToken]);
-                              setGeneratedToken(token);
-                            }}
-                          >
-                            Token Üret
-                          </button>
+                            <button 
+                              className="button button-primary" 
+                              style={{ height: '48px' }}
+                              onClick={() => {
+                                const level = (document.getElementById('reg-level') as HTMLSelectElement).value;
+                                // Kıdem kodları: OP: Operatör, EN: Mühendis, MG: Yönetici
+                                const levelCode = level === 'Operatör' ? 'OP' : level === 'Saha Mühendisi' ? 'EN' : 'MG';
+                                const randomStr = Math.random().toString(36).substr(2, 6).toUpperCase();
+                                // Akıllı İmza: SOCAR - [KIDEM KODU] - [RANDOM]
+                                const token = `SOCAR-${levelCode}-${randomStr}`;
+                                setRegistrationTokens([...registrationTokens, { token, level, used: false }]);
+                                setGeneratedToken(token);
+                              }}
+                            >
+                              Token Üret
+                            </button>
                         </div>
 
                         {generatedToken && (
