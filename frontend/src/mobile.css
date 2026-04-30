@@ -1,91 +1,61 @@
-/* 📱 SOCKET Premium Elegant Mobile (v2.1.0) */
+/* 📱 SOCKET Mobile Visibility Fix (v2.2.2) */
 @media (max-width: 768px) {
   :root {
-    --header-height: 70px;
+    --sidebar-width: 0px !important;
   }
 
-  /* 🏗️ Layout Overhaul */
+  /* 🏗️ Ana İçerik Alanı - Her koşulda görünür olmalı */
   .page-content {
-    padding: 16px !important;
-    background: radial-gradient(circle at top right, rgba(0, 212, 255, 0.05), transparent 40%), #0a0c12 !important;
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 100vw !important;
+    margin-left: 0 !important;
+    z-index: 1 !important; /* Sidebar'ın altında kalacak */
   }
 
+  /* 📦 Sidebar - İçeriği örtmemeli, üstüne binmeli */
+  .sidebar {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 280px !important; /* Ekranın tamamını kaplamasın */
+    max-width: 85vw !important; /* Telefonda biraz boşluk kalsın */
+    transform: translateX(-100%) !important;
+    z-index: 99999 !important; /* Her şeyin üstünde */
+    background: #0d1117 !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  }
+
+  .sidebar-open .sidebar {
+    transform: translateX(0) !important;
+  }
+
+  /* 🌑 Overlay - Tıklandığında menüyü kapatan siyah katman */
+  .mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.5); /* Çok koyu olmasın */
+    z-index: 99998 !important;
+    display: none;
+  }
+
+  .sidebar-open .mobile-overlay {
+    display: block !important;
+  }
+
+  /* 📈 Dashboard Kartları - Tekrar mühürlendi */
   .dashboard-grid {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 16px !important;
+    display: block !important;
   }
 
-  /* ✨ Elegant Cards */
   .panel.card {
-    grid-column: span 12 !important;
-    width: 100% !important;
-    background: rgba(255, 255, 255, 0.03) !important;
-    backdrop-filter: blur(20px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    border-radius: 28px !important;
-    padding: 24px !important;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2) !important;
-    margin-bottom: 0 !important;
-  }
-
-  .panel-header {
+    display: block !important;
+    visibility: visible !important;
     margin-bottom: 1.5rem !important;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
-    padding-bottom: 1rem !important;
-  }
-
-  .panel-header h2 {
-    font-size: 0.95rem !important;
-    font-weight: 700 !important;
-    letter-spacing: 1px !important;
-    color: rgba(255, 255, 255, 0.9) !important;
-  }
-
-  /* 📊 KPI & Metric Readability */
-  .kpi-grid, .info-list {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 12px !important;
-  }
-
-  .kpi-box, .info-list > div {
-    background: rgba(0, 0, 0, 0.2) !important;
-    border: 1px solid rgba(255, 255, 255, 0.03) !important;
-    border-radius: 20px !important;
-    padding: 18px !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 4px !important;
-  }
-
-  .kpi-box span, .info-list span {
-    font-size: 0.65rem !important;
-    text-transform: uppercase !important;
-    letter-spacing: 1.5px !important;
-    color: var(--text-secondary) !important;
-    opacity: 0.7 !important;
-  }
-
-  .kpi-box strong, .info-list strong {
-    font-size: 1.4rem !important;
-    font-weight: 800 !important;
-    color: #fff !important;
-    text-shadow: 0 0 10px rgba(0, 212, 255, 0.2) !important;
-  }
-
-  /* 📡 Radar & Charts */
-  .radar-container {
-    height: 340px !important;
-    border: 1px solid rgba(0, 212, 255, 0.15) !important;
-  }
-
-  .header-weather-metrics {
-    display: none !important; /* Mobilde header'ı sadeleştir */
-  }
-
-  .header-title {
-    font-size: 1.4rem !important;
   }
 }
