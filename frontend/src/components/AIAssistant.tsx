@@ -223,47 +223,50 @@ ${getSystemContext()}`;
         <div 
           id="socket-alert-ultra"
           style={{
-            position: 'fixed',
-            top: '150px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            background: '#00d4ff',
-            color: '#000',
-            padding: '10px 16px',
-            borderRadius: '12px',
-            fontSize: '14px',
-            fontWeight: '900',
-            width: '90%',
-            maxWidth: '360px',
-            height: '50px',
-            minHeight: '50px',
-            maxHeight: '50px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            boxShadow: '0 15px 50px rgba(0,212,255,0.5)',
-            zIndex: 9999999,
-            border: '2px solid white',
-            animation: 'none'
+            position: 'fixed !important',
+            top: '160px !important',
+            left: '50% !important',
+            transform: 'translateX(-50%) !important',
+            background: '#00d4ff !important',
+            color: '#000 !important',
+            padding: '0 12px !important',
+            borderRadius: '10px !important',
+            width: '92% !important',
+            maxWidth: '360px !important',
+            height: '50px !important',
+            minHeight: '50px !important',
+            maxHeight: '50px !important',
+            display: 'grid !important',
+            gridTemplateColumns: '1fr 80px !important',
+            alignItems: 'center !important',
+            boxShadow: '0 10px 40px rgba(0,212,255,0.5) !important',
+            zIndex: '99999999 !important',
+            border: '2px solid white !important',
+            boxSizing: 'border-box !important'
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, overflow: 'hidden' }}>
-            <AlertCircle size={20} style={{ flexShrink: 0 }} />
-            <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{hintText}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', overflow: 'hidden' }}>
+            <AlertCircle size={18} style={{ flexShrink: 0 }} />
+            <span style={{ 
+              whiteSpace: 'nowrap', 
+              overflow: 'hidden', 
+              textOverflow: 'ellipsis',
+              fontSize: '13px',
+              fontWeight: 'bold'
+            }}>{hintText}</span>
           </div>
           <button 
             onClick={(e) => { e.stopPropagation(); setShowHint(false); }}
             style={{ 
-              background: 'black', 
-              color: 'white',
-              border: 'none', 
-              borderRadius: '6px', 
-              padding: '6px 10px', 
-              cursor: 'pointer', 
-              marginLeft: '10px',
-              flexShrink: 0,
-              fontSize: '12px',
-              fontWeight: 'bold'
+              background: '#000 !important', 
+              color: '#fff !important',
+              border: 'none !important', 
+              borderRadius: '5px !important', 
+              height: '32px !important',
+              width: '80px !important',
+              cursor: 'pointer !important', 
+              fontSize: '11px !important',
+              fontWeight: '900 !important'
             }}
           >
             KAPAT
