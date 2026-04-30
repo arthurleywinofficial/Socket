@@ -282,41 +282,50 @@ ${getSystemContext()}`;
         .ai-assistant-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 10000; font-family: 'Inter', sans-serif; }
         .ai-hint-bubble {
           position: fixed; 
-          top: 1.5rem; 
+          top: 1rem; 
           left: 50%;
           transform: translateX(-50%);
-          background: #00d4ff; 
+          background: rgba(0, 212, 255, 0.95); 
           color: #000;
-          padding: 0.85rem 1.25rem; 
-          border-radius: 20px; 
-          font-size: 0.95rem; 
+          padding: 10px 16px; 
+          border-radius: 14px; 
+          font-size: 0.85rem; 
           font-weight: 700; 
-          width: 92%;
-          max-width: 500px;
+          width: 90%;
+          max-width: 450px;
           display: flex; 
           align-items: center; 
           justify-content: space-between;
-          gap: 0.75rem; 
-          box-shadow: 0 10px 40px rgba(0,212,255,0.4);
+          gap: 10px; 
+          box-shadow: 0 10px 30px rgba(0,212,255,0.3);
           cursor: pointer; 
-          transition: all 0.3s;
-          z-index: 1100;
-          border: 2px solid rgba(255,255,255,0.2);
-          animation: slideDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-          box-sizing: border-box;
+          z-index: 999999;
+          border: 1px solid rgba(255,255,255,0.3);
+          backdrop-filter: blur(10px);
+          animation: slideDown 0.4s ease-out;
         }
         .hint-content {
           display: flex;
           align-items: center;
-          gap: 0.75rem;
+          gap: 8px;
           flex: 1;
-          overflow: hidden;
         }
         .hint-content span {
-          white-space: normal; /* Metnin alt satıra geçmesine izin ver */
-          line-height: 1.2;
-          text-align: left;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          line-height: 1;
         }
+        .hint-close {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 4px;
+          background: rgba(0,0,0,0.05);
+          border-radius: 50%;
+          transition: 0.2s;
+        }
+        .hint-close:hover { background: rgba(0,0,0,0.15); }
         .ai-hint-bubble:hover { transform: translateX(-50%) scale(1.05); background: #fff; }
         @keyframes slideDown { from { transform: translate(-50%, -100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
         .ai-fab {
