@@ -282,43 +282,41 @@ ${getSystemContext()}`;
         .ai-assistant-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 10000; font-family: 'Inter', sans-serif; }
         .ai-hint-bubble {
           position: fixed !important; 
-          top: 8px !important; 
+          top: 100px !important; /* Header'ın hemen altı */
           left: 50% !important;
           transform: translateX(-50%) !important;
           background: #00d4ff !important; 
           color: #000 !important;
-          padding: 8px 12px !important; 
-          border-radius: 12px !important; 
+          padding: 0 12px !important; 
+          border-radius: 10px !important; 
           font-size: 0.8rem !important; 
           font-weight: 800 !important; 
-          width: 90% !important;
+          width: 92% !important;
           max-width: 380px !important;
-          height: auto !important;
-          min-height: 40px !important;
+          height: 44px !important;
           display: flex !important; 
           align-items: center !important; 
           justify-content: space-between !important;
           gap: 8px !important; 
           box-shadow: 0 10px 30px rgba(0,212,255,0.4) !important;
-          z-index: 2000000 !important;
-          border: 1px solid rgba(255,255,255,0.4) !important;
+          z-index: 1000 !important;
+          border: 1px solid rgba(255,255,255,0.3) !important;
         }
         .hint-content {
           display: flex !important;
           align-items: center !important;
           gap: 6px !important;
           flex: 1 !important;
-          min-width: 0 !important;
+          overflow: hidden !important;
         }
         .hint-content span {
           white-space: nowrap !important;
           overflow: hidden !important;
           text-overflow: ellipsis !important;
-          line-height: 1 !important;
         }
         .hint-close {
           flex-shrink: 0 !important;
-          background: rgba(0,0,0,0.15) !important;
+          background: rgba(0,0,0,0.1) !important;
           border-radius: 6px !important;
           padding: 4px !important;
           display: flex !important;
