@@ -220,7 +220,7 @@ ${getSystemContext()}`;
   return (
     <div className="ai-assistant-container">
       {showHint && (
-        <div className="ai-hint-bubble fade-in">
+        <div className="socket-ai-alert-v2 fade-in">
           <div className="hint-content" onClick={() => { setIsOpen(true); handleSend("Mevcut alarmları ve durumu analiz et."); }} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flex: 1 }}>
             <AlertCircle size={16} />
             <span>{hintText}</span>
@@ -280,32 +280,35 @@ ${getSystemContext()}`;
 
       <style>{`
         .ai-assistant-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 10000; font-family: 'Inter', sans-serif; }
-        .ai-hint-bubble {
+        .socket-ai-alert-v2 {
           position: fixed !important; 
-          top: 100px !important; /* Header'ın hemen altı */
+          top: 120px !important; /* Header 110px + 10px boşluk */
           left: 50% !important;
           transform: translateX(-50%) !important;
           background: #00d4ff !important; 
           color: #000 !important;
-          padding: 0 12px !important; 
-          border-radius: 10px !important; 
-          font-size: 0.8rem !important; 
+          padding: 0 16px !important; 
+          border-radius: 12px !important; 
+          font-size: 0.85rem !important; 
           font-weight: 800 !important; 
-          width: 92% !important;
-          max-width: 380px !important;
-          height: 44px !important;
+          width: 90% !important;
+          max-width: 400px !important;
+          height: 48px !important;
+          min-height: 48px !important;
+          max-height: 48px !important;
           display: flex !important; 
           align-items: center !important; 
           justify-content: space-between !important;
-          gap: 8px !important; 
-          box-shadow: 0 10px 30px rgba(0,212,255,0.4) !important;
-          z-index: 1000 !important;
-          border: 1px solid rgba(255,255,255,0.3) !important;
+          gap: 10px !important; 
+          box-shadow: 0 10px 40px rgba(0,212,255,0.4) !important;
+          z-index: 10000 !important;
+          border: 2px solid rgba(255,255,255,0.4) !important;
+          overflow: hidden !important;
         }
         .hint-content {
           display: flex !important;
           align-items: center !important;
-          gap: 6px !important;
+          gap: 8px !important;
           flex: 1 !important;
           overflow: hidden !important;
         }
@@ -316,10 +319,13 @@ ${getSystemContext()}`;
         }
         .hint-close {
           flex-shrink: 0 !important;
-          background: rgba(0,0,0,0.1) !important;
-          border-radius: 6px !important;
-          padding: 4px !important;
+          background: rgba(0,0,0,0.15) !important;
+          color: #000 !important;
+          border-radius: 8px !important;
+          padding: 6px !important;
           display: flex !important;
+          border: none !important;
+          cursor: pointer !important;
         }
         .ai-hint-bubble:hover { transform: translateX(-50%) scale(1.05); background: #fff; }
         @keyframes slideDown { from { transform: translate(-50%, -100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }

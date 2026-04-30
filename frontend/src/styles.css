@@ -2766,3 +2766,31 @@ body::before {
     max-height: 48px !important;
   }
 }
+
+/* 🏯 Ultra-Header & Safe AI Anchor (v2.4.0) */
+@media (max-width: 768px) {
+  .page-header {
+    height: 110px !important;
+    min-height: 110px !important;
+    padding: 0 1.5rem !important;
+    background: rgba(13, 17, 23, 0.95) !important;
+    backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2) !important;
+  }
+
+  .header-center {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  .header-title {
+    font-size: 1.5rem !important; /* Daha görkemli */
+    letter-spacing: 5px !important;
+    font-weight: 900 !important;
+  }
+
+  .header-right {
+    gap: 1rem !important;
+  }
+}
