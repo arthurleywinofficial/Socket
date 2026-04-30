@@ -1124,51 +1124,70 @@ function App() {
                       <section style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
                         <h3 style={{ fontSize: '0.9rem', color: 'var(--accent)', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Kullanıcı Yönetimi & Davet</h3>
                         <div className="panel" style={{ background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '24px', border: '1px solid var(--border-color)' }}>
-                          {/* 🛡️ GELİŞTİRİCİ TABLOSU: Arthur için Kullanıcı Listesi */}
+                          {/* 🛡️ GELİŞTİRİCİ DENETİM TERMİNALİ: Arthur için Kullanıcı Listesi */}
                           {userId === '99999999999' && (
-                            <div style={{ marginBottom: '2.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '2rem' }}>
-                              <h4 style={{ fontSize: '0.85rem', color: '#fff', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                                <Shield size={16} color="var(--accent)" /> Sistem ID Yönetimi
-                              </h4>
+                            <div style={{ marginTop: '2.5rem', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '2rem' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                                <h4 style={{ fontSize: '0.85rem', color: '#fff', margin: 0, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                                  <Shield size={16} color="var(--accent)" /> GELİŞTİRİCİ DENETİM TERMİNALİ
+                                </h4>
+                                <span style={{ fontSize: '0.65rem', background: 'var(--accent)', color: '#000', padding: '0.2rem 0.6rem', borderRadius: '4px', fontWeight: 'bold' }}>SUPER-ADMIN</span>
+                              </div>
+                              
                               <div style={{ overflowX: 'auto' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
                                   <thead>
                                     <tr style={{ textAlign: 'left', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-                                      <th style={{ padding: '0.75rem', color: 'var(--text-secondary)' }}>ID</th>
-                                      <th style={{ padding: '0.75rem', color: 'var(--text-secondary)' }}>İsim</th>
-                                      <th style={{ padding: '0.75rem', color: 'var(--text-secondary)' }}>Yetki</th>
-                                      <th style={{ padding: '0.75rem', color: 'var(--text-secondary)', textAlign: 'right' }}>İşlemler</th>
+                                      <th style={{ padding: '1rem', color: 'var(--text-secondary)' }}>Kullanıcı</th>
+                                      <th style={{ padding: '1rem', color: 'var(--text-secondary)' }}>Yetki</th>
+                                      <th style={{ padding: '1rem', color: 'var(--text-secondary)' }}>Şifre</th>
+                                      <th style={{ padding: '1rem', color: 'var(--text-secondary)', textAlign: 'right' }}>İşlemler</th>
                                     </tr>
                                   </thead>
                                   <tbody>
                                     {JSON.parse(localStorage.getItem('socar-registered-users') || '[]').map((u: any) => (
-                                      <tr key={u.userId} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <td style={{ padding: '0.75rem', fontFamily: 'monospace', color: 'var(--accent)' }}>{u.userId}</td>
-                                        <td style={{ padding: '0.75rem', color: '#fff' }}>{u.username}</td>
-                                        <td style={{ padding: '0.75rem' }}>
-                                          <span style={{ fontSize: '0.7rem', padding: '0.1rem 0.5rem', borderRadius: '4px', background: u.userId === '99999999999' ? 'var(--accent-soft)' : 'rgba(255,255,255,0.05)', color: u.userId === '99999999999' ? 'var(--accent)' : 'inherit' }}>
+                                      <tr key={u.userId} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', transition: '0.2s' }}>
+                                        <td style={{ padding: '1rem' }}>
+                                          <div style={{ color: '#fff', fontWeight: 600 }}>{u.username}</div>
+                                          <div style={{ fontSize: '0.7rem', color: 'var(--accent)', fontFamily: 'monospace' }}>ID: {u.userId}</div>
+                                        </td>
+                                        <td style={{ padding: '1rem' }}>
+                                          <span style={{ fontSize: '0.7rem', padding: '0.2rem 0.6rem', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}>
                                             {u.level || 'Operatör'}
                                           </span>
                                         </td>
-                                        <td style={{ padding: '0.75rem', textAlign: 'right' }}>
-                                          <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end' }}>
-                                            <button className="button" style={{ padding: '0.3rem', minHeight: 'auto' }} title="Düzenle" onClick={() => {
+                                        <td style={{ padding: '1rem', fontFamily: 'monospace' }}>
+                                          <span title="Şifreyi Göster" style={{ cursor: 'pointer', color: 'var(--accent)', letterSpacing: '0.1em' }} onClick={() => alert(`${u.username} şifresi: ${u.password}`)}>
+                                            ••••••
+                                          </span>
+                                        </td>
+                                        <td style={{ padding: '1rem', textAlign: 'right' }}>
+                                          <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                                            <button className="button" style={{ padding: '0.4rem 0.8rem', minHeight: 'auto', fontSize: '0.75rem' }} onClick={() => {
                                               const n = prompt('Yeni İsim:', u.username);
-                                              const r = prompt('Yeni Rol:', u.level || 'Operatör');
-                                              if (n || r) {
+                                              const r = prompt('Yeni Rol (Operatör, Saha Mühendisi, Yönetici):', u.level || 'Operatör');
+                                              const p = prompt('Yeni Şifre (Boş bırakırsanız değişmez):');
+                                              
+                                              if (n !== null || r !== null || p !== null) {
                                                 const us = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
                                                 const i = us.findIndex((x: any) => x.userId === u.userId);
-                                                if (i !== -1) { if(n) us[i].username = n; if(r) us[i].level = r; localStorage.setItem('socar-registered-users', JSON.stringify(us)); window.location.reload(); }
+                                                if (i !== -1) { 
+                                                  if(n) us[i].username = n; 
+                                                  if(r) us[i].level = r; 
+                                                  if(p) us[i].password = p;
+                                                  localStorage.setItem('socar-registered-users', JSON.stringify(us)); 
+                                                  window.location.reload(); 
+                                                }
                                               }
-                                            }}><Edit3 size={12} /></button>
-                                            <button className="button" style={{ padding: '0.3rem', minHeight: 'auto', color: '#ff4d4d' }} title="Sil" onClick={() => {
-                                              if (u.userId === '99999999999') return alert('Kendi hesabınızı silemezsiniz.');
-                                              if (confirm(`${u.username} silinsin mi?`)) {
+                                            }}>Düzenle</button>
+                                            <button className="button" style={{ padding: '0.4rem 0.8rem', minHeight: 'auto', fontSize: '0.75rem', color: '#ff4d4d', background: 'rgba(255,77,77,0.05)' }} onClick={() => {
+                                              if (u.userId === '99999999999') return;
+                                              if (confirm(`${u.username} sistemden silinecek?`)) {
                                                 const us = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
                                                 localStorage.setItem('socar-registered-users', JSON.stringify(us.filter((x: any) => x.userId !== u.userId)));
                                                 window.location.reload();
                                               }
-                                            }}><Trash2 size={12} /></button>
+                                            }}>Sil</button>
                                           </div>
                                         </td>
                                       </tr>
@@ -1178,7 +1197,7 @@ function App() {
                               </div>
                             </div>
                           )}
-                          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Yeni bir personel kaydı için davetiye token'ı üretin.</p>
+                          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem', marginTop: '1.5rem' }}>Yeni bir personel kaydı için davetiye token'ı üretin.</p>
                           
                           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
                             <div style={{ flex: 1, minWidth: '200px' }}>
@@ -1332,7 +1351,7 @@ function App() {
                     {/* Uygulama Bilgisi */}
                     <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}>
                       <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>
-                        SOCKET Industrial Platform v1.2.3 <br/> 
+                        SOCKET Industrial Platform v1.2.4 <br/> 
                         Son Sunucu Senkronizasyonu: {new Date().toLocaleTimeString()}
                       </p>
                     </div>
