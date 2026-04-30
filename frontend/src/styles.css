@@ -2452,3 +2452,78 @@ body::before {
   html { font-size: 13px; }
   .panel.card { padding: 16px !important; }
 }
+
+/* 🌊 Mobile Header Alignment Fix (v2.3.0) */
+@media (max-width: 768px) {
+  .page-header {
+    height: 60px !important;
+    padding: 0 0.75rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .header-left {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex: 0 0 auto !important;
+  }
+
+  .header-title-group {
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .header-title {
+    font-size: 1rem !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+    letter-spacing: 1px !important;
+  }
+
+  .mobile-toggle {
+    padding: 4px !important;
+    margin: 0 !important;
+    background: transparent !important;
+    border: none !important;
+  }
+
+  .header-right {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.4rem !important;
+    flex: 0 0 auto !important;
+  }
+
+  .status-badge {
+    margin-right: 2px !important;
+  }
+
+  .user-profile-btn {
+    height: 32px !important;
+    padding: 2px 6px !important;
+    border-radius: 8px !important;
+  }
+
+  .user-avatar {
+    width: 24px !important;
+    height: 24px !important;
+    border-radius: 6px !important;
+  }
+
+  .user-avatar svg {
+    width: 14px !important;
+    height: 14px !important;
+  }
+
+  .user-profile-btn span:first-child {
+    font-size: 0.7rem !important;
+    max-width: 45px !important;
+  }
+
+  .header-subtitle-group, .header-weather-metrics, .theme-toggle, .user-profile-btn > svg:last-child {
+    display: none !important;
+  }
+}
