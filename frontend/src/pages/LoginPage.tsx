@@ -75,7 +75,7 @@ export default function LoginPage({ onLogin, onShowHelp, onShowPrivacy, registra
           users.push(newUser);
           localStorage.setItem('socar-registered-users', JSON.stringify(users));
           
-          onLogin(username, 'mock-token-' + Math.random(), validToken.level, randomId);
+          onLogin(username, 'mock-token-' + Math.random(), validToken.level || 'Operatör', randomId || '');
           setIsLoading(false);
         }, 1500);
       }
@@ -93,7 +93,7 @@ export default function LoginPage({ onLogin, onShowHelp, onShowPrivacy, registra
       const registeredUsers = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
       const foundLocal = registeredUsers.find((u: any) => u.username === username && u.password === password);
       if (foundLocal) {
-        onLogin(username, 'local-access-token', foundLocal.level, foundLocal.userId);
+        onLogin(username, 'local-access-token', foundLocal.level || 'Operatör', foundLocal.userId || '');
       } else {
         setError('Kullanıcı bulunamadı veya şifre hatalı.');
       }
@@ -238,7 +238,7 @@ export default function LoginPage({ onLogin, onShowHelp, onShowPrivacy, registra
             <span onClick={onShowPrivacy}>Gizlilik</span>
           </div>
           <div style={{ marginTop: '1.5rem', fontSize: '0.7rem', color: 'rgba(255,255,255,0.15)', letterSpacing: '1px' }}>
-            v1.3.8
+            v1.3.9
           </div>
         </div>
       </div>
