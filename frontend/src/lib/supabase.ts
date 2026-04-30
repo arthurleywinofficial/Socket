@@ -12,6 +12,10 @@ const createSafeClient = () => {
         signInWithPassword: async () => ({ data: { user: null }, error: { message: 'Supabase Not Configured' } }),
         signUp: async () => ({ data: { user: null }, error: { message: 'Supabase Not Configured' } }),
         signOut: async () => ({ error: null }),
+        signInWithOAuth: async (options: any) => { 
+          alert(`Supabase henüz yapılandırılmamış. ${options.provider} girişi için lütfen Vercel'den anahtarları girin.`);
+          return { data: { url: null }, error: { message: 'Supabase Not Configured' } };
+        },
         onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
       },
       from: () => ({
