@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Activity, BarChart2, Bell, ChartLine, ChartNoAxesCombined, CircleDollarSign, Cloud, LayoutGrid, Moon, Settings2, ShieldAlert, SunMedium, Users, SlidersHorizontal, Map, HelpCircle, Shield, Lock, Thermometer, Droplets, RefreshCw, Clock, AlertTriangle, LifeBuoy, Menu, User, Trash2, Edit3 } from 'lucide-react'
+import { Activity, BarChart2, Bell, ChartLine, ChartNoAxesCombined, CircleDollarSign, Cloud, LayoutGrid, Moon, Radar, Settings2, ShieldAlert, SunMedium, Users, SlidersHorizontal, Map, HelpCircle, Shield, Lock, Thermometer, Droplets, RefreshCw, Clock, AlertTriangle, LifeBuoy, Menu, User, Trash2, Edit3, UserSearch } from 'lucide-react'
 import { Line } from 'react-chartjs-2'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Filler, Legend } from 'chart.js'
 import Sidebar from './components/Sidebar'
@@ -15,6 +15,7 @@ import LoadingSkeleton from './components/LoadingSkeleton'
 import UserMenu from './components/UserMenu'
 import useLocalStorage from './hooks/useLocalStorage'
 import { API_BASE } from './config'
+import RadarView from './pages/RadarView'
 
 // Error Page Component
 const ErrorPage = ({ error, resetErrorBoundary }: { error: Error, resetErrorBoundary: () => void }) => (
@@ -141,7 +142,8 @@ const MENU = [
       { id: 'map', label: 'Saha Haritası', icon: Map },
       { id: 'production', label: 'Üretim İzleme', icon: SlidersHorizontal },
       { id: 'environment', label: 'Çevresel İzleme', icon: Cloud },
-      { id: 'personnel', label: 'Personel Takibi', icon: Users }
+      { id: 'personnel', label: 'Personel Takibi', icon: Users },
+      { id: 'radar', label: 'WiFi Radar', icon: Radar, restricted: true }
     ]
   },
   {
@@ -613,7 +615,10 @@ function App() {
 
       {isAuthenticated && (
         <Sidebar
-          menu={MENU}
+          menu={MENU.map(section => ({
+            ...section,
+            items: section.items.filter(item => !item.restricted || (item.restricted && userRole === 'Geliştirici'))
+          }))}
           selected={selectedPage}
           onSelect={setSelectedPage}
           theme={theme}
@@ -988,6 +993,8 @@ function App() {
                 </div>
               </div>
             )}
+            
+            {selectedPage === 'radar' && <RadarView />}
 
             {selectedPage === 'alarms' && (
               <div className="grid-layout">
