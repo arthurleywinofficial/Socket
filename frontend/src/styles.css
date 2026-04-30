@@ -93,6 +93,17 @@ button {
   overflow: hidden;
 }
 
+.app-shell.unauthenticated {
+  grid-template-columns: 1fr;
+}
+
+.app-shell.unauthenticated .page-content {
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .sidebar {
   width: 280px;
   height: 100vh;

@@ -560,7 +560,9 @@ function App() {
   const pageTitle = MENU.flatMap(section => section.items).find(item => item.id === selectedPage)?.label ?? 'Dashboard'
 
   return (
-    <div className="app-shell" data-theme={theme}>
+  return (
+    <div className={`app-shell ${!isAuthenticated ? 'unauthenticated' : ''}`} data-theme={theme}>
+      {/* 🚀 STARTUP LOADING OVERLAY (En Üst Katman) */}
       {/* 🚀 STARTUP LOADING OVERLAY (En Üst Katman) */}
       {showStartup && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: '#0a0d14', zIndex: 999999, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -1426,7 +1428,7 @@ function App() {
                     {/* Uygulama Bilgisi */}
                     <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}>
                       <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>
-                        SOCKET Industrial Platform v1.3.2 <br/> 
+                        SOCKET Industrial Platform v1.3.3 <br/> 
                         Son Sunucu Senkronizasyonu: {new Date().toLocaleTimeString()}
                       </p>
                     </div>
