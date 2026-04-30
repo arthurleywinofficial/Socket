@@ -45,7 +45,13 @@ interface Metric {
 }
 
 export default function GraphAnalysisPage() {
-  const [availableMetrics, setAvailableMetrics] = useState<Metric[]>([])
+  const [availableMetrics, setAvailableMetrics] = useState<Metric[]>([
+    { id: 'Temp-Zone1', name: 'Sıcaklık - Bölge 1', unit: '°C', color: '#ff4d4d' },
+    { id: 'Electricity', name: 'Elektrik Tüketimi', unit: 'kWh', color: '#00d4ff' },
+    { id: 'Water', name: 'Su Kullanımı', unit: 'm³', color: '#3399ff' },
+    { id: 'Pipeline-Pressure', name: 'Boru Hattı Basıncı', unit: 'bar', color: '#ffcc00' },
+    { id: 'Gas-Flow', name: 'Gaz Akış Hızı', unit: 'm³/sa', color: '#10b981' },
+  ])
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>(['Temp-Zone1'])
   const [chartData, setChartData] = useState<any>(null)
   const [range, setRange] = useState(1) // hours
