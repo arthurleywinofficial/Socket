@@ -313,6 +313,11 @@ function App() {
   const [passwords, setPasswords] = useState({ old: '', new: '', confirm: '' })
   const [updateStatus, setUpdateStatus] = useState<{ type: 'success' | 'error' | null; msg: string }>({ type: null, msg: '' })
 
+  // 🆕 Kayıt Sistemi State'leri
+  const [registrationTokens, setRegistrationTokens] = useLocalStorage<any[]>('socar-reg-tokens', [])
+  const [generatedToken, setGeneratedToken] = useState<string | null>(null)
+  const [isRegistering, setIsRegistering] = useState(false)
+
   useEffect(() => {
     document.documentElement.dataset.theme = theme
   }, [theme])
@@ -461,8 +466,9 @@ function App() {
     return (
       <LoginPage 
         onLogin={handleLogin} 
-        onShowHelp={() => setSelectedPage('help')}
+        onShowHelp={() => setSelectedPage('help')} 
         onShowPrivacy={() => setSelectedPage('privacy')}
+        registrationTokens={registrationTokens}
       />
     )
   }
@@ -1056,7 +1062,54 @@ function App() {
                       </div>
                     </section>
 
-                    {/* Bildirim Kanalları */}
+                    {/* 🆕 Kullanıcı Yönetimi (Admin Only) */}
+                    <section style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
+                      <h3 style={{ fontSize: '0.9rem', color: 'var(--accent)', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Kullanıcı Yönetimi & Davet</h3>
+                      <div className="panel" style={{ background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '16px', border: '1px solid var(--border-color)' }}>
+                        <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Yeni bir personel kaydı için davetiye token'ı üretin.</p>
+                        
+                        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
+                          <div style={{ flex: 1, minWidth: '200px' }}>
+                            <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>Kıdem Seviyesi</label>
+                            <select id="reg-level" className="button" style={{ width: '100%', background: 'rgba(255,255,255,0.05)' }}>
+                              <option value="Operatör">Operatör</option>
+                              <option value="Mühendis">Saha Mühendisi</option>
+                              <option value="Yönetici">Birim Yöneticisi</option>
+                            </select>
+                          </div>
+                          <button 
+                            className="button button-primary" 
+                            style={{ height: '48px' }}
+                            onClick={() => {
+                              const level = (document.getElementById('reg-level') as HTMLSelectElement).value;
+                              const token = 'SOCAR-' + Math.random().toString(36).substr(2, 9).toUpperCase();
+                              const newToken = { token, level, createdAt: new Date().toISOString(), used: false };
+                              setRegistrationTokens([...registrationTokens, newToken]);
+                              setGeneratedToken(token);
+                            }}
+                          >
+                            Token Üret
+                          </button>
+                        </div>
+
+                        {generatedToken && (
+                          <div className="fade-in" style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(0, 212, 255, 0.1)', borderRadius: '12px', border: '1px dashed var(--accent)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div>
+                              <span style={{ fontSize: '0.7rem', color: 'var(--accent)', display: 'block' }}>Üretilen Kayıt Kodu:</span>
+                              <strong style={{ fontSize: '1.2rem', letterSpacing: '2px' }}>{generatedToken}</strong>
+                            </div>
+                            <button className="button btn-sm" onClick={() => {
+                              navigator.clipboard.writeText(generatedToken);
+                              alert('Token kopyalandı!');
+                            }}>Kopyala</button>
+                          </div>
+                        )}
+
+                        <div style={{ marginTop: '1.5rem' }}>
+                          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Aktif Bekleyen Tokenlar: {registrationTokens.filter(t => !t.used).length}</span>
+                        </div>
+                      </div>
+                    </section>
                     <section style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
                       <h3 style={{ fontSize: '0.9rem', color: 'var(--accent)', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Bildirim ve Uyarılar</h3>
                       <div className="info-list" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
