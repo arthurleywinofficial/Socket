@@ -94,14 +94,20 @@ button {
 }
 
 .app-shell.unauthenticated {
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr !important;
+}
+
+.app-shell.unauthenticated .sidebar {
+  display: none !important;
 }
 
 .app-shell.unauthenticated .page-content {
-  padding: 2rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  margin-left: 0 !important;
+  padding: 2rem !important;
+  width: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 .sidebar {
