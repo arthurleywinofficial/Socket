@@ -2581,3 +2581,51 @@ body::before {
     top: 10px !important;
   }
 }
+
+/* 🌊 Ferah Header & Dengeli Yerleşim (v2.3.6) */
+@media (max-width: 768px) {
+  .page-header {
+    height: 76px !important;
+    padding: 0 1.25rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+  }
+
+  .header-center {
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .header-title {
+    font-size: 1.2rem !important;
+    letter-spacing: 3px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .mobile-toggle {
+    width: 44px !important;
+    height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: rgba(0, 212, 255, 0.05) !important;
+    border-radius: 12px !important;
+  }
+
+  .header-right {
+    gap: 0.75rem !important;
+  }
+
+  .user-profile-btn {
+    height: 40px !important;
+    padding: 4px 10px !important;
+    border-radius: 12px !important;
+  }
+
+  .user-avatar {
+    width: 28px !important;
+    height: 28px !important;
+  }
+}
