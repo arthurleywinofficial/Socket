@@ -319,6 +319,40 @@ function App() {
   const [generatedToken, setGeneratedToken] = useState<string | null>(null)
   const [isRegistering, setIsRegistering] = useState(false)
   const [userRole, setUserRole] = useLocalStorage<string>('socar-user-role', 'Operatör')
+  
+  // 🎭 Gelişmiş Modal Sistemi State'leri
+  const [modal, setModal] = useState<{
+    isOpen: boolean;
+    type: 'alert' | 'confirm' | 'prompt';
+    title: string;
+    message: string;
+    value?: string;
+    onAction?: (val?: string) => void;
+  }>({ isOpen: false, type: 'alert', title: '', message: '' })
+
+  // 🛡️ Zorunlu Çıkış Takibi (Force Logout Monitor)
+  useEffect(() => {
+    if (!userId) return;
+    const checkForceLogout = () => {
+      const users = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
+      const currentUser = users.find((u: any) => u.userId === userId);
+      if (currentUser && currentUser.needsLogout) {
+        // Flag'i temizle ve çıkış yaptır
+        currentUser.needsLogout = false;
+        localStorage.setItem('socar-registered-users', JSON.stringify(users));
+        handleLogout();
+        setModal({
+          isOpen: true,
+          type: 'alert',
+          title: 'Oturum Sonlandırıldı',
+          message: 'Yetki seviyeniz veya hesap bilgileriniz yönetici tarafından güncellendi. Lütfen yeni bilgilerinizle tekrar giriş yapın.',
+          onAction: () => window.location.reload()
+        });
+      }
+    };
+    const interval = setInterval(checkForceLogout, 2000);
+    return () => clearInterval(interval);
+  }, [userId]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -1168,36 +1202,75 @@ function App() {
                                           </span>
                                         </td>
                                         <td style={{ padding: '1rem', fontFamily: 'monospace' }}>
-                                          <span title="Şifreyi Göster" style={{ cursor: 'pointer', color: 'var(--accent)', letterSpacing: '0.1em' }} onClick={() => alert(`${u.username} şifresi: ${u.password}`)}>
+                                          <span 
+                                            title="Şifreyi Göster" 
+                                            style={{ cursor: 'pointer', color: 'var(--accent)', letterSpacing: '0.1em' }} 
+                                            onClick={() => setModal({
+                                              isOpen: true,
+                                              type: 'alert',
+                                              title: 'Güvenlik Doğrulaması',
+                                              message: `${u.username} kullanıcısının şifresi: ${u.password}`
+                                            })}
+                                          >
                                             ••••••
                                           </span>
                                         </td>
                                         <td style={{ padding: '1rem', textAlign: 'right' }}>
                                           <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                                             <button className="button" style={{ padding: '0.4rem 0.8rem', minHeight: 'auto', fontSize: '0.75rem' }} onClick={() => {
-                                              const n = prompt('Yeni İsim:', u.username);
-                                              const r = prompt('Yeni Rol (Operatör, Saha Mühendisi, Yönetici):', u.level || 'Operatör');
-                                              const p = prompt('Yeni Şifre (Boş bırakırsanız değişmez):');
-                                              
-                                              if (n !== null || r !== null || p !== null) {
-                                                const us = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
-                                                const i = us.findIndex((x: any) => x.userId === u.userId);
-                                                if (i !== -1) { 
-                                                  if(n) us[i].username = n; 
-                                                  if(r) us[i].level = r; 
-                                                  if(p) us[i].password = p;
-                                                  localStorage.setItem('socar-registered-users', JSON.stringify(us)); 
-                                                  window.location.reload(); 
+                                              // Zincirleme Modal Başlat
+                                              setModal({
+                                                isOpen: true,
+                                                type: 'prompt',
+                                                title: 'Kullanıcı Düzenle',
+                                                message: 'Yeni Görünen İsim:',
+                                                value: u.username,
+                                                onAction: (newName) => {
+                                                  setModal({
+                                                    isOpen: true,
+                                                    type: 'prompt',
+                                                    title: 'Rol Güncelle',
+                                                    message: 'Yeni Rol (Operatör, Saha Mühendisi, Yönetici, Geliştirici):',
+                                                    value: u.level || 'Operatör',
+                                                    onAction: (newRole) => {
+                                                      setModal({
+                                                        isOpen: true,
+                                                        type: 'prompt',
+                                                        title: 'Şifre Sıfırla',
+                                                        message: 'Yeni Şifre (Değişmesin istiyorsanız aynı bırakın):',
+                                                        value: u.password,
+                                                        onAction: (newPass) => {
+                                                          const users = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
+                                                          const idx = users.findIndex((x: any) => x.userId === u.userId);
+                                                          if (idx !== -1) {
+                                                            users[idx].username = newName || users[idx].username;
+                                                            users[idx].level = newRole || users[idx].level;
+                                                            users[idx].password = newPass || users[idx].password;
+                                                            // 🛡️ ZORUNLU ÇIKIŞ DAMGASI
+                                                            users[idx].needsLogout = true;
+                                                            localStorage.setItem('socar-registered-users', JSON.stringify(users));
+                                                            setModal({ isOpen: true, type: 'alert', title: 'Başarılı', message: 'Kullanıcı güncellendi ve sistemden çıkış yaptırıldı.' });
+                                                          }
+                                                        }
+                                                      })
+                                                    }
+                                                  })
                                                 }
-                                              }
+                                              })
                                             }}>Düzenle</button>
                                             <button className="button" style={{ padding: '0.4rem 0.8rem', minHeight: 'auto', fontSize: '0.75rem', color: '#ff4d4d', background: 'rgba(255,77,77,0.05)' }} onClick={() => {
                                               if (u.userId === '99999999999') return;
-                                              if (confirm(`${u.username} sistemden silinecek?`)) {
-                                                const us = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
-                                                localStorage.setItem('socar-registered-users', JSON.stringify(us.filter((x: any) => x.userId !== u.userId)));
-                                                window.location.reload();
-                                              }
+                                              setModal({
+                                                isOpen: true,
+                                                type: 'confirm',
+                                                title: 'Kullanıcıyı Sil',
+                                                message: `${u.username} isimli kullanıcıyı sistemden tamamen silmek istediğinize emin misiniz?`,
+                                                onAction: () => {
+                                                  const us = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
+                                                  localStorage.setItem('socar-registered-users', JSON.stringify(us.filter((x: any) => x.userId !== u.userId)));
+                                                  setModal({ isOpen: true, type: 'alert', title: 'Silindi', message: 'Kullanıcı sistemden kaldırıldı.' });
+                                                }
+                                              });
                                             }}>Sil</button>
                                           </div>
                                         </td>
@@ -1362,7 +1435,7 @@ function App() {
                     {/* Uygulama Bilgisi */}
                     <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}>
                       <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>
-                        SOCKET Industrial Platform v1.2.8 <br/> 
+                        SOCKET Industrial Platform v1.2.9 <br/> 
                         Son Sunucu Senkronizasyonu: {new Date().toLocaleTimeString()}
                       </p>
                     </div>
@@ -1513,7 +1586,50 @@ function App() {
       <div 
         className="mobile-overlay" 
         onClick={() => document.body.classList.remove('sidebar-open')}
-      />
+      >
+        {/* 🎭 SİSTEM MODAL PENCERESİ */}
+        {modal.isOpen && (
+          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(8px)', zIndex: 99999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+            <div className="fade-in-up" style={{ width: '100%', maxWidth: '400px', background: 'var(--panel-bg)', border: '1px solid var(--border-color)', borderRadius: '24px', padding: '2rem', boxShadow: '0 20px 50px rgba(0,0,0,0.5)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+                <Shield color="var(--accent)" size={24} />
+                <h3 style={{ margin: 0, fontSize: '1.25rem', color: '#fff' }}>{modal.title}</h3>
+              </div>
+              
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '2rem' }}>
+                {modal.message}
+              </p>
+
+              {modal.type === 'prompt' && (
+                <input 
+                  type="text" 
+                  className="button" 
+                  autoFocus
+                  style={{ width: '100%', background: 'rgba(255,255,255,0.03)', textAlign: 'left', marginBottom: '1.5rem', cursor: 'text' }}
+                  value={modal.value}
+                  onChange={(e) => setModal({...modal, value: e.target.value})}
+                />
+              )}
+
+              <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+                {(modal.type === 'confirm' || modal.type === 'prompt') && (
+                  <button className="button" style={{ flex: 1 }} onClick={() => setModal({...modal, isOpen: false})}>Vazgeç</button>
+                )}
+                <button 
+                  className="button button-primary" 
+                  style={{ flex: 1 }} 
+                  onClick={() => {
+                    setModal({...modal, isOpen: false});
+                    if (modal.onAction) modal.onAction(modal.value);
+                  }}
+                >
+                  Onayla
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
