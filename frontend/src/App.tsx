@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Activity, BarChart2, Bell, ChartLine, ChartNoAxesCombined, CircleDollarSign, Cloud, LayoutGrid, Moon, Settings2, ShieldAlert, SunMedium, Users, SlidersHorizontal, Map, HelpCircle, Shield, Lock, Thermometer, Droplets, RefreshCw, Clock, AlertTriangle, LifeBuoy } from 'lucide-react'
+import { Activity, BarChart2, Bell, ChartLine, ChartNoAxesCombined, CircleDollarSign, Cloud, LayoutGrid, Moon, Settings2, ShieldAlert, SunMedium, Users, SlidersHorizontal, Map, HelpCircle, Shield, Lock, Thermometer, Droplets, RefreshCw, Clock, AlertTriangle, LifeBuoy, Menu } from 'lucide-react'
 import { Line } from 'react-chartjs-2'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Filler, Legend } from 'chart.js'
 import Sidebar from './components/Sidebar'
@@ -466,7 +466,10 @@ function App() {
       <main className="page-content" style={!isAuthenticated ? { maxWidth: '800px', margin: '0 auto', width: '100%' } : {}}>
         {isAuthenticated && (
           <header className="page-header slide-in">
-            <div className="header-left">
+            <div className="header-left" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+              <button className="mobile-toggle" onClick={() => document.body.classList.toggle('sidebar-open')}>
+                <Menu size={20} />
+              </button>
               <div className="header-title-group">
                 <h1 className="header-title">SOCKET</h1>
                 <div className="header-subtitle-group">
@@ -525,8 +528,8 @@ function App() {
           <>
             {selectedPage === 'dashboard' && (
               <div className="dashboard-grid">
-                {/* 1. Operasyon Özeti (4/12) */}
-                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 4' }}>
+                {/* 1. Operasyon Özeti (3/12) */}
+                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 3' }}>
                   <div className="panel-header">
                     <h2>Operasyon Özeti</h2>
                     <Activity size={16} />
@@ -543,8 +546,8 @@ function App() {
                   </div>
                 </div>
 
-                {/* 2. Finansal KPI (4/12) */}
-                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 4' }}>
+                {/* 2. Finansal KPI (3/12) */}
+                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 3' }}>
                   <div className="panel-header">
                     <h2>Finansal Durum</h2>
                     <CircleDollarSign size={16} />
@@ -561,8 +564,8 @@ function App() {
                   </div>
                 </div>
 
-                {/* 3. Güvenlik & Alarmlar (4/12) */}
-                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 4' }}>
+                {/* 3. Güvenlik & Alarmlar (3/12) */}
+                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 3' }}>
                   <div className="panel-header">
                     <h2>Sistem Güvenliği</h2>
                     <ShieldAlert size={16} color={displayOverview.safety?.active_alarms > 0 ? '#ef4444' : 'var(--accent)'} />
@@ -579,8 +582,8 @@ function App() {
                   </div>
                 </div>
 
-                {/* 4. Simülatör Verileri (6/12) */}
-                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 6' }}>
+                {/* 4. Simülatör Verileri (3/12) */}
+                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 3' }}>
                   <div className="panel-header">
                     <h2>Kritik Simülatör Sensörleri</h2>
                     <SlidersHorizontal size={16} />
@@ -601,8 +604,8 @@ function App() {
                   </div>
                 </div>
 
-                {/* 5. Üretim Hattı (6/12) */}
-                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 6' }}>
+                {/* 5. Üretim Hattı (3/12) */}
+                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 3' }}>
                   <div className="panel-header">
                     <h2>Üretim Hattı Akışı</h2>
                     <BarChart2 size={16} />
@@ -623,8 +626,8 @@ function App() {
                   </div>
                 </div>
 
-                {/* 6. Lojistik & Stok (6/12) */}
-                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 6' }}>
+                {/* 6. Lojistik & Stok (3/12) */}
+                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 3' }}>
                   <div className="panel-header">
                     <h2>Lojistik & Envanter</h2>
                     <Users size={16} />
@@ -645,8 +648,8 @@ function App() {
                   </div>
                 </div>
 
-                {/* 7. Çevresel Veriler (6/12) */}
-                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 6' }}>
+                {/* 7. Çevresel Veriler (3/12) */}
+                <div className="panel card compact fade-in-up" style={{ gridColumn: 'span 3' }}>
                   <div className="panel-header">
                     <h2>Çevresel İzleme</h2>
                     <Cloud size={16} />

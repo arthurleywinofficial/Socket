@@ -31,9 +31,6 @@ const Sidebar: FC<Props> = ({ menu, selected, onSelect, theme, toggleTheme }) =>
             <p style={{fontSize: '10px', lineHeight: 1.2, marginTop: '2px'}}>SOCAR Operasyon Kontrol<br/>ve Endüstriyel Takip</p>
           </div>
         </div>
-        <button className="mobile-toggle" onClick={() => document.body.classList.toggle('sidebar-open')}>
-          <Menu size={18} />
-        </button>
       </div>
 
       <nav className="sidebar-nav">

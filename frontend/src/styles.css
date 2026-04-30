@@ -41,6 +41,7 @@
   --warning: #f59e0b;
   --warning-soft: rgba(245, 158, 11, 0.15);
   font-family: 'Inter', sans-serif;
+  font-size: 18px; /* UI %120 Zoom hissi için baz boyutu artırdık */
 }
 
 html[data-theme='light'] {
@@ -321,7 +322,7 @@ button {
 
 .dashboard-grid {
   display: grid;
-  gap: 1.5rem;
+  gap: 1rem; /* Boşlukları biraz daralttık */
   grid-template-columns: repeat(12, 1fr);
 }
 
@@ -533,12 +534,13 @@ button {
 }
 
 .mobile-toggle {
-  display: none;
+  display: none; /* Masaüstünde gizle */
   border: none;
-  background: rgba(255,255,255,0.05);
-  color: var(--text-primary);
+  background: var(--accent-soft);
+  color: var(--accent);
   padding: 0.7rem;
-  border-radius: 16px;
+  border-radius: 12px;
+  cursor: pointer;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
