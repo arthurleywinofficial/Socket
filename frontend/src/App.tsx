@@ -1385,7 +1385,7 @@ function App() {
                     {/* Uygulama Bilgisi */}
                     <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}>
                       <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>
-                        SOCKET Industrial Platform v1.3.0 <br/> 
+                        SOCKET Industrial Platform v1.3.1 <br/> 
                         Son Sunucu Senkronizasyonu: {new Date().toLocaleTimeString()}
                       </p>
                     </div>
@@ -1577,11 +1577,11 @@ function App() {
               <svg width="100%" height="100%" viewBox="0 0 100 140" style={{ animation: 's-glow 2s infinite' }}>
                 <defs>
                   <clipPath id="s-mask">
-                    <path d="M80,30 C80,10 20,10 20,30 C20,50 80,50 80,70 C80,90 20,90 20,110 C20,130 80,130 80,110" stroke="white" strokeWidth="15" fill="none" />
+                    <path d="M75,30 C75,10 25,10 25,50 C25,90 75,80 75,120 C75,160 25,160 25,140" stroke="white" strokeWidth="18" fill="none" strokeLinecap="round" />
                   </clipPath>
                 </defs>
-                <path d="M80,30 C80,10 20,10 20,30 C20,50 80,50 80,70 C80,90 20,90 20,110 C20,130 80,130 80,110" stroke="rgba(255,255,255,0.05)" strokeWidth="15" fill="none" />
-                <path d="M80,30 C80,10 20,10 20,30 C20,50 80,50 80,70 C80,90 20,90 20,110 C20,130 80,130 80,110" stroke="var(--accent)" strokeWidth="15" fill="none" style={{ strokeDasharray: '400', strokeDashoffset: '400', animation: 'dash 3.5s linear forwards' }} />
+                <path d="M75,30 C75,10 25,10 25,50 C25,90 75,80 75,120 C75,160 25,160 25,140" stroke="rgba(255,255,255,0.03)" strokeWidth="18" fill="none" strokeLinecap="round" />
+                <path d="M75,30 C75,10 25,10 25,50 C25,90 75,80 75,120 C75,160 25,160 25,140" stroke="var(--accent)" strokeWidth="18" fill="none" strokeLinecap="round" style={{ strokeDasharray: '600', strokeDashoffset: '600', animation: 'dash 3.5s linear forwards' }} />
               </svg>
               <style>{`
                 @keyframes dash {
