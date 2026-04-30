@@ -282,26 +282,40 @@ ${getSystemContext()}`;
         .ai-assistant-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 10000; font-family: 'Inter', sans-serif; }
         .ai-hint-bubble {
           position: fixed; 
-          top: 2rem; 
+          top: 1.5rem; 
           left: 50%;
           transform: translateX(-50%);
           background: #00d4ff; 
           color: #000;
-          padding: 1rem 2rem; 
-          border-radius: 100px; 
-          font-size: 1rem; 
+          padding: 0.85rem 1.25rem; 
+          border-radius: 20px; 
+          font-size: 0.95rem; 
           font-weight: 700; 
-          width: max-content;
+          width: 92%;
+          max-width: 500px;
           display: flex; 
           align-items: center; 
+          justify-content: space-between;
           gap: 0.75rem; 
           box-shadow: 0 10px 40px rgba(0,212,255,0.4);
           cursor: pointer; 
           transition: all 0.3s;
-          white-space: nowrap;
           z-index: 1100;
           border: 2px solid rgba(255,255,255,0.2);
           animation: slideDown 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+          box-sizing: border-box;
+        }
+        .hint-content {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          flex: 1;
+          overflow: hidden;
+        }
+        .hint-content span {
+          white-space: normal; /* Metnin alt satıra geçmesine izin ver */
+          line-height: 1.2;
+          text-align: left;
         }
         .ai-hint-bubble:hover { transform: translateX(-50%) scale(1.05); background: #fff; }
         @keyframes slideDown { from { transform: translate(-50%, -100%); opacity: 0; } to { transform: translate(-50%, 0); opacity: 1; } }
