@@ -517,7 +517,7 @@ function App() {
       )}
       <main className="page-content">
         {isAuthenticated && (
-          <header className="page-header slide-in">
+          <header className="page-header slide-in" style={{ zIndex: 1001, position: 'relative' }}>
             <div className="header-left" style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
               <button className="mobile-toggle" onClick={() => document.body.classList.toggle('sidebar-open')}>
                 <Menu size={20} />
@@ -1275,7 +1275,7 @@ function App() {
                     {/* Uygulama Bilgisi */}
                     <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}>
                       <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>
-                        SOCKET Industrial Platform v1.0.9 <br/> 
+                        SOCKET Industrial Platform v1.1.0 <br/> 
                         Son Sunucu Senkronizasyonu: {new Date().toLocaleTimeString()}
                       </p>
                     </div>
