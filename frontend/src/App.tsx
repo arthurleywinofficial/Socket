@@ -317,6 +317,7 @@ function App() {
   const [registrationTokens, setRegistrationTokens] = useLocalStorage<any[]>('socar-reg-tokens', [])
   const [generatedToken, setGeneratedToken] = useState<string | null>(null)
   const [isRegistering, setIsRegistering] = useState(false)
+  const [userRole, setUserRole] = useLocalStorage<string>('socar-user-role', 'Operatör')
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme
@@ -452,14 +453,38 @@ function App() {
     )
   }
 
-  const handleLogin = (username: string, authToken: string) => {
-    setToken(authToken)
+  const handleLogin = (username: string, token: string, role?: string) => {
     setUser(username)
+    setToken(token)
+    
+    // Rolü belirle (Arthur her zaman Geliştiricidir)
+    if (username === 'Arthur') {
+      setUserRole('Geliştirici')
+    } else if (role) {
+      setUserRole(role)
+    } else {
+      setUserRole('Operatör')
+    }
+    
+    setIsAuthenticated(true)
   }
+
+  // 🧹 SİSTEM TEMİZLİĞİ: Tüm eski logları bir seferliğine temizle
+  useEffect(() => {
+    const isCleaned = localStorage.getItem('socar-system-reset-v2');
+    if (!isCleaned) {
+      localStorage.removeItem('socar-registered-users');
+      localStorage.removeItem('socar-reg-tokens');
+      localStorage.setItem('socar-system-reset-v2', 'true');
+      console.log('Sistem Başarıyla Sıfırlandı.');
+    }
+  }, []);
 
   const handleLogout = () => {
     setUser(null)
     setToken(null)
+    setUserRole('Operatör') // Çıkışta yetkiyi en alt seviyeye çek
+    setIsAuthenticated(false)
   }
 
   if (!isAuthenticated && selectedPage !== 'help' && selectedPage !== 'privacy') {
@@ -541,8 +566,14 @@ function App() {
                 }}>
                   {theme === 'dark' ? <SunMedium size={20} /> : <Moon size={20} />}
                 </button>
-                <UserMenu username={user || 'Misafir'} onLogout={handleLogout} onNavigate={setSelectedPage} theme={theme} />
-              </div>
+                <UserMenu 
+                username={user || ''} 
+                userRole={userRole}
+                onLogout={handleLogout} 
+                onNavigate={setSelectedPage}
+                theme={theme}
+              />
+</div>
             </div>
           </header>
         )}
@@ -923,8 +954,16 @@ function App() {
                             className="button button-primary" 
                             style={{ padding: '0 1.5rem' }}
                             onClick={() => {
+                              if (!newUsername.trim()) return;
+                              // Kayıtlı kullanıcılarda güncelle
+                              const users = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
+                              const userIdx = users.findIndex((u: any) => u.username === user);
+                              if (userIdx !== -1) {
+                                users[userIdx].username = newUsername;
+                                localStorage.setItem('socar-registered-users', JSON.stringify(users));
+                              }
                               setUser(newUsername);
-                              setUpdateStatus({ type: 'success', msg: 'Kullanıcı adı başarıyla güncellendi.' });
+                              setUpdateStatus({ type: 'success', msg: 'Görünen isim başarıyla güncellendi.' });
                               setTimeout(() => setUpdateStatus({ type: null, msg: '' }), 3000);
                             }}
                           >
@@ -979,15 +1018,27 @@ function App() {
                           className="button" 
                           style={{ background: 'var(--accent-soft)', color: 'var(--accent)', border: '1px solid var(--accent)' }}
                           onClick={() => {
-                            // Mock şifre kontrolü (Varsayılan şifre: admin123)
-                            if (passwords.old !== 'admin123') {
+                            const users = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
+                            // Admin için varsayılan şifreyi adminadmin olarak düzelttim
+                            const currentUserData = users.find((u: any) => u.username === user) || { password: 'adminadmin' };
+
+                            if (passwords.old !== currentUserData.password) {
                               setUpdateStatus({ type: 'error', msg: 'Mevcut şifreniz hatalı.' });
                             } else if (passwords.new !== passwords.confirm) {
                               setUpdateStatus({ type: 'error', msg: 'Yeni şifreler eşleşmiyor.' });
                             } else if (passwords.new.length < 4) {
-                              setUpdateStatus({ type: 'error', msg: 'Yeni şifre en az 4 karakter olmalıdır.' });
+                              setUpdateStatus({ type: 'error', msg: 'Şifre çok kısa (min 4 karakter).' });
                             } else {
-                              setUpdateStatus({ type: 'success', msg: 'Şifreniz başarıyla güncellendi.' });
+                              // Şifreyi kaydet veya admin'i listeye ekle
+                              const userIdx = users.findIndex((u: any) => u.username === user);
+                              if (userIdx !== -1) {
+                                users[userIdx].password = passwords.new;
+                              } else {
+                                users.push({ username: user, password: passwords.new, level: userRole });
+                              }
+                              localStorage.setItem('socar-registered-users', JSON.stringify(users));
+                              
+                              setUpdateStatus({ type: 'success', msg: 'Şifreniz başarıyla değiştirildi ve kaydedildi.' });
                               setPasswords({ old: '', new: '', confirm: '' });
                             }
                             setTimeout(() => setUpdateStatus({ type: null, msg: '' }), 4000);
@@ -1012,8 +1063,11 @@ function App() {
             {selectedPage === 'settings' && (
               <div className="fade-in-up" style={{ maxWidth: '700px', margin: '0 auto', width: '100%' }}>
                 <div className="panel card">
-                  <div className="panel-header" style={{ marginBottom: '2rem' }}>
-                    <h2>Sistem Ayarları</h2>
+                  <div className="panel-header" style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <h2 style={{ margin: 0 }}>Sistem Ayarları</h2>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--accent)', textTransform: 'uppercase' }}>Mevcut Yetki: {userRole}</span>
+                    </div>
                     <Settings2 size={20} />
                   </div>
                   
@@ -1062,76 +1116,79 @@ function App() {
                       </div>
                     </section>
 
-                    {/* 🆕 Kullanıcı Yönetimi (Admin Only) */}
-                    <section style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
-                      <h3 style={{ fontSize: '0.9rem', color: 'var(--accent)', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Kullanıcı Yönetimi & Davet</h3>
-                      <div className="panel" style={{ background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '24px', border: '1px solid var(--border-color)' }}>
-                        <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Yeni bir personel kaydı için davetiye token'ı üretin.</p>
-                        
-                        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
-                          <div style={{ flex: 1, minWidth: '200px' }}>
-                            <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>Kıdem Seviyesi</label>
-                            <select 
-                              id="reg-level" 
-                              className="button" 
-                              style={{ 
-                                width: '100%', 
-                                background: '#1a1e2e', 
-                                color: '#fff', 
-                                border: '1px solid var(--border-color)',
-                                cursor: 'pointer',
-                                paddingRight: '2rem',
-                                borderRadius: '14px',
-                                colorScheme: 'dark' /* Tarayıcıya karanlık modda olduğunu zorla bildir */
-                              }}
-                            >
-                              <option value="Operatör">Operatör</option>
-                              <option value="Mühendis">Saha Mühendisi</option>
-                              <option value="Yönetici">Birim Yöneticisi</option>
-                            </select>
-                            <style>{`
-                              #reg-level option {
-                                background-color: #1a1e2e !important;
-                                color: white !important;
-                              }
-                            `}</style>
-                          </div>
-                            <button 
-                              className="button button-primary" 
-                              style={{ height: '48px' }}
-                              onClick={() => {
-                                const level = (document.getElementById('reg-level') as HTMLSelectElement).value;
-                                // Kıdem kodları: OP: Operatör, EN: Mühendis, MG: Yönetici
-                                const levelCode = level === 'Operatör' ? 'OP' : level === 'Saha Mühendisi' ? 'EN' : 'MG';
-                                const randomStr = Math.random().toString(36).substr(2, 6).toUpperCase();
-                                // Akıllı İmza: SOCAR - [KIDEM KODU] - [RANDOM]
-                                const token = `SOCAR-${levelCode}-${randomStr}`;
-                                setRegistrationTokens([...registrationTokens, { token, level, used: false }]);
-                                setGeneratedToken(token);
-                              }}
-                            >
-                              Token Üret
-                            </button>
-                        </div>
-
-                        {generatedToken && (
-                          <div className="fade-in" style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(0, 212, 255, 0.1)', borderRadius: '12px', border: '1px dashed var(--accent)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <div>
-                              <span style={{ fontSize: '0.7rem', color: 'var(--accent)', display: 'block' }}>Üretilen Kayıt Kodu:</span>
-                              <strong style={{ fontSize: '1.2rem', letterSpacing: '2px' }}>{generatedToken}</strong>
+                    {/* 🆕 Kullanıcı Yönetimi (Admin Only - Sadece Birim Yöneticisi görebilir) */}
+                    {userRole === 'Birim Yöneticisi' || userRole === 'Geliştirici' && (
+                      <section style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
+                        <h3 style={{ fontSize: '0.9rem', color: 'var(--accent)', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Kullanıcı Yönetimi & Davet</h3>
+                        <div className="panel" style={{ background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '24px', border: '1px solid var(--border-color)' }}>
+                          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Yeni bir personel kaydı için davetiye token'ı üretin.</p>
+                          
+                          <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
+                            <div style={{ flex: 1, minWidth: '200px' }}>
+                              <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.5rem' }}>Kıdem Seviyesi</label>
+                              <select 
+                                id="reg-level" 
+                                className="button" 
+                                style={{ 
+                                  width: '100%', 
+                                  background: '#1a1e2e', 
+                                  color: '#fff', 
+                                  border: '1px solid var(--border-color)',
+                                  cursor: 'pointer',
+                                  paddingRight: '2rem',
+                                  borderRadius: '14px',
+                                  colorScheme: 'dark' 
+                                }}
+                              >
+                                <option value="Operatör">Operatör</option>
+                                <option value="Saha Mühendisi">Saha Mühendisi</option>
+                                <option value="Yönetici">Birim Yöneticisi</option>
+                                {userRole === 'Geliştirici' && (
+                                  <option value="Geliştirici" style={{ color: 'var(--accent)', fontWeight: 'bold' }}>Geliştirici (Özel Yetki)</option>
+                                )}
+                              </select>
+                              <style>{`
+                                #reg-level option {
+                                  background-color: #1a1e2e !important;
+                                  color: white !important;
+                                }
+                              `}</style>
                             </div>
-                            <button className="button btn-sm" onClick={() => {
-                              navigator.clipboard.writeText(generatedToken);
-                              alert('Token kopyalandı!');
-                            }}>Kopyala</button>
+                              <button 
+                                className="button button-primary" 
+                                style={{ height: '48px' }}
+                                onClick={() => {
+                                  const level = (document.getElementById('reg-level') as HTMLSelectElement).value;
+                                  const levelCode = level === 'Operatör' ? 'OP' : level === 'Saha Mühendisi' ? 'EN' : level === 'Geliştirici' ? 'DV' : 'MG';
+                                  const randomStr = Math.random().toString(36).substr(2, 6).toUpperCase();
+                                  const token = `SOCAR-${levelCode}-${randomStr}`;
+                                  setRegistrationTokens([...registrationTokens, { token, level, used: false }]);
+                                  setGeneratedToken(token);
+                                }}
+                              >
+                                Token Üret
+                              </button>
                           </div>
-                        )}
 
-                        <div style={{ marginTop: '1.5rem' }}>
-                          <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Aktif Bekleyen Tokenlar: {registrationTokens.filter(t => !t.used).length}</span>
+                          {generatedToken && (
+                            <div className="fade-in" style={{ marginTop: '1.5rem', padding: '1rem', background: 'rgba(0, 212, 255, 0.1)', borderRadius: '12px', border: '1px dashed var(--accent)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                              <div>
+                                <span style={{ fontSize: '0.7rem', color: 'var(--accent)', display: 'block' }}>Üretilen Kayıt Kodu:</span>
+                                <strong style={{ fontSize: '1.2rem', letterSpacing: '2px' }}>{generatedToken}</strong>
+                              </div>
+                              <button className="button btn-sm" onClick={() => {
+                                navigator.clipboard.writeText(generatedToken);
+                                alert('Token kopyalandı!');
+                              }}>Kopyala</button>
+                            </div>
+                          )}
+
+                          <div style={{ marginTop: '1.5rem' }}>
+                            <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>Aktif Bekleyen Tokenlar: {registrationTokens.filter(t => !t.used).length}</span>
+                          </div>
                         </div>
-                      </div>
-                    </section>
+                      </section>
+                    )}
                     <section style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
                       <h3 style={{ fontSize: '0.9rem', color: 'var(--accent)', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Bildirim ve Uyarılar</h3>
                       <div className="info-list" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
@@ -1154,10 +1211,71 @@ function App() {
                       </div>
                     </section>
 
+                    {/* 🛡️ GELİŞTİRİCİ ÖZEL: Merkezi Kullanıcı Denetimi */}
+                    {userRole === 'Geliştirici' && (
+                      <section style={{ borderTop: '1px solid var(--accent)', paddingTop: '1.5rem', marginTop: '1rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+                          <h3 style={{ fontSize: '0.9rem', color: 'var(--accent)', margin: 0, textTransform: 'uppercase', fontWeight: 'bold' }}>🛡️ Geliştirici Denetim Terminali</h3>
+                          <span style={{ fontSize: '0.7rem', padding: '2px 8px', borderRadius: '20px', background: 'var(--accent)', color: '#000' }}>SUPER-ADMIN</span>
+                        </div>
+                        <div className="panel" style={{ background: 'rgba(0, 212, 255, 0.03)', borderRadius: '24px', border: '1px solid rgba(0, 212, 255, 0.2)', padding: '1.5rem' }}>
+                          <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Sistemdeki tüm kayıtlı kullanıcıların yönetimi:</p>
+                          <div style={{ overflowX: 'auto' }}>
+                            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+                              <thead>
+                                <tr style={{ textAlign: 'left', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                                  <th style={{ padding: '0.75rem' }}>Kullanıcı</th>
+                                  <th style={{ padding: '0.75rem' }}>Yetki</th>
+                                  <th style={{ padding: '0.75rem' }}>Şifre</th>
+                                  <th style={{ padding: '1rem', textAlign: 'right' }}>İşlem</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {(JSON.parse(localStorage.getItem('socar-registered-users') || '[]')).map((u: any, idx: number) => (
+                                  <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <td style={{ padding: '0.75rem', fontWeight: 'bold' }}>{u.username}</td>
+                                    <td style={{ padding: '0.75rem' }}>
+                                      <span style={{ padding: '2px 8px', borderRadius: '4px', background: u.level === 'Geliştirici' ? 'var(--accent)' : 'rgba(255,255,255,0.1)', color: u.level === 'Geliştirici' ? '#000' : '#fff', fontSize: '0.7rem' }}>
+                                        {u.level}
+                                      </span>
+                                    </td>
+                                    <td style={{ padding: '0.75rem', fontFamily: 'monospace', color: 'var(--accent)' }}>{u.password}</td>
+                                    <td style={{ padding: '0.75rem', textAlign: 'right' }}>
+                                      <button className="button btn-sm" style={{ padding: '4px 12px', fontSize: '0.7rem', borderRadius: '8px' }} onClick={() => {
+                                        const newPass = prompt(`${u.username} için yeni şifre:`, u.password);
+                                        if (newPass) {
+                                          const users = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
+                                          const userIdx = users.findIndex((usr: any) => usr.username === u.username);
+                                          if (userIdx !== -1) {
+                                            users[userIdx].password = newPass;
+                                            localStorage.setItem('socar-registered-users', JSON.stringify(users));
+                                            alert('Şifre güncellendi!');
+                                            window.location.reload();
+                                          }
+                                        }
+                                      }}>Düzenle</button>
+                                      <button className="button btn-sm" style={{ marginLeft: '0.5rem', background: 'rgba(255,0,0,0.1)', color: 'red', border: '1px solid rgba(255,0,0,0.2)' }} onClick={() => {
+                                        if (confirm(`${u.username} kullanıcısını silmek istediğinize emin misiniz?`)) {
+                                          const users = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
+                                          const filtered = users.filter((usr: any) => usr.username !== u.username);
+                                          localStorage.setItem('socar-registered-users', JSON.stringify(filtered));
+                                          window.location.reload();
+                                        }
+                                      }}>Sil</button>
+                                    </td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </section>
+                    )}
+
                     {/* Uygulama Bilgisi */}
                     <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}>
                       <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>
-                        SOCKET Industrial Platform v1.0.3-LIVE-FORCE <br/> 
+                        SOCKET Industrial Platform v1.0.5-FINAL-SYNC <br/> 
                         Son Sunucu Senkronizasyonu: {new Date().toLocaleTimeString()}
                       </p>
                     </div>

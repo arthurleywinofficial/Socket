@@ -3,12 +3,13 @@ import { User, LogOut, ChevronDown, Settings, Shield, Bell } from 'lucide-react'
 
 interface UserMenuProps {
   username: string;
+  userRole: string; // Yeni özellik
   onLogout: () => void;
   onNavigate: (page: string) => void;
   theme: 'dark' | 'light';
 }
 
-const UserMenu: React.FC<UserMenuProps> = ({ username, onLogout, onNavigate, theme }) => {
+const UserMenu: React.FC<UserMenuProps> = ({ username, userRole, onLogout, onNavigate, theme }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -59,7 +60,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ username, onLogout, onNavigate, the
         </div>
         <div style={{ textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
           <span style={{ fontSize: '0.85rem', fontWeight: 700, color: theme === 'dark' ? '#fff' : '#0f172a' }}>{username}</span>
-          <span style={{ fontSize: '0.7rem', color: theme === 'dark' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)' }}>Operatör</span>
+          <span style={{ fontSize: '0.7rem', color: theme === 'dark' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)' }}>{userRole}</span>
         </div>
         <ChevronDown size={16} style={{ 
           color: theme === 'dark' ? 'rgba(255,255,255,0.4)' : 'rgba(0,0,0,0.4)',
