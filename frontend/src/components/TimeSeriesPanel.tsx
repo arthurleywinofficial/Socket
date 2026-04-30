@@ -59,9 +59,9 @@ const TimeSeriesPanel: FC<Props> = ({ title, data, range, onChangeRange, color =
                   color: 'rgba(255,255,255,0.4)',
                   font: { size: 10 }
                 }, 
+                border: { display: false },
                 grid: { 
                   color: 'rgba(255,255,255,0.05)',
-                  drawBorder: false
                 } 
               }
             }
