@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Activity, BarChart2, Bell, ChartLine, ChartNoAxesCombined, CircleDollarSign, Cloud, LayoutGrid, Moon, Settings2, ShieldAlert, SunMedium, Users, SlidersHorizontal, Map, HelpCircle, Shield, Lock, Thermometer, Droplets, RefreshCw, Clock, AlertTriangle, LifeBuoy, Menu, User } from 'lucide-react'
+import { Activity, BarChart2, Bell, ChartLine, ChartNoAxesCombined, CircleDollarSign, Cloud, LayoutGrid, Moon, Settings2, ShieldAlert, SunMedium, Users, SlidersHorizontal, Map, HelpCircle, Shield, Lock, Thermometer, Droplets, RefreshCw, Clock, AlertTriangle, LifeBuoy, Menu, User, Trash2, Edit3 } from 'lucide-react'
 import { Line } from 'react-chartjs-2'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Filler, Legend } from 'chart.js'
 import Sidebar from './components/Sidebar'
@@ -941,7 +941,10 @@ function App() {
                         {user?.[0]?.toUpperCase()}
                       </div>
                       <div style={{ flex: 1 }}>
-                        <label style={{ display: 'block', fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.4rem' }}>Görünen İsim</label>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '0.4rem' }}>
+                          <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)' }}>Görünen İsim</label>
+                          <span style={{ fontSize: '0.7rem', color: 'var(--accent)', fontFamily: 'monospace', opacity: 0.8 }}>ID: {userId || 'Tanımlanmadı'}</span>
+                        </div>
                         <div style={{ display: 'flex', gap: '0.5rem' }}>
                           <input 
                             type="text" 
@@ -957,7 +960,7 @@ function App() {
                               if (!newUsername.trim()) return;
                               // Kayıtlı kullanıcılarda güncelle
                               const users = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
-                              const userIdx = users.findIndex((u: any) => u.username === user);
+                              const userIdx = users.findIndex((u: any) => u.userId === userId); // ID üzerinden bulmak daha güvenli
                               if (userIdx !== -1) {
                                 users[userIdx].username = newUsername;
                                 localStorage.setItem('socar-registered-users', JSON.stringify(users));
@@ -1116,11 +1119,65 @@ function App() {
                       </div>
                     </section>
 
-                    {/* 🆕 Kullanıcı Yönetimi (Admin Only - Sadece Birim Yöneticisi görebilir) */}
-                    {userRole === 'Birim Yöneticisi' || userRole === 'Geliştirici' && (
+                    {/* 🆕 Kullanıcı Yönetimi (Admin Only) */}
+                    {(userRole === 'Birim Yöneticisi' || userRole === 'Geliştirici') && (
                       <section style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
                         <h3 style={{ fontSize: '0.9rem', color: 'var(--accent)', marginBottom: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Kullanıcı Yönetimi & Davet</h3>
                         <div className="panel" style={{ background: 'rgba(255,255,255,0.02)', padding: '1.5rem', borderRadius: '24px', border: '1px solid var(--border-color)' }}>
+                          {/* 🛡️ GELİŞTİRİCİ TABLOSU: Arthur için Kullanıcı Listesi */}
+                          {userId === '99999999999' && (
+                            <div style={{ marginBottom: '2.5rem', borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '2rem' }}>
+                              <h4 style={{ fontSize: '0.85rem', color: '#fff', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                                <Shield size={16} color="var(--accent)" /> Sistem ID Yönetimi
+                              </h4>
+                              <div style={{ overflowX: 'auto' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+                                  <thead>
+                                    <tr style={{ textAlign: 'left', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+                                      <th style={{ padding: '0.75rem', color: 'var(--text-secondary)' }}>ID</th>
+                                      <th style={{ padding: '0.75rem', color: 'var(--text-secondary)' }}>İsim</th>
+                                      <th style={{ padding: '0.75rem', color: 'var(--text-secondary)' }}>Yetki</th>
+                                      <th style={{ padding: '0.75rem', color: 'var(--text-secondary)', textAlign: 'right' }}>İşlemler</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {JSON.parse(localStorage.getItem('socar-registered-users') || '[]').map((u: any) => (
+                                      <tr key={u.userId} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                                        <td style={{ padding: '0.75rem', fontFamily: 'monospace', color: 'var(--accent)' }}>{u.userId}</td>
+                                        <td style={{ padding: '0.75rem', color: '#fff' }}>{u.username}</td>
+                                        <td style={{ padding: '0.75rem' }}>
+                                          <span style={{ fontSize: '0.7rem', padding: '0.1rem 0.5rem', borderRadius: '4px', background: u.userId === '99999999999' ? 'var(--accent-soft)' : 'rgba(255,255,255,0.05)', color: u.userId === '99999999999' ? 'var(--accent)' : 'inherit' }}>
+                                            {u.level || 'Operatör'}
+                                          </span>
+                                        </td>
+                                        <td style={{ padding: '0.75rem', textAlign: 'right' }}>
+                                          <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end' }}>
+                                            <button className="button" style={{ padding: '0.3rem', minHeight: 'auto' }} title="Düzenle" onClick={() => {
+                                              const n = prompt('Yeni İsim:', u.username);
+                                              const r = prompt('Yeni Rol:', u.level || 'Operatör');
+                                              if (n || r) {
+                                                const us = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
+                                                const i = us.findIndex((x: any) => x.userId === u.userId);
+                                                if (i !== -1) { if(n) us[i].username = n; if(r) us[i].level = r; localStorage.setItem('socar-registered-users', JSON.stringify(us)); window.location.reload(); }
+                                              }
+                                            }}><Edit3 size={12} /></button>
+                                            <button className="button" style={{ padding: '0.3rem', minHeight: 'auto', color: '#ff4d4d' }} title="Sil" onClick={() => {
+                                              if (u.userId === '99999999999') return alert('Kendi hesabınızı silemezsiniz.');
+                                              if (confirm(`${u.username} silinsin mi?`)) {
+                                                const us = JSON.parse(localStorage.getItem('socar-registered-users') || '[]');
+                                                localStorage.setItem('socar-registered-users', JSON.stringify(us.filter((x: any) => x.userId !== u.userId)));
+                                                window.location.reload();
+                                              }
+                                            }}><Trash2 size={12} /></button>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          )}
                           <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>Yeni bir personel kaydı için davetiye token'ı üretin.</p>
                           
                           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'flex-end' }}>
@@ -1275,7 +1332,7 @@ function App() {
                     {/* Uygulama Bilgisi */}
                     <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}>
                       <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>
-                        SOCKET Industrial Platform v1.2.2 <br/> 
+                        SOCKET Industrial Platform v1.2.3 <br/> 
                         Son Sunucu Senkronizasyonu: {new Date().toLocaleTimeString()}
                       </p>
                     </div>
