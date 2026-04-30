@@ -237,6 +237,9 @@ export default function LoginPage({ onLogin, onShowHelp, onShowPrivacy, registra
             <span onClick={onShowHelp}>Yardım</span>
             <span onClick={onShowPrivacy}>Gizlilik</span>
           </div>
+          <div style={{ marginTop: '1.5rem', fontSize: '0.7rem', color: 'rgba(255,255,255,0.15)', letterSpacing: '1px' }}>
+            v1.3.5
+          </div>
         </div>
       </div>
 
