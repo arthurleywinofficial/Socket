@@ -9,7 +9,7 @@ type Props = {
   color?: string
 }
 
-const TimeSeriesPanel: FC<Props> = ({ title, data, range, onChangeRange, color = '#00d4ff' }) => {
+const TimeSeriesPanel: FC<Props> = ({ title, data, range, color = '#00d4ff' }) => {
   return (
     <div className="timeseries-panel">
       <div className="panel-meta">
