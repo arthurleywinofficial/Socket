@@ -561,6 +561,47 @@ function App() {
 
   return (
     <div className="app-shell" data-theme={theme}>
+      {/* 🚀 STARTUP LOADING OVERLAY (En Üst Katman) */}
+      {showStartup && (
+        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: '#0a0d14', zIndex: 999999, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <style>{`
+            @keyframes s-glow {
+              0%, 100% { filter: drop-shadow(0 0 10px var(--accent)); }
+              50% { filter: drop-shadow(0 0 30px var(--accent)); }
+            }
+            .s-logo-container {
+              position: relative;
+              width: 120px;
+              height: 160px;
+              margin-bottom: 2rem;
+            }
+          `}</style>
+          
+          <div className="s-logo-container">
+            <svg width="100%" height="100%" viewBox="0 0 100 160" style={{ animation: 's-glow 2s infinite' }}>
+              <path d="M75,40 C75,20 25,20 25,60 C25,100 75,90 75,130 C75,170 25,170 25,150" stroke="rgba(255,255,255,0.03)" strokeWidth="18" fill="none" strokeLinecap="round" />
+              <path d="M75,40 C75,20 25,20 25,60 C25,100 75,90 75,130 C75,170 25,170 25,150" stroke="var(--accent)" strokeWidth="18" fill="none" strokeLinecap="round" style={{ strokeDasharray: '600', strokeDashoffset: '600', animation: 'dash 3.5s linear forwards' }} />
+            </svg>
+            <style>{`
+              @keyframes dash {
+                to { stroke-dashoffset: 0; }
+              }
+              @keyframes bar-fill {
+                0% { width: 0%; }
+                100% { width: 100%; }
+              }
+            `}</style>
+          </div>
+
+          <div style={{ width: '200px', height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden' }}>
+            <div style={{ width: '0%', height: '100%', background: 'var(--accent)', borderRadius: '10px', animation: 'bar-fill 3.5s ease-out forwards' }} />
+          </div>
+          <p style={{ marginTop: '1.5rem', color: 'var(--text-secondary)', fontSize: '0.85rem', letterSpacing: '2px', textTransform: 'uppercase', opacity: 0.8 }}>
+            Sistem Verileri Senkronize Ediliyor
+          </p>
+        </div>
+      )}
+
       {isAuthenticated && (
         <Sidebar 
           menu={MENU} 
@@ -1385,7 +1426,7 @@ function App() {
                     {/* Uygulama Bilgisi */}
                     <div style={{ marginTop: '1rem', padding: '1rem', borderRadius: '16px', background: 'rgba(255,255,255,0.02)', textAlign: 'center' }}>
                       <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', margin: 0 }}>
-                        SOCKET Industrial Platform v1.3.1 <br/> 
+                        SOCKET Industrial Platform v1.3.2 <br/> 
                         Son Sunucu Senkronizasyonu: {new Date().toLocaleTimeString()}
                       </p>
                     </div>
@@ -1537,72 +1578,6 @@ function App() {
         className="mobile-overlay" 
         onClick={() => document.body.classList.remove('sidebar-open')}
       >
-        {/* 🚀 STARTUP LOADING OVERLAY */}
-        {showStartup && (
-          <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: '#0a0d14', zIndex: 100000, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <style>{`
-              @keyframes s-fill {
-                0% { height: 0%; opacity: 0; }
-                100% { height: 100%; opacity: 1; }
-              }
-              @keyframes s-glow {
-                0%, 100% { filter: drop-shadow(0 0 10px var(--accent)); }
-                50% { filter: drop-shadow(0 0 30px var(--accent)); }
-              }
-              .s-logo-container {
-                position: relative;
-                width: 120px;
-                height: 160px;
-                margin-bottom: 2rem;
-              }
-              .s-logo-bg {
-                position: absolute;
-                width: 100%;
-                height: 100%;
-                fill: none;
-                stroke: rgba(255,255,255,0.05);
-                stroke-width: 8;
-              }
-              .s-logo-fill {
-                position: absolute;
-                bottom: 0;
-                width: 100%;
-                background: linear-gradient(to top, var(--accent), #00d4ff);
-                clip-path: url(#s-mask);
-                animation: s-fill 3s ease-out forwards;
-              }
-            `}</style>
-            
-            <div className="s-logo-container">
-              <svg width="100%" height="100%" viewBox="0 0 100 140" style={{ animation: 's-glow 2s infinite' }}>
-                <defs>
-                  <clipPath id="s-mask">
-                    <path d="M75,30 C75,10 25,10 25,50 C25,90 75,80 75,120 C75,160 25,160 25,140" stroke="white" strokeWidth="18" fill="none" strokeLinecap="round" />
-                  </clipPath>
-                </defs>
-                <path d="M75,30 C75,10 25,10 25,50 C25,90 75,80 75,120 C75,160 25,160 25,140" stroke="rgba(255,255,255,0.03)" strokeWidth="18" fill="none" strokeLinecap="round" />
-                <path d="M75,30 C75,10 25,10 25,50 C25,90 75,80 75,120 C75,160 25,160 25,140" stroke="var(--accent)" strokeWidth="18" fill="none" strokeLinecap="round" style={{ strokeDasharray: '600', strokeDashoffset: '600', animation: 'dash 3.5s linear forwards' }} />
-              </svg>
-              <style>{`
-                @keyframes dash {
-                  to { stroke-dashoffset: 0; }
-                }
-              `}</style>
-            </div>
-
-            <div style={{ width: '200px', height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '10px', overflow: 'hidden' }}>
-              <div style={{ width: '0%', height: '100%', background: 'var(--accent)', borderRadius: '10px', animation: 'bar-fill 3.5s ease-out forwards' }} />
-            </div>
-            <p style={{ marginTop: '1.5rem', color: 'var(--text-secondary)', fontSize: '0.85rem', letterSpacing: '2px', textTransform: 'uppercase', opacity: 0.8 }}>
-              Sistem Verileri Senkronize Ediliyor
-            </p>
-            <style>{`
-              @keyframes bar-fill {
-                0% { width: 0%; }
-                100% { width: 100%; }
-              }
-            `}</style>
-          </div>
         )}
 
         {/* 🎭 SİSTEM MODAL PENCERESİ */}
