@@ -628,16 +628,16 @@ function App() {
       <main className="page-content">
         {isAuthenticated && (
           <header className="page-header slide-in" style={{ 
-            paddingTop: '40px !important', 
-            paddingBottom: '40px !important', 
-            minHeight: '140px !important', 
-            display: 'flex !important', 
-            alignItems: 'center !important', 
-            justifyContent: 'space-between !important', 
-            paddingLeft: '1.5rem !important', 
-            paddingRight: '1.5rem !important', 
-            position: 'relative !important', 
-            zIndex: '1001 !important' 
+            paddingTop: '40px', 
+            paddingBottom: '40px', 
+            minHeight: '140px', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'space-between', 
+            paddingLeft: '1.5rem', 
+            paddingRight: '1.5rem', 
+            position: 'relative', 
+            zIndex: 1001 
           }}>
             <div className="header-left">
               <button className="mobile-toggle" onClick={() => document.body.classList.toggle('sidebar-open')}>

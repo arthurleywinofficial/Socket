@@ -238,24 +238,24 @@ ${getSystemContext()}`;
         <div 
           id="socket-alert-ultra"
           style={{
-            position: 'fixed !important',
-            top: '160px !important',
-            left: '50% !important',
-            transform: 'translateX(-50%) !important',
-            background: 'rgba(0, 212, 255, 0.95) !important',
-            color: '#000 !important',
-            padding: '0 12px !important',
-            borderRadius: '12px !important',
-            width: '90% !important',
-            maxWidth: '350px !important',
-            height: '44px !important',
-            display: 'flex !important',
-            alignItems: 'center !important',
-            justifyContent: 'space-between !important',
-            boxShadow: '0 10px 40px rgba(0,212,255,0.4) !important',
-            zIndex: '99999999 !important',
-            border: '1px solid white !important',
-            backdropFilter: 'blur(10px) !important'
+            position: 'fixed',
+            top: '160px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            background: 'rgba(0, 212, 255, 0.95)',
+            color: '#000',
+            padding: '0 12px',
+            borderRadius: '12px',
+            width: '90%',
+            maxWidth: '350px',
+            height: '44px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            boxShadow: '0 10px 40px rgba(0,212,255,0.4)',
+            zIndex: 99999999,
+            border: '1px solid white',
+            backdropFilter: 'blur(10px)'
           }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: 1, overflow: 'hidden' }}>
@@ -271,16 +271,16 @@ ${getSystemContext()}`;
           <button 
             onClick={(e) => { e.stopPropagation(); setShowHint(false); }}
             style={{ 
-              background: '#000 !important', 
-              color: '#fff !important',
-              border: 'none !important', 
-              borderRadius: '50% !important', 
-              height: '28px !important',
-              width: '28px !important',
-              cursor: 'pointer !important', 
-              display: 'flex !important',
-              alignItems: 'center !important',
-              justifyContent: 'center !important'
+              background: '#000', 
+              color: '#fff',
+              border: 'none', 
+              borderRadius: '50%', 
+              height: '28px',
+              width: '28px',
+              cursor: 'pointer', 
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
             }}
           >
             <X size={14} />

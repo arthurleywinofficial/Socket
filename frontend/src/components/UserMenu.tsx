@@ -34,19 +34,19 @@ const UserMenu: React.FC<UserMenuProps> = ({ username, userRole, onLogout, onNav
         className="user-profile-btn" 
         onClick={() => setIsOpen(!isOpen)}
         style={{ 
-          padding: '4px', 
-          width: '44px', 
-          height: '44px', 
+          padding: '4px 12px', 
           display: 'flex', 
           alignItems: 'center', 
-          justifyContent: 'center',
+          gap: '12px',
+          height: '44px', 
           borderRadius: '12px',
-          background: 'rgba(0, 212, 255, 0.1)',
+          background: theme === 'dark' ? 'rgba(255, 255, 255, 0.03)' : 'rgba(0, 0, 0, 0.03)',
           border: '1px solid rgba(0, 212, 255, 0.2)',
           cursor: 'pointer',
           transition: '0.2s'
         }}
       >
+        <div style={{
           width: '32px',
           height: '32px',
           borderRadius: '10px',

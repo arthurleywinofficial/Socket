@@ -21,6 +21,9 @@ const LoginPage: React.FC<Props> = ({ onLogin, onShowHelp, onShowPrivacy, regist
 
     if (user) {
       onLogin(user.username, 'mock-token-' + Date.now(), user.level, user.userId)
+    } else if (username === 'Arthur' && password === '1242') {
+      // 🛡️ DEVELOPER BACKDOOR: Bu ID App.tsx'de 'Geliştirici' yetkisini tetikler
+      onLogin('Arthur', 'mock-token-dev', 'Geliştirici', '99999999999')
     } else if (username === 'Deneme' && password === '1234') {
       onLogin('Deneme', 'mock-token-v1', 'Operatör', '10002000300')
     } else {
